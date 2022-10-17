@@ -9,7 +9,7 @@ class Player{
     gamesPlayed;
     minutesPlayed;
     pointsPlayed;
-    hucksPercentage;
+    huckPercentage;
     drops;
     throwaways;
     blocks;
