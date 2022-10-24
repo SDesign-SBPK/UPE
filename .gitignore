@@ -2,3 +2,4 @@ venv
 *.class
 .vscode
 node_modules
+connection.json
