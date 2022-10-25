@@ -4,6 +4,12 @@ The database is based on MySQL and uses the Sequelize ORM to connect and create 
 
 ## Setup
 
+Make sure you have Node and NPM installed - everything runs off these, so I'd be worried if you don't have them at this point.
+
+Make sure you have MySQL installed and setup on your system. You should be able to access your instance via some account - either the root or a user account. These will be needed to connect.
+
+Install the Sequelize ORM and the required MySQL adapter by running `npm install` in this directory.
+
 Create a new file `connection.json` in this directory. This will be used for your connection to the database. Add the following contents:
 ```json
 {
