@@ -5,7 +5,7 @@ const connection = require("./connection.json");
  * Sets up the database and all of the models
  */
 
-// Connect to DB using saved
+// Connect to DB using saved credentials
 const sequelize = new Sequelize({
     database: connection.database,
     username: connection.user,
@@ -24,12 +24,12 @@ sequelize.authenticate().then(() => {
 // Define models in DB
 const modelDefiners = [
     require("./models/Game.model"),
-    require("./models/Location.model"),
+    require("./models/Team.model"),
     require("./models/Player.model"),
     require("./models/PlayerGameStats.model"),
-    require("./models/Team.model"),
     require("./models/TeamGameStats.model"),
-    require("./models/WeatherInterval.model")
+    require("./models/WeatherInterval.model"),
+    require("./models/Location.model")
 ];
 
 for (defineModel of modelDefiners) {
