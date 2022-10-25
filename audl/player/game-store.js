@@ -44,9 +44,8 @@ const savePageJson = function (res) {
                 game.timezone = pageOfGameHistory['games'][index]['startTimezone']
                 game.week = pageOfGameHistory['games'][index]['week']
                 let playerFile = fileStream.createWriteStream(__dirname + '/../game-history/' + game.gameID + '.json')
-                fileStream.writeFile(playerFile.path, JSON.stringify(game), 'utf-8', function () {
-
-                })
+                fileStream.writeFile(playerFile.path, JSON.stringify(game), 'utf-8', function () {})
+                playerFile.close()
             }
             page++
             if(page > pageLimit){
@@ -66,4 +65,4 @@ let storeGamesOnPage = function (){
 
 //Set this on an interval for each page. Has to be long enough as node.js is asynchronous which causes it to try and call
 //when it may not be done processing a page
-interval = setInterval(storeGamesOnPage, 1000)
+interval = setInterval(storeGamesOnPage, 100)

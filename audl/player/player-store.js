@@ -46,9 +46,8 @@ const savePageJson = function (res) {
                 player.throwaways = pageOfPlayers['stats'][index]['throwaways']
                 player.blocks = pageOfPlayers['stats'][index]['blocks']
                 let playerFile = fileStream.createWriteStream(__dirname + '/../player-files/' + player.lastName + ',' + player.firstName + '.json')
-                fileStream.writeFile(playerFile.path, JSON.stringify(player), 'utf-8', function () {
-                    
-                })
+                fileStream.writeFile(playerFile.path, JSON.stringify(player), 'utf-8', function () {})
+                playerFile.close()
             }
             page++
             if(page > pageLimit){
@@ -68,6 +67,6 @@ let storePayersOnPage = function (){
 
 //Set this on an interval for each page. Has to be long enough as node.js is asynchronous which causes it to try and call
 //when it may not be done processing a page
-interval = setInterval(storePayersOnPage, 2000)
+interval = setInterval(storePayersOnPage, 500)
 
 

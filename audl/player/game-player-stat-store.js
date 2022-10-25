@@ -5,12 +5,15 @@
 
 const internet = require('https')
 const fileStream = require("fs")
+const playerGameStat = require("../audl-containers/player-game-stats");
 const pageLimit = 149
 const yearLimit = 2022
 const baseStatsUrl = 'https://www.backend.audlstats.com/web-api/roster-game-stats-for-player?playerID='
 const basePlayerUrl = 'https://www.backend.audlstats.com/web-api/player-stats?limit=20&page='
 let startYear = 2014
 let page = 1
+
+let interval;
 
 let storePlayerGameStats = function(pageNumber){
     return new Promise(() => {
@@ -36,6 +39,7 @@ let storePlayerGameStats = function(pageNumber){
 
                     for(let index = 0; index < list.length; index++){
                         for(let year = startYear; year < yearLimit; year++){
+
                             new Promise(() => {
                                 internet.get(baseStatsUrl + list[index] + '&year=' + year, function (results) {
                                     let yearBody = ""
@@ -47,7 +51,6 @@ let storePlayerGameStats = function(pageNumber){
 
                                         results.on("end", () => {
                                             parsedYear = JSON.parse(yearBody)
-                                            console.log(parsedYear)
                                             for(let game = 0; game < parsedYear['stats'].length; game++){
                                                 let playerGameStat = require('../audl-containers/player-game-stats')
                                                 playerGameStat.gameID = parsedYear['stats'][game]['gameID']
@@ -63,8 +66,11 @@ let storePlayerGameStats = function(pageNumber){
                                                 playerGameStat.secondsPlayed = parsedYear['stats'][game]['secondsPlayed']
                                                 playerGameStat.yardsThrown = parsedYear['stats'][game]['yardsThrown']
                                                 playerGameStat.yardsReceived = parsedYear['stats'][game]['yardsReceived']
-                                                let playerGameFile = fileStream.createWriteStream(__dirname + '/../player-game-stats/' + list[index] + '-' + playerGameStat.gameID + '.json')
-                                                fileStream.writeFile(playerGameFile.path, JSON.stringify(playerGameStat), 'utf-8', function () {})
+                                                try{
+                                                    let playerGameFile = fileStream.createWriteStream(__dirname + '/../player-game-stats/' + list[index] + '-' + playerGameStat.gameID + '.json')
+                                                    fileStream.writeFile(playerGameFile.path, JSON.stringify(playerGameStat), 'utf-8', function () {})
+                                                    playerGameFile.close()
+                                                }catch (error) {}
                                             }
                                         })
                                     }catch (error) {}
@@ -73,15 +79,17 @@ let storePlayerGameStats = function(pageNumber){
                         }
                     }
                 })
-
             }catch (error){}
         }).on("error", () => {})
     })
 }
 
-
-for(let i = page; i < pageLimit; i++){
-    storePlayerGameStats(i)
+let mainFunction = function (){
+    storePlayerGameStats(page)
+    page++
+    if(page > pageLimit) clearInterval(interval)
 }
+
+interval = setInterval(mainFunction, 100)
 
 
