@@ -4,13 +4,12 @@ class PlayerGameStats{
     goals;
     assists;
     throwaways;
+    completions;
     completionPercentage;
-    holdPercentage;
-    breakPercentage;
-    huckPercentage;
-    turnovers;
+    catches;
+    drops;
     blocks;
-    redZonePercentage;
-    scoreFor;
-    scoreAgainst;
+    secondsPlayed;
+    yardsThrown;
+    yardsReceived;
 }

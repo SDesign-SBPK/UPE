@@ -5,54 +5,14 @@
 
 const internet = require('https')
 const fileStream = require("fs")
-const pageLimit = 10
+const pageLimit = 149
 const yearLimit = 2022
 const baseStatsUrl = 'https://www.backend.audlstats.com/web-api/roster-game-stats-for-player?playerID='
 const basePlayerUrl = 'https://www.backend.audlstats.com/web-api/player-stats?limit=20&page='
 let startYear = 2014
 let page = 1
-let interval
 
-let playerIndex = 0
-let playerIdList = []
-
-const savePlayerGameStats = function (res) {
-    let body = ""
-    let parsedBody = ""
-    try{
-        res.on("data", (chunk) => {
-            body += chunk
-        })
-
-        res.on("end", ()=>{
-            parsedBody = JSON.parse(body)
-            for(let index = startYear; index < yearLimit; index++){
-
-            }
-
-            playerIndex++
-            if(playerIndex === playerIdList.length)(
-                clearInterval(interval)
-            )
-        })
-    }catch (error) {
-
-    }
-}
-
-
-/*
-Store the data being entered via https into a json format, and then save into a player file
- */
-
-let storePlayerYear = function (playerId, year){
-    return new Promise(() => {
-        console.log("Player ID: " + playerId)
-        console.log("Player Year: " + year)
-    })
-}
-
-let playerIdsToArray = function(pageNumber){
+let storePlayerGameStats = function(pageNumber){
     return new Promise(() => {
         internet.get(basePlayerUrl + pageNumber, function (res) {
             let list = []
@@ -88,6 +48,24 @@ let playerIdsToArray = function(pageNumber){
                                         results.on("end", () => {
                                             parsedYear = JSON.parse(yearBody)
                                             console.log(parsedYear)
+                                            for(let game = 0; game < parsedYear['stats'].length; game++){
+                                                let playerGameStat = require('../audl-containers/player-game-stats')
+                                                playerGameStat.gameID = parsedYear['stats'][game]['gameID']
+                                                playerGameStat.playerID = list[index]
+                                                playerGameStat.goals = parsedYear['stats'][game]['goals']
+                                                playerGameStat.assists = parsedYear['stats'][game]['assists']
+                                                playerGameStat.throwaways = parsedYear['stats'][game]['throwaways']
+                                                playerGameStat.completions = parsedYear['stats'][game]['completions']
+                                                playerGameStat.completionPercentage = ((parsedYear['stats'][game]['completions'] / parsedYear['stats'][game]['throwsAttempted']) * 100)
+                                                playerGameStat.catches = parsedYear['stats'][game]['catches']
+                                                playerGameStat.drops = parsedYear['stats'][game]['drops']
+                                                playerGameStat.blocks = parsedYear['stats'][game]['blocks']
+                                                playerGameStat.secondsPlayed = parsedYear['stats'][game]['secondsPlayed']
+                                                playerGameStat.yardsThrown = parsedYear['stats'][game]['yardsThrown']
+                                                playerGameStat.yardsReceived = parsedYear['stats'][game]['yardsReceived']
+                                                let playerGameFile = fileStream.createWriteStream(__dirname + '/../player-game-stats/' + list[index] + '-' + playerGameStat.gameID + '.json')
+                                                fileStream.writeFile(playerGameFile.path, JSON.stringify(playerGameStat), 'utf-8', function () {})
+                                            }
                                         })
                                     }catch (error) {}
                                 }).on("error", () => {})
@@ -103,7 +81,7 @@ let playerIdsToArray = function(pageNumber){
 
 
 for(let i = page; i < pageLimit; i++){
-    playerIdsToArray(i)
+    storePlayerGameStats(i)
 }
 
 
