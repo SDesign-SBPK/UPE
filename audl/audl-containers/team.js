@@ -3,6 +3,8 @@ class Team{
     teamName;
     wins;
     losses;
+    scoresFor;
+    scoresAgainst;
     gamesPlayed;
     completionPercentage;
     holdPercentage;
@@ -11,6 +13,5 @@ class Team{
     turnovers;
     blocks;
     redZonePercentage;
-    scoresFor;
-    scoresAgainst;
+
 }
