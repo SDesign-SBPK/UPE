@@ -66,6 +66,7 @@ CREATE TABLE Game (
     averageTemp DECIMAL(5,2) DEFAULT 0.00,
     averageWindSpeed DECIMAL(5,2) DEFAULT 0.00,
     averagePrecipitation DECIMAL(5,2) DEFAULT 0.00,
+    averageHumidity DECIMAL(5,2) DEFAULT 0.00,
     awayTeamCity VARCHAR(64),
     homeTeamCity VARCHAR(64),
     PRIMARY KEY (gameID)

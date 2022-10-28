@@ -27,56 +27,22 @@ To setup the database schema, you can run `node index.js` to create the schema o
 
 ## Interacting with the Database
 
-To interact with the database, import the `database` module to the relevant file. An example:
+To interact with the database, import the relevant controller for the table you want to interact with:
 ```js
-// From the database directory
-const db = require("./database");
+const games = require("./controllers/Game.model");
 
-// Add, remove, read, etc.
+games.createGame(/* ... */);
+
+// And so on
 ```
 
-The current state of the database relies purely on using the Sequelize interface to interact with the database. Wrapper modules will follow soon that abstract away some of the details and make it simpler to use. For now, the database can be interacted by using:
+All of the models have the same base functions for now:
+- `create` - adds a new entry to the database
+- `getAll` - retrieves all of the entries from the database
+- `get` - retrieves one entry from the database
+- `update` - updates one specific entry in the database
+- `delete` - removes a specific entry in the database
 
-```js
-// Create entry in <Model name>
-// INSERT INTO Model VALUES ("fieldValue", ...)
-db.models.model.create({
-    "fieldName": "fieldValue",
-    // Remaining columns in entry
-}).then(res => {
-    console.log(res);
-}).catch((error) => {
-    console.log("Failed to create entry: ", error);
-});
+Future functions can be added later, depending on specific needs
 
-// Retrieval
-// SELECT * FROM Model
-db.models.model.findAll().then(res => {
-    console.log(res)
-}).catch((error) => {
-    console.error("Failed to retrieve data : ", error);
-});
-
-// SELECT * FROM Model WHERE columnName = columnValue
-db.models.model.findOne({
-    where: {
-        columnName: "columnValue"
-    }
-}).then(res => {
-    console.log(res)
-}).catch((error) => {
-    console.error("Failed to retrieve data : ", error);
-});
-
-// Remove a record
-// DELETE FROM Model WHERE columnName = columnValue
-db.models.model.destroy({
-    where: {
-        columnName: "columnValue"
-    }
-}).then(() => {
-    console.log("Successfully deleted record.")
-}).catch((error) => {
-    console.error("Failed to delete record : ", error);
-});
-```
+In the `index.js` file of the `database` folder, there is a function available that resets the entire database if so desired

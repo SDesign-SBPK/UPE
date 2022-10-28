@@ -4,7 +4,7 @@ const { DataTypes } = require("sequelize");
  * The data representation of an AUDL game. Identified by the gameID (string)
  */
 module.exports = (sequelize) => {
-    sequelize.define("Game", {
+    const Game = sequelize.define("Game", {
         gameID: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -42,6 +42,10 @@ module.exports = (sequelize) => {
             type: DataTypes.DECIMAL(5,2),
             defaultValue: 0.00
         },
+        averageHumidity: {
+            type: DataTypes.DECIMAL(5,2),
+            defaultValue: 0.00
+        },
         awayTeamCity: {
             type: DataTypes.STRING
         },
@@ -49,4 +53,6 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING
         }
     });
+
+    return Game;
 };
