@@ -1,5 +1,4 @@
 const db = require("./database");
-const locations = require("./controllers/Location.controller")
 
 const resetDB = () => {
     db.sync({force: true}).then(() => {

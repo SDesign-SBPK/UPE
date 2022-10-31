@@ -21,9 +21,11 @@ Create a new file `connection.json` in this directory. This will be used for you
 }
 ```
 
-Once the file has been created, running `node database.js` should test the connection successfully.
+Once the file has been created, running `node database.js` will test the connection successfully.
 
-To setup the database schema, you can run `node index.js` to create the schema of the database using just the Node and Sequelize combination. The `database.sql` script is not used for anything at the moment and is left in the repository right now in order to have a reference of the overall schema.
+To setup the database schema, you can import `index.js` into another file and call for the `resetDB()` function. 
+
+The `database.sql` script is not used for anything at the moment and is left in the repository right now in order to have a reference of the overall schema.
 
 ## Interacting with the Database
 
