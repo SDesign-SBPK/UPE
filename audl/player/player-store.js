@@ -5,9 +5,10 @@
 
 const internet = require('https')
 const fileStream = require("fs")
-const pageLimit = 149
+let pageLimit = 149
 const baseUrl = 'https://www.backend.audlstats.com/web-api/player-stats?limit=20&page='
 let page = 1
+let directory = __dirname + '/../player-files/'
 let interval
 
 let pageOfPlayers;
@@ -45,7 +46,7 @@ const savePageJson = function (res) {
                 player.drops = pageOfPlayers['stats'][index]['drops']
                 player.throwaways = pageOfPlayers['stats'][index]['throwaways']
                 player.blocks = pageOfPlayers['stats'][index]['blocks']
-                let playerFile = fileStream.createWriteStream(__dirname + '/../player-files/' + player.lastName + ',' + player.firstName + '.json')
+                let playerFile = fileStream.createWriteStream(directory + player.lastName + ',' + player.firstName + '.json')
                 fileStream.writeFile(playerFile.path, JSON.stringify(player), 'utf-8', function () {})
                 playerFile.close()
             }
@@ -65,8 +66,21 @@ let storePayersOnPage = function (){
 
 }
 
-//Set this on an interval for each page. Has to be long enough as node.js is asynchronous which causes it to try and call
-//when it may not be done processing a page
-interval = setInterval(storePayersOnPage, 500)
+/**
+ * This will store the stats of players from the pages specified into a specified directory. It will print out the page number done once completed.
+ *
+ * @param startPage Must be greater than or equal to 1. This will be the page that the function will start pulling from the AUDL site
+ * @param endPage The last page to store from the AUDL site
+ * @param storingDirectory Defined base directory that each of the player files will be stored to. The directory has to exist in order to function.
+ * Note that it is a relative path that is used.
+ */
+const storePlayerPages = function(startPage, endPage, storingDirectory){
+    page = startPage
+    pageLimit = endPage
+    directory = storingDirectory
+    interval = setInterval(storePayersOnPage, 100)
+}
+
+module.exports = {storePlayerPages}
 
 
