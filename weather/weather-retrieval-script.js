@@ -1,21 +1,36 @@
 //IMPORTANT: Must run command "npm install node-fetch" - then add the line: "type": "module" into package.json file.
 
 import fetch from "node-fetch";
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const fs = require('fs');
+const path = require('path');
 
-gameDataRetrieval();
+gameDataRetrieval(fs, path);
 
-async function gameDataRetrieval() {
-    //Insert way to retrieve the game data from the database
-
+async function gameDataRetrieval(fs, path) {
     //Placeholder values for testing purposes
-    const startTime = "2019-06-13T07:30:00";
-    const endTime = "2019-06-13T09:00:00";
-
-    //location will equal homeTeamCity
-    //Must figure out some way to determine playoff/championship games (Different Locations)
-    const location = "Sterling,VA,US";
-
+    var startTime = "2022-08-27T19:00:00";
+    var endTime = "2022-08-27T20:00:00";
+    var location = "Washington,DC";
     const val = getWeatherData(startTime, endTime, location);
+
+    //Loop to read all JSON files from game-history directory
+    //Collects location and timestamp from each file.
+    const dir = "./game-history/";
+    const jsonFiles = fs.readdirSync(dir).filter(file => path.extname(file) === '.json');
+
+    jsonFiles.forEach(file =>{
+        const fileData = fs.readFileSync(path.join(dir, file));
+        const json = JSON.parse(fileData.toString());
+        startTime = json.timestamp;
+        location = json.homeCity;
+        console.log(file);
+        console.log(startTime);
+        console.log(location);
+    })
+
+    //const val = getWeatherData(startTime, endTime, location);
 
     //Must add way to Insert intervals into database
 
