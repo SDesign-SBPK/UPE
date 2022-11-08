@@ -31,6 +31,9 @@ module.exports = (sequelize) => {
         },
         altitude: {
             type: DataTypes.INTEGER
+        },
+        state: {
+            type: DataTypes.STRING
         }
     });
 };
