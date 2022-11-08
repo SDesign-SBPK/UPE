@@ -5,19 +5,20 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const fs = require('fs');
 const path = require('path');
+var moment = require('moment');
 
 gameDataRetrieval(fs, path);
 
 async function gameDataRetrieval(fs, path) {
     //Placeholder values for testing purposes
-    var startTime = "2022-08-27T19:00:00";
+    var startTime = "2022-08-29T10:00:00";
     var endTime = "2022-08-27T20:00:00";
     var location = "Washington,DC";
     const val = getWeatherData(startTime, endTime, location);
 
     //Loop to read all JSON files from game-history directory
     //Collects location and timestamp from each file.
-    const dir = "./game-history/";
+    const dir = "./game-history2/";
     const jsonFiles = fs.readdirSync(dir).filter(file => path.extname(file) === '.json');
 
     jsonFiles.forEach(file =>{
@@ -39,8 +40,11 @@ async function gameDataRetrieval(fs, path) {
 //Retrieves weather data from VisualCrossingAPI depending on start, end, and location parameters
 async function getWeatherData(start, end, loc){
     try {
-        var uri = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history?combinationMethod=aggregate&aggregateMinutes=15&startDateTime=" + start + "&"
-        + "endDateTime=" + end + "&unitGroup=us&contentType=json&locationMode=single&location=" + loc + "&key=BXJMPGTKDASB9QYG9KQ595BQF";
+        var endTime = moment(start).add(2, 'h').toISOString(true);
+        end = endTime.substring(0, 19)
+        console.log(end);
+        var uri = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history?combinationMethod=aggregate&aggregateMinutes=15&startDateTime=" + start
+         + "&endDateTime=" + end + "&unitGroup=us&contentType=json&locationMode=single&location=" + loc + "&key=BXJMPGTKDASB9QYG9KQ595BQF";
         const response = await fetch(uri);
 
         if (!response.ok){
