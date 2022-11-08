@@ -10,42 +10,45 @@ var moment = require('moment');
 gameDataRetrieval(fs, path);
 
 async function gameDataRetrieval(fs, path) {
-    //Placeholder values for testing purposes
-    var startTime = "2022-08-29T10:00:00";
-    var endTime = "2022-08-27T20:00:00";
-    var location = "Washington,DC";
-    const val = getWeatherData(startTime, endTime, location);
-
-    //Loop to read all JSON files from game-history directory
-    //Collects location and timestamp from each file.
+    //Collects location and timestamp information from each game record.
     const dir = "./game-history2/";
     const jsonFiles = fs.readdirSync(dir).filter(file => path.extname(file) === '.json');
-
-    jsonFiles.forEach(file =>{
-        const fileData = fs.readFileSync(path.join(dir, file));
+    console.log(jsonFiles);
+    
+    //
+    for (let i = 0; i < jsonFiles.length; i++) {
+        const fileData = fs.readFileSync(path.join(dir, jsonFiles[i]));
         const json = JSON.parse(fileData.toString());
-        startTime = json.timestamp;
-        location = json.homeCity;
-        console.log(file);
-        console.log(startTime);
-        console.log(location);
-    })
-
-    //const val = getWeatherData(startTime, endTime, location);
+        var startTime = json.timestamp;
+        var location = json.homeCity;
+        console.log(jsonFiles[i]);
+        await wait(5000);
+        var val = getWeatherData(startTime, location);
+        await wait(5000);
+    }
 
     //Must add way to Insert intervals into database
 
 }
 
+//Wait function to slow down requests to VisualCrossingAPI
+function wait(milliseconds){
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
+  }
+
 //Retrieves weather data from VisualCrossingAPI depending on start, end, and location parameters
-async function getWeatherData(start, end, loc){
+async function getWeatherData(start, loc){
     try {
+        //Automatically computes end timestamp based on the start of each game
         var endTime = moment(start).add(2, 'h').toISOString(true);
-        end = endTime.substring(0, 19)
-        console.log(end);
+        var end = endTime.substring(0, 19)
+        
+        //Weathe API Request
         var uri = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history?combinationMethod=aggregate&aggregateMinutes=15&startDateTime=" + start
          + "&endDateTime=" + end + "&unitGroup=us&contentType=json&locationMode=single&location=" + loc + "&key=BXJMPGTKDASB9QYG9KQ595BQF";
-        const response = await fetch(uri);
+         const response = await fetch(uri);
 
         if (!response.ok){
             throw new Error('Error! status: ' + response.status);
@@ -53,6 +56,7 @@ async function getWeatherData(start, end, loc){
 
         const result = await response.json();
         
+        //Process and Extract Useful Weather Data
         const values = processWeatherData(result);
         return values;
 
