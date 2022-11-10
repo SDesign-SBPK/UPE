@@ -22,9 +22,9 @@ async function gameDataRetrieval(fs, path) {
         var startTime = json.timestamp;
         var location = json.homeCity;
         console.log(jsonFiles[i]);
-        await wait(5000);
+        await wait(2500);
         var val = getWeatherData(startTime, location);
-        await wait(5000);
+        await wait(2500);
     }
 
     //Must add way to Insert intervals into database
