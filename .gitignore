@@ -1,4 +1,3 @@
-/.idea
 .DS_Store
 audl/.DS_Store
 audl/pages/
@@ -6,3 +5,9 @@ audl/player-files
 audl/game-history
 audl/player-game-stats
 audl/team-files
+venv
+*.class
+.vscode
+node_modules
+connection.json
+/.idea
