@@ -23,7 +23,7 @@ Create a new file `connection.json` in this directory. This will be used for you
 
 Once the file has been created, running `node database.js` will test the connection successfully.
 
-To setup the database schema, you can import `index.js` into another file and call for the `resetDB()` function. 
+To setup the database schema, you can import `index.js` into another file and call for the `connectDB()` and `resetDB()` functions. 
 
 The `database.sql` script is not used for anything at the moment and is left in the repository right now in order to have a reference of the overall schema.
 
@@ -31,7 +31,7 @@ The `database.sql` script is not used for anything at the moment and is left in 
 
 To interact with the database, import the relevant controller for the table you want to interact with:
 ```js
-const games = require("./controllers/Game.model");
+const games = require("./controllers/Game.controller");
 
 games.createGame(/* ... */);
 
@@ -44,6 +44,8 @@ All of the models have the same base functions for now:
 - `get` - retrieves one entry from the database
 - `update` - updates one specific entry in the database
 - `delete` - removes a specific entry in the database
+
+Both the `create` and `update` functions take in an object to be saved into the DB. These are currently just assumed to have the same field names as the model names and are not verified. This can be changed later, but some level of assumption has to be made for now.
 
 Future functions can be added later, depending on specific needs
 

@@ -56,12 +56,14 @@ const getTeam = (teamID) => {
  * @param updatedTeam The updated object entry for team
  */
 const updateTeam = (teamID, updatedTeam) => {
-    db.models.Team.update({
-        ...updatedTeam,
-        where: {
-            teamID: teamID
+    db.models.Team.update(
+        { ...updatedTeam },
+        {
+            where: {
+                teamID: teamID
+            }
         }
-    }).then(res => {
+    ).then(res => {
         console.log(res);
     }).catch((error) => {
         console.log("Failed to update Team: ", error);

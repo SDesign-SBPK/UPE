@@ -56,12 +56,14 @@ const getGame = (gameID) => {
  * @param updatedGame updated object entry for game
  */
 const updateGame = (gameID, updatedGame) => {
-    db.models.Game.update({
-        ...updatedGame, // May cause issues later, possibly overwriting gameID
-        where: {
-            gameID: gameID
+    db.models.Game.update(
+        { ...updatedGame },
+        {
+            where: {
+                gameID: gameID
+            }
         }
-    }).then(res => {
+    ).then(res => {
         console.log(res);
     }).catch((error) => {
         console.log("Failed to update Game: ", error);

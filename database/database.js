@@ -15,12 +15,6 @@ const sequelize = new Sequelize({
     dialect: 'mysql'
 });
 
-sequelize.authenticate().then(() => {
-    console.log("Connection established");
-}).catch ((error) => {
-    console.error("Error connecting to database: ", error);
-});
-
 // Define models in DB
 const modelDefiners = [
     require("./models/Game.model"),
