@@ -1,5 +1,9 @@
-/.idea
+venv
+*.class
+.vscode
 node_modules
+connection.json
+/.idea
 package.json
 package-lock.json
 weather/game-history/
