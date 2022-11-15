@@ -6,12 +6,14 @@ const require = createRequire(import.meta.url);
 const fs = require('fs');
 const path = require('path');
 var moment = require('moment');
+const gameController = require("../database/controllers/Game.controller");
+const weatherController = require("../database/controllers/WeatherInterval.controller");
 
 gameDataRetrieval(fs, path);
 
 async function gameDataRetrieval(fs, path) {
     //Collects location and timestamp information from each game record.
-    const dir = "./game-history2/";
+    const dir = "./weather/game-history2/";
     const jsonFiles = fs.readdirSync(dir).filter(file => path.extname(file) === '.json');
     console.log(jsonFiles);
     
@@ -21,13 +23,26 @@ async function gameDataRetrieval(fs, path) {
         const json = JSON.parse(fileData.toString());
         var startTime = json.timestamp;
         var location = json.homeCity;
+        let game = {
+            gameID: json.gameID,
+            awayTeam: json.awayTeam,
+            homeTeam: json.homeTeam,
+            awayTeamCity: json.awayCity,
+            homeTeamCity: json.homeCity,
+            startTime: startTime.substring(0, 19),
+            endTime: " ",
+            awayScore: json.awayScore,
+            homeScore: json.homeScore,
+            averageTemperature: 0,
+            averageWindSpeed: 0,
+            averagePrecipitation: 0,
+            averageHumidity: 0
+        };
         console.log(jsonFiles[i]);
         await wait(2500);
-        var val = getWeatherData(startTime, location);
+        getWeatherData(startTime, location, game);
         await wait(2500);
     }
-
-    //Must add way to Insert intervals into database
 
 }
 
@@ -39,11 +54,12 @@ function wait(milliseconds){
   }
 
 //Retrieves weather data from VisualCrossingAPI depending on start, end, and location parameters
-async function getWeatherData(start, loc){
+async function getWeatherData(start, loc, game){
     try {
         //Automatically computes end timestamp based on the start of each game
         var endTime = moment(start).add(2, 'h').toISOString(true);
-        var end = endTime.substring(0, 19)
+        var end = endTime.substring(0, 19);
+        game.endTime = end;
         
         //Weathe API Request
         var uri = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history?combinationMethod=aggregate&aggregateMinutes=15&startDateTime=" + start
@@ -57,8 +73,8 @@ async function getWeatherData(start, loc){
         const result = await response.json();
         
         //Process and Extract Useful Weather Data
-        const values = processWeatherData(result);
-        return values;
+        processWeatherData(result, game);
+        return;
 
     } catch (err) {
         console.log(err);
@@ -68,7 +84,7 @@ async function getWeatherData(start, loc){
 
 //Processes WeatherData into 15 minute intervals
 //Provides temp, wind speed, precipation, and humidity for each interval
-async function processWeatherData(weatherData){
+async function processWeatherData(weatherData, game){
     if (!weatherData) {
         console.log("Empty response");
         return;
@@ -89,16 +105,31 @@ async function processWeatherData(weatherData){
 
     for (var i=0;i<values.length;i++) {
         console.log(values[i].datetimeStr+": temp="+values[i].temp+", wspd="+values[i].wspd+", precip="+values[i].precip+ ", humidity="+values[i].humidity);
+        //let timestamp = values[i].dateTimeStr;
+        //let intTime = timestamp.substring(0, 19);
+        let weatherInterval = {
+            gameID: game.gameID,
+            intervalNumber: i+1,
+            intervalTime: values[i].dateTimeStr,
+            temperature: values[i].temp,
+            windSpeed: values[i].wspd, 
+            precipitation: values[i].precip, 
+            humidity: values[i].humidity
+        };
+        weatherController.createWeatherInterval(weatherInterval);
         sumTemp += values[i].temp;
         sumPrecip += values[i].precip;
         sumWspd += values[i].wspd;
         sumHumidity += values[i].humidity;
     }
     
-    let avgTemp = sumTemp / values.length;
-    let avgPrecip = sumPrecip / values.length;
-    let avgWspd = sumWspd / values.length;
-    let avgHumidity = sumHumidity / values.length;
-    console.log("AvgTemp=" + avgTemp + ", AvgPrecip=" + avgPrecip + ", AvgWspd=" + avgWspd + ", AvgHumidity=" + avgHumidity);
-    return values;
+    game.averageTemperature = sumTemp / values.length;
+    game.averagePrecipitation = sumPrecip / values.length;
+    game.averageWindSpeed = sumWspd / values.length;
+    game.averageHumidity = sumHumidity / values.length;
+    console.log("AvgTemp=" + game.averageTemperature + ", AvgPrecip=" + game.averagePrecipitation + ", AvgWspd=" + game.averageWindSpeed + ", AvgHumidity=" + game.averageHumidity);
+
+    gameController.updateGame(game.gameID, game);
+
+    return;
 }
