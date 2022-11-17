@@ -21,7 +21,7 @@ async function gameDataRetrieval(fs, path) {
     for (let i = 0; i < jsonFiles.length; i++) {
         const fileData = fs.readFileSync(path.join(dir, jsonFiles[i]));
         const json = JSON.parse(fileData.toString());
-        var startTime = json.timestamp;
+        var startTime = (json.timestamp).substring(0, 19);
         var location = json.homeCity;
         let game = {
             gameID: json.gameID,
@@ -29,7 +29,7 @@ async function gameDataRetrieval(fs, path) {
             homeTeam: json.homeTeam,
             awayTeamCity: json.awayCity,
             homeTeamCity: json.homeCity,
-            startTime: startTime.substring(0, 19),
+            startTime: startTime.replace("T", " "),
             endTime: " ",
             awayScore: json.awayScore,
             homeScore: json.homeScore,
@@ -59,7 +59,7 @@ async function getWeatherData(start, loc, game){
         //Automatically computes end timestamp based on the start of each game
         var endTime = moment(start).add(2, 'h').toISOString(true);
         var end = endTime.substring(0, 19);
-        game.endTime = end;
+        game.endTime = end.replace("T", " ");
         
         //Weathe API Request
         var uri = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history?combinationMethod=aggregate&aggregateMinutes=15&startDateTime=" + start
@@ -105,12 +105,12 @@ async function processWeatherData(weatherData, game){
 
     for (var i=0;i<values.length;i++) {
         console.log(values[i].datetimeStr+": temp="+values[i].temp+", wspd="+values[i].wspd+", precip="+values[i].precip+ ", humidity="+values[i].humidity);
-        //let timestamp = values[i].dateTimeStr;
-        //let intTime = timestamp.substring(0, 19);
+        let timestamp = values[i].datetimeStr;
+        let intTime = (timestamp.substring(0, 19)).replace("T", " ");
         let weatherInterval = {
             gameID: game.gameID,
             intervalNumber: i+1,
-            intervalTime: values[i].dateTimeStr,
+            intervalTime: intTime,
             temperature: values[i].temp,
             windSpeed: values[i].wspd, 
             precipitation: values[i].precip, 
