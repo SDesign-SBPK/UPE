@@ -1,6 +1,20 @@
-from array import array
+from sklearn import svm
 
-from sklearn import svm, datasets
+def getStats(teamId):
+    return []
+
+def predict(teamOneId, teamTwoId):
+    teamOneStats = getStats(teamOneId)
+    teamTwoStats = getStats(teamTwoId)
+
+    teamStats = [teamOneStats[:], teamTwoStats[:]]
+    teamTargets = []
+
+    machine = svm.SVC(kernel="linear", C=1)
+    machine.fit(teamStats, teamTargets)
+
+
+    result = machine.predict()
 
 def predict():
     #Teams Union and Flyers stats. This will eventually change to take team parameters and use those to pull data from the server.
@@ -12,13 +26,6 @@ def predict():
     machine.fit(teamStats, targets)
     result = machine.predict([[0.6]])
     print(result)
-
-
-
-def test():
-    iris = datasets.load_iris()
-    print(iris.data[:])
-    print(iris.target)
 
 
 predict()
