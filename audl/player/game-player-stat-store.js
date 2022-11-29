@@ -5,7 +5,6 @@
 
 const internet = require('https')
 const fileStream = require("fs")
-const playerGameStat = require("../audl-containers/player-game-stats");
 const pageLimit = 149
 const yearLimit = 2022
 const baseStatsUrl = 'https://www.backend.audlstats.com/web-api/roster-game-stats-for-player?playerID='
