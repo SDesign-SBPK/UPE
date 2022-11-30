@@ -55,12 +55,14 @@ const getLocation = (teamID) => {
  * @param updatedLocation Updated object entry for location
  */
 const updateLocation = (teamID, updatedLocation) => {
-    db.models.Location.update({
-        ...updatedLocation,
-        where: {
-            teamID: teamID
+    db.models.Location.update(
+        { ...updatedLocation },
+        {
+            where: {
+                teamID: teamID
+            }
         }
-    }).then(res => {
+    ).then(res => {
         console.log(res);
     }).catch((error) => {
         console.log("Failed to update Location: ", error);
