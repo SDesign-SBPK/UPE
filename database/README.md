@@ -29,6 +29,22 @@ The `database.sql` script is not used for anything at the moment and is left in 
 
 ## Interacting with the Database
 
+### For Python Files
+
+This section is mainly for the ML model.
+
+Import the `ml_connector.py` file into the necessary file by adding an import statement to the top of the file:
+```py
+import database.ml_connector as conn
+
+conn.getGame(gameID)
+
+# And so on
+```
+The functions will return any entries that are found matching the passed in parameter
+
+### For Node Files
+
 To interact with the database, import the relevant controller for the table you want to interact with:
 ```js
 const games = require("./controllers/Game.controller");
