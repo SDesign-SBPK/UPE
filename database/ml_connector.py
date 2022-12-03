@@ -9,81 +9,112 @@ Uses the same `connection.json` file as the rest of the database files use
 import mysql.connector as connector
 import json
 
-connection_file = open("connection.json")
+connection_file = open("./connection.json")
 connection_details = json.load(connection_file)
 connection = connector.connect(
     user = connection_details["user"],
     password = connection_details["pass"],
     host = connection_details["host"],
-    port = connection_details["port"]
+    port = connection_details["port"],
+    database = connection_details["database"]
 )
 
 
-def getGame(gameID):
+def getGame(gameID: str):
     """
     Gets a game using a gameID
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM Games WHERE gameID = %s", (gameID,))
+    game = c.fetchone()
+    return game
 
 
-def getLocation(teamID):
+def getLocation(teamID: str):
     """
     Gets a specific location using the relevant teamID
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM Locations WHERE teamID = %s", (teamID,))
+    location = c.fetchone()
+    return location
 
 
-def getPlayer(playerID):
+def getPlayer(playerID: str):
     """
     Gets a player using their playerID
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM Players WHERE playerID = %s", (playerID,))
+    player = c.fetchone()
+    return player
 
 
-def getAllStatsforPlayer(playerID):
+def getAllStatsforPlayer(playerID: str):
     """
     Gets all of the game stat entries for a specific player
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM PlayerGameStats WHERE playerID = %s", (playerID,))
+    stats = c.fetchall()
+    return stats
 
 
-def getGameStatForPlayer(playerID, gameID):
+def getGameStatForPlayer(playerID: str, gameID: str):
     """
     Gets the game stat entry for a specific player in a specific game
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM PlayerGameStats WHERE playerID = %s AND gameID = %s", (playerID, gameID))
+    stat = c.fetchone()
+    return stat
 
 
-def getTeam(teamID):
+def getTeam(teamID: str):
     """
     Gets a team entry with a given teamID
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM Teams WHERE teamID = %s", (teamID,))
+    team = c.fetchone()
+    return team
 
 
-def getAllStatsforTeam(teamID):
+def getAllStatsforTeam(teamID: str):
     """
     Gets all of the game stat entries for a specific team
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM TeamGameStats WHERE teamID = %s", (teamID,))
+    stats = c.fetchall()
+    return stats
 
 
-def getGameStatForTeam(teamID, gameID):
+def getGameStatForTeam(teamID: str, gameID: str):
     """
-    Gets the game stat entry for a specific player in a specific game
+    Gets the game stat entry for a specific team in a specific game
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM TeamGameStats WHERE teamID = %s AND gameID = %s", (teamID, gameID))
+    stat = c.fetchone()
+    return stat
 
 
-def getGameWeatherIntervals(gameID):
+def getGameWeatherIntervals(gameID: str):
     """
     Gets all of the weather intervals for a given game
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM WeatherIntervals WHERE gameID = %s", (gameID,))
+    intervals = c.fetchall()
+    return intervals
 
 
-def getWeatherInterval(gameID, intervalNumber):
+def getWeatherInterval(gameID: str, intervalNumber: str):
     """
     Gets a specific interval from a game
     """
-    pass
+    c = connection.cursor(buffered = True)
+    c.execute("SELECT * FROM WeatherIntervals WHERE gameID = %s AND intervalNumber = %s", (gameID, intervalNumber))
+    interval = c.fetchone()
+    return interval
