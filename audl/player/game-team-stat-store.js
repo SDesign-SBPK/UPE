@@ -9,7 +9,7 @@ const pageLimit = 145
 const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
 let page = 1
 let interval
-
+const path = require('path')
 let pageOfGameHistory;
 
 /*
@@ -29,7 +29,7 @@ const savePageJson = function (res) {
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfGameHistory['games'].length; index++){
-                let game = require('../audl-containers/game')
+                let game = require(path.normalize('../audl-containers/game'))
                 game.gameID = pageOfGameHistory['games'][index]['gameID']
                 game.awayTeam = pageOfGameHistory['games'][index]['awayTeamID']
                 game.homeTeam = pageOfGameHistory['games'][index]['homeTeamID']
@@ -42,7 +42,7 @@ const savePageJson = function (res) {
                 game.timestamp = pageOfGameHistory['games'][index]['startTimestamp']
                 game.timezone = pageOfGameHistory['games'][index]['startTimezone']
                 game.week = pageOfGameHistory['games'][index]['week']
-                let teamGameFile = fileStream.createWriteStream(__dirname + '\\..\\team-game-stats\\' + game.gameID + '.json')
+                let teamGameFile = fileStream.createWriteStream(path.normalize(__dirname + '/../team-game-stats/' + game.gameID + '.json') )
                 teamGameFile.write(JSON.stringify(game), function () {
                     teamGameFile.close();
                 })
