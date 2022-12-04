@@ -1,1 +1,1 @@
-{"gameID":"2022-04-30-SLC-LA","awayTeam":"shred","homeTeam":"aviators","awayCity":"Salt Lake","homeCity":"LA","locationName":"Jack Kemp Stadium","awayScore":25,"homeScore":22,"status":"Final","timestamp":"2022-04-30T18:00:00-07:00","timezone":"PDT"}
+{"gameID":"2022-04-30-SLC-LA","teamID":"aviators","completionPercentage":0.9090909090909091,"completions":210,"huckPercentage":0.5833333333333334,"redZonePercentage":0.9230769230769231,"holdPercentage":0.64,"breakPercentage":0.20833333333333334,"score":-1,"turnovers":21,"blocks":8}

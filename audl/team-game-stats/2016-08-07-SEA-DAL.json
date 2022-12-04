@@ -1,1 +1,1 @@
-{"gameID":"2016-08-07-SEA-DAL","awayTeam":"cascades","homeTeam":"legion","awayCity":"Seattle","homeCity":"Dallas","locationName":null,"awayScore":27,"homeScore":33,"status":"Final","timestamp":"2016-08-07T12:00:00-05:00","timezone":"CDT"}
+{"gameID":"2016-08-07-SEA-DAL","teamID":"legion","completionPercentage":0.9487179487179487,"completions":296,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.7586206896551724,"breakPercentage":0.3142857142857143,"score":-1,"turnovers":16,"blocks":12}

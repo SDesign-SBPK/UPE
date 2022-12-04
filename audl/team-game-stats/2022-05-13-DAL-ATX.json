@@ -1,1 +1,1 @@
-{"gameID":"2022-05-13-DAL-ATX","awayTeam":"legion","homeTeam":"sol","awayCity":"Dallas","homeCity":"Austin","locationName":"Westlake Chaparral Stadium","awayScore":17,"homeScore":24,"status":"Final","timestamp":"2022-05-13T19:00:00-05:00","timezone":"CDT"}
+{"gameID":"2022-05-13-DAL-ATX","teamID":"sol","completionPercentage":0.9326241134751773,"completions":263,"huckPercentage":0.45454545454545453,"redZonePercentage":0.8888888888888888,"holdPercentage":0.631578947368421,"breakPercentage":0.46153846153846156,"score":-1,"turnovers":19,"blocks":14}

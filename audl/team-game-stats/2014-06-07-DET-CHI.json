@@ -1,1 +1,1 @@
-{"gameID":"2014-06-07-DET-CHI","awayTeam":"mechanix","homeTeam":"union","awayCity":"Detroit","homeCity":"Chicago","locationName":null,"awayScore":13,"homeScore":26,"status":"Final","timestamp":"2014-06-07T19:00:00-05:00","timezone":"CDT"}
+{"gameID":"2014-06-07-DET-CHI","teamID":"mechanix","completionPercentage":0.8918918918918919,"completions":264,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.45454545454545453,"breakPercentage":0.2,"score":-1,"turnovers":32,"blocks":10}

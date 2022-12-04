@@ -1,1 +1,1 @@
-{"gameID":"2021-08-29-NY-BOS","awayTeam":"empire","homeTeam":"glory","awayCity":"New York","homeCity":"Boston","locationName":"Hormel Stadium","awayScore":18,"homeScore":17,"status":"Final","timestamp":"2021-08-29T12:00:00-04:00","timezone":"EDT"}
+{"gameID":"2021-08-29-NY-BOS","teamID":"glory","completionPercentage":0.9221311475409836,"completions":225,"huckPercentage":0.5384615384615384,"redZonePercentage":0.6842105263157895,"holdPercentage":0.75,"breakPercentage":0.10526315789473684,"score":-1,"turnovers":19,"blocks":12}

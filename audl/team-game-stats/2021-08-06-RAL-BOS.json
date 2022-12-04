@@ -1,1 +1,1 @@
-{"gameID":"2021-08-06-RAL-BOS","awayTeam":"flyers","homeTeam":"glory","awayCity":"Raleigh","homeCity":"Boston","locationName":"Hormel Stadium","awayScore":19,"homeScore":18,"status":"Final","timestamp":"2021-08-06T19:00:00-04:00","timezone":"EDT"}
+{"gameID":"2021-08-06-RAL-BOS","teamID":"flyers","completionPercentage":0.9509433962264151,"completions":252,"huckPercentage":0.5,"redZonePercentage":0.8421052631578947,"holdPercentage":0.7,"breakPercentage":0.23809523809523808,"score":-1,"turnovers":13,"blocks":5}

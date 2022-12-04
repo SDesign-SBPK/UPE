@@ -5,12 +5,12 @@
 
 const internet = require('https')
 const fileStream = require("fs")
-const pageLimit = 145
-const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
+const pageLimit = 129
+const baseUrl = 'https://www.backend.audlstats.com/web-api/team-game-stats?limit=20&page='
 let page = 1
 let interval
 const path = require('path')
-let pageOfGameHistory;
+let pageOfGameHistory
 
 /*
 Store the data being entered via https into a json format, and then save into a player file
@@ -28,19 +28,19 @@ const savePageJson = function (res) {
             pageOfGameHistory = JSON.parse(body)
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
-            for(let index = 0; index < pageOfGameHistory['games'].length; index++){
-                let game = require(path.normalize('../audl-containers/game'))
-                game.gameID = pageOfGameHistory['games'][index]['gameID']
-                game.awayTeam = pageOfGameHistory['games'][index]['awayTeamID']
-                game.homeTeam = pageOfGameHistory['games'][index]['homeTeamID']
-                game.awayCity = pageOfGameHistory['games'][index]['awayTeamCity']
-                game.homeCity = pageOfGameHistory['games'][index]['homeTeamCity']
-                game.locationName = pageOfGameHistory['games'][index]['locationName']
-                game.awayScore = pageOfGameHistory['games'][index]['awayScore']
-                game.homeScore = pageOfGameHistory['games'][index]['homeScore']
-                game.status = pageOfGameHistory['games'][index]['status']
-                game.timestamp = pageOfGameHistory['games'][index]['startTimestamp']
-                game.timezone = pageOfGameHistory['games'][index]['startTimezone']
+            for(let index = 0; index < pageOfGameHistory['stats'].length; index++){
+                let game = require(path.normalize('../audl-containers/team-game-stats'))
+                game.gameID = pageOfGameHistory['stats'][index]['gameID']
+                game.teamID = pageOfGameHistory['stats'][index]['teamID']
+                game.completionPercentage = pageOfGameHistory['stats'][index]['completions'] / pageOfGameHistory['stats'][index]['throwingAttempts']
+                game.completions = pageOfGameHistory['stats'][index]['completions']
+                game.huckPercentage = pageOfGameHistory['stats'][index]['hucksCompleted'] / pageOfGameHistory['stats'][index]['hucksAttempted']
+                game.redZonePercentage = pageOfGameHistory['stats'][index]['redZoneScores'] / pageOfGameHistory['stats'][index]['redZonePossessions']
+                game.holdPercentage = pageOfGameHistory['stats'][index]['oLineScores'] / pageOfGameHistory['stats'][index]['oLinePoints']
+                game.breakPercentage = pageOfGameHistory['stats'][index]['dLineScores'] / pageOfGameHistory['stats'][index]['dLinePoints']
+                game.score = -1
+                game.turnovers = pageOfGameHistory['stats'][index]['turnovers']
+                game.blocks = pageOfGameHistory['stats'][index]['blocks']
                 let teamGameFile = fileStream.createWriteStream(path.normalize(__dirname + '/../team-game-stats/' + game.gameID + '.json') )
                 teamGameFile.write(JSON.stringify(game), function () {
                     teamGameFile.close();

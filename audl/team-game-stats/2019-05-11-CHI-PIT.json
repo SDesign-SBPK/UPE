@@ -1,1 +1,1 @@
-{"gameID":"2019-05-11-CHI-PIT","awayTeam":"union","homeTeam":"thunderbirds","awayCity":"Chicago","homeCity":"Pittsburgh","locationName":"JC Stone Field","awayScore":18,"homeScore":21,"status":"Final","timestamp":"2019-05-11T18:00:00-04:00","timezone":"EDT"}
+{"gameID":"2019-05-11-CHI-PIT","teamID":"thunderbirds","completionPercentage":0.9514563106796117,"completions":294,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.7,"breakPercentage":0.30434782608695654,"score":-1,"turnovers":15,"blocks":8}

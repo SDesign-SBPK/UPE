@@ -1,1 +1,1 @@
-{"gameID":"2019-07-06-DC-TOR","awayTeam":"breeze","homeTeam":"rush","awayCity":"DC","homeCity":"Toronto","locationName":"Varsity Stadium","awayScore":21,"homeScore":26,"status":"Final","timestamp":"2019-07-06T16:00:00-04:00","timezone":"EDT"}
+{"gameID":"2019-07-06-DC-TOR","teamID":"rush","completionPercentage":0.9367088607594937,"completions":222,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.6956521739130435,"breakPercentage":0.35714285714285715,"score":-1,"turnovers":15,"blocks":10}

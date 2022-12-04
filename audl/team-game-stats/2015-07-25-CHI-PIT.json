@@ -1,1 +1,1 @@
-{"gameID":"2015-07-25-CHI-PIT","awayTeam":"union","homeTeam":"thunderbirds","awayCity":"Chicago","homeCity":"Pittsburgh","locationName":null,"awayScore":23,"homeScore":24,"status":"Final","timestamp":"2015-07-25T19:00:00-05:00","timezone":"CDT"}
+{"gameID":"2015-07-25-CHI-PIT","teamID":"thunderbirds","completionPercentage":0.8985507246376812,"completions":248,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.5384615384615384,"breakPercentage":0.38461538461538464,"score":-1,"turnovers":28,"blocks":9}

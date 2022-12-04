@@ -1,1 +1,1 @@
-{"gameID":"2015-06-28-PHI-NY","awayTeam":"phoenix","homeTeam":"empire","awayCity":"Philadelphia","homeCity":"New York","locationName":null,"awayScore":13,"homeScore":24,"status":"Final","timestamp":"2015-06-28T12:00:00-04:00","timezone":"EDT"}
+{"gameID":"2015-06-28-PHI-NY","teamID":"phoenix","completionPercentage":0.8905109489051095,"completions":244,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.34615384615384615,"breakPercentage":0.26666666666666666,"score":-1,"turnovers":30,"blocks":7}

@@ -1,1 +1,1 @@
-{"gameID":"2014-06-21-PHI-MTL","awayTeam":"phoenix","homeTeam":"royal","awayCity":"Philadelphia","homeCity":"Montreal","locationName":null,"awayScore":19,"homeScore":31,"status":"Final","timestamp":"2014-06-21T19:00:00-05:00","timezone":"CDT"}
+{"gameID":"2014-06-21-PHI-MTL","teamID":"phoenix","completionPercentage":0.9144542772861357,"completions":310,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.3939393939393939,"breakPercentage":0.2857142857142857,"score":-1,"turnovers":29,"blocks":5}

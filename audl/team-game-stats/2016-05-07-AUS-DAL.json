@@ -1,1 +1,1 @@
-{"gameID":"2016-05-07-AUS-DAL","awayTeam":"sol","homeTeam":"legion","awayCity":"Austin","homeCity":"Dallas","locationName":null,"awayScore":16,"homeScore":24,"status":"Final","timestamp":"2016-05-07T19:00:00-05:00","timezone":"CDT"}
+{"gameID":"2016-05-07-AUS-DAL","teamID":"legion","completionPercentage":0.8461538461538461,"completions":187,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.7222222222222222,"breakPercentage":0.4230769230769231,"score":-1,"turnovers":34,"blocks":24}

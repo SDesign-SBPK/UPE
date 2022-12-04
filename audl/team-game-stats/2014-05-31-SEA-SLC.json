@@ -1,1 +1,1 @@
-{"gameID":"2014-05-31-SEA-SLC","awayTeam":"cascades","homeTeam":"lions","awayCity":"Seattle","homeCity":"Salt Lake","locationName":null,"awayScore":22,"homeScore":15,"status":"Final","timestamp":"2014-05-31T19:00:00-05:00","timezone":"CDT"}
+{"gameID":"2014-05-31-SEA-SLC","teamID":"cascades","completionPercentage":0.8620689655172413,"completions":250,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.5882352941176471,"breakPercentage":0.5,"score":-1,"turnovers":40,"blocks":23}

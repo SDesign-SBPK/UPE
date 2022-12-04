@@ -1,1 +1,1 @@
-{"gameID":"2019-06-29-RAL-TB","awayTeam":"flyers","homeTeam":"cannons","awayCity":"Raleigh","homeCity":"Tampa Bay","locationName":"Skyway Field","awayScore":22,"homeScore":20,"status":"Final","timestamp":"2019-06-29T19:30:00-04:00","timezone":"EDT"}
+{"gameID":"2019-06-29-RAL-TB","teamID":"cannons","completionPercentage":0.9215686274509803,"completions":282,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.7083333333333334,"breakPercentage":0.13636363636363635,"score":-1,"turnovers":24,"blocks":12}

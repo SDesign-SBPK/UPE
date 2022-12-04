@@ -1,1 +1,1 @@
-{"gameID":"2022-04-30-NY-DC","awayTeam":"empire","homeTeam":"breeze","awayCity":"New York","homeCity":"DC","locationName":"Carlini Field, Catholic U","awayScore":22,"homeScore":19,"status":"Final","timestamp":"2022-04-30T19:00:00-04:00","timezone":"EDT"}
+{"gameID":"2022-04-30-NY-DC","teamID":"empire","completionPercentage":0.9704797047970479,"completions":263,"huckPercentage":0.8571428571428571,"redZonePercentage":0.9444444444444444,"holdPercentage":0.85,"breakPercentage":0.21739130434782608,"score":-1,"turnovers":8,"blocks":6}

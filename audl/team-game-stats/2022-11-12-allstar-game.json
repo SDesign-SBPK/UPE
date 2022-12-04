@@ -1,1 +1,1 @@
-{"gameID":"2022-11-12-allstar-game","awayTeam":"allstars1","homeTeam":"allstars2","awayCity":"East-Central","homeCity":"South-West","locationName":null,"awayScore":42,"homeScore":24,"status":"Final","timestamp":"2022-11-12T16:00:00-08:00","timezone":"PST"}
+{"gameID":"2022-11-12-allstar-game","teamID":"allstars2","completionPercentage":0.8979591836734694,"completions":264,"huckPercentage":0.5161290322580645,"redZonePercentage":0.8571428571428571,"holdPercentage":0.5588235294117647,"breakPercentage":0.17391304347826086,"score":-1,"turnovers":30,"blocks":12}

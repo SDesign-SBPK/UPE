@@ -1,1 +1,1 @@
-{"gameID":"2017-05-13-DAL-RAL","awayTeam":"legion","homeTeam":"flyers","awayCity":"Dallas","homeCity":"Raleigh","locationName":null,"awayScore":25,"homeScore":32,"status":"Final","timestamp":"2017-05-13T19:00:00-04:00","timezone":"EDT"}
+{"gameID":"2017-05-13-DAL-RAL","teamID":"legion","completionPercentage":0.9382716049382716,"completions":304,"huckPercentage":null,"redZonePercentage":null,"holdPercentage":0.6764705882352942,"breakPercentage":0.07407407407407407,"score":-1,"turnovers":20,"blocks":8}

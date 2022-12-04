@@ -1,1 +1,1 @@
-{"gameID":"2021-06-25-AUS-SEA","awayTeam":"sol","homeTeam":"cascades","awayCity":"Austin","homeCity":"Seattle","locationName":"Seattle Memorial Stadium","awayScore":24,"homeScore":28,"status":"Final","timestamp":"2021-06-25T19:30:00-07:00","timezone":"PDT"}
+{"gameID":"2021-06-25-AUS-SEA","teamID":"cascades","completionPercentage":0.9294117647058824,"completions":237,"huckPercentage":0.631578947368421,"redZonePercentage":0.8421052631578947,"holdPercentage":0.7307692307692307,"breakPercentage":0.3,"score":-1,"turnovers":18,"blocks":11}

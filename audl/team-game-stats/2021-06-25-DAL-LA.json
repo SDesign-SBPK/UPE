@@ -1,1 +1,1 @@
-{"gameID":"2021-06-25-DAL-LA","awayTeam":"legion","homeTeam":"aviators","awayCity":"Dallas","homeCity":"LA","locationName":"LA Southwest College","awayScore":21,"homeScore":16,"status":"Final","timestamp":"2021-06-25T18:00:00-07:00","timezone":"PDT"}
+{"gameID":"2021-06-25-DAL-LA","teamID":"legion","completionPercentage":0.9354838709677419,"completions":261,"huckPercentage":0.7142857142857143,"redZonePercentage":0.7619047619047619,"holdPercentage":0.7222222222222222,"breakPercentage":0.34782608695652173,"score":-1,"turnovers":18,"blocks":7}
