@@ -41,7 +41,6 @@ const savePageJson = function (res) {
                 game.status = pageOfGameHistory['games'][index]['status']
                 game.timestamp = pageOfGameHistory['games'][index]['startTimestamp']
                 game.timezone = pageOfGameHistory['games'][index]['startTimezone']
-                game.week = pageOfGameHistory['games'][index]['week']
                 let teamGameFile = fileStream.createWriteStream(path.normalize(__dirname + '/../team-game-stats/' + game.gameID + '.json') )
                 teamGameFile.write(JSON.stringify(game), function () {
                     teamGameFile.close();
