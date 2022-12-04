@@ -5,7 +5,6 @@
 
 const internet = require('https')
 const fileStream = require("fs")
-const game = require("../audl-containers/team-game-stats");
 const pageLimit = 145
 const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
 let page = 1
@@ -31,7 +30,6 @@ const savePageJson = function (res) {
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfGameHistory['games'].length; index++){
                 let game = require('../audl-containers/game')
-                console.log(pageOfGameHistory['games'][index]['gameID'])
                 game.gameID = pageOfGameHistory['games'][index]['gameID']
                 game.awayTeam = pageOfGameHistory['games'][index]['awayTeamID']
                 game.homeTeam = pageOfGameHistory['games'][index]['homeTeamID']
@@ -44,9 +42,10 @@ const savePageJson = function (res) {
                 game.timestamp = pageOfGameHistory['games'][index]['startTimestamp']
                 game.timezone = pageOfGameHistory['games'][index]['startTimezone']
                 game.week = pageOfGameHistory['games'][index]['week']
-                let playerFile = fileStream.createWriteStream(__dirname + '/../game-history/' + game.gameID + '.json')
-                fileStream.writeFile(playerFile.path, JSON.stringify(game), 'utf-8', function () {})
-                playerFile.close()
+                let teamGameFile = fileStream.createWriteStream(__dirname + '\\..\\team-game-stats\\' + game.gameID + '.json')
+                teamGameFile.write(JSON.stringify(game), function () {
+                    teamGameFile.close();
+                })
             }
             page++
             if(page > pageLimit){
@@ -60,10 +59,9 @@ const savePageJson = function (res) {
 //The initial function to call. Currently unsure why, but after every request, an error (I believe is just a connection timeout) is received.
 let storeGamesOnPage = function (){
     internet.get(baseUrl + page, savePageJson).on("error", (error) => {})
-    console.log("Page Done: " + page)
 
 }
 
 //Set this on an interval for each page. Has to be long enough as node.js is asynchronous which causes it to try and call
 //when it may not be done processing a page
-interval = setInterval(storeGamesOnPage, 100)
+interval = setInterval(storeGamesOnPage, 10)

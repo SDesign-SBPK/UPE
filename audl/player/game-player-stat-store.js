@@ -67,12 +67,14 @@ let storePlayerGameStats = function(pageNumber){
                                                 playerGameStat.yardsReceived = parsedYear['stats'][game]['yardsReceived']
                                                 try{
                                                     let playerGameFile = fileStream.createWriteStream(__dirname + '/../player-game-stats/' + list[index] + '-' + playerGameStat.gameID + '.json')
-                                                    fileStream.writeFile(playerGameFile.path, JSON.stringify(playerGameStat), 'utf-8', function () {})
-                                                    playerGameFile.close()
-                                                }catch (error) {}
+                                                    playerGameFile.write(JSON.stringify(playerGameStat), function (){
+                                                        playerGameFile.close();
+                                                    })
+
+                                                }catch (error) {console.log(error)}
                                             }
                                         })
-                                    }catch (error) {}
+                                    }catch (error) {console.log("Issue")}
                                 }).on("error", () => {})
                             })
                         }
