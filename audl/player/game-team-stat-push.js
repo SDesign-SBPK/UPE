@@ -1,6 +1,7 @@
 const fs = require('fs')
-const controller = require("../../database/controllers/TeamGameStats.controller")
-
+const path = require('path')
+const controller = require('../../database/controllers/TeamGameStats.controller')
+const {connectDB} = require('../../database')
 
 const pushTeamGameStatFiles = function (directory){
 
@@ -14,11 +15,12 @@ const pushTeamGameStatFiles = function (directory){
 
         //Take each file from the array and push it to the database
         files.forEach(file => {
+            connectDB()
             //Make the path for each of the files
-            let fullFilePath = directory + '/' + file.name
+            let fullFilePath = path.normalize(directory + '/' + file.name)
 
             //Read the data from the file using the file path into a string format
-            let data = that.fs.readFileSync(fullFilePath).toString()
+            let data = fs.readFileSync(fullFilePath).toString()
 
             //Storing the raw data from the file into a JSON format
             let json = JSON.parse(data)
