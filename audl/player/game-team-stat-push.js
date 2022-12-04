@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const controller = require('../../database/controllers/TeamGameStats.controller')
-const {connectDB} = require('../../database')
+
 
 const pushTeamGameStatFiles = function (directory){
 
@@ -15,7 +14,9 @@ const pushTeamGameStatFiles = function (directory){
 
         //Take each file from the array and push it to the database
         files.forEach(file => {
-            connectDB()
+
+            let controller = require('../../database/controllers/TeamGameStats.controller')
+
             //Make the path for each of the files
             let fullFilePath = path.normalize(directory + '/' + file.name)
 

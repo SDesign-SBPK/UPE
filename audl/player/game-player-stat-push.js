@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const {connectDB} = require('../../database')
 
 const pushPlayerGameStatFiles = function (directory){
 
