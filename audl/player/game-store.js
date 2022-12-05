@@ -11,7 +11,7 @@ const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
 let page = 1
 let interval
 
-let pageOfGameHistory;
+let pageOfGameHistory
 
 /*
 Store the data being entered via https into a json format, and then save into a player file
@@ -61,7 +61,6 @@ const savePageJson = function (res) {
 //The initial function to call. Currently unsure why, but after every request, an error (I believe is just a connection timeout) is received.
 let storeGamesOnPage = function (){
     internet.get(baseUrl + page, savePageJson).on("error", (error) => {})
-    console.log("Page Done: " + page)
 
 }
 

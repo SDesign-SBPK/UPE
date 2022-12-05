@@ -3,7 +3,7 @@ const fileStream = require("fs")
 const path = require('path')
 let baseUrl = 'https://www.backend.audlstats.com/web-api/team-stats?limit=50'
 let pageOfTeams
-let teamDirectory = path.normalize(__dirname + '/../team-files/')
+const teamDirectory = path.normalize(__dirname + '/../team-files/')
 /*
 Store the data being entered via https into a json format, and then save into a team file
  */
@@ -21,7 +21,7 @@ const savePageJson = function (res) {
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfTeams['stats'].length; index++){
-                let team = require(path.normalize('../audl-containers/team'))
+                let team = require('../audl-containers/team')
                 console.log(pageOfTeams['stats'][index]['teamID'])
                 team.teamID = pageOfTeams['stats'][index]['teamID']
                 team.teamName = pageOfTeams['stats'][index]['teamName']
@@ -38,7 +38,7 @@ const savePageJson = function (res) {
                 team.blocks = pageOfTeams['stats'][index]['blocks']
                 team.redZonePercentage = pageOfTeams['stats'][index]['redZoneConversionPercentage']
                 let teamFile = fileStream.createWriteStream(path.normalize(teamDirectory + team.teamID + '.json'))
-                teamFile.writeFile(JSON.stringify(team), function () {
+                teamFile.write(JSON.stringify(team), function () {
                     teamFile.close()
                 })
             }
@@ -48,10 +48,10 @@ const savePageJson = function (res) {
 
 
 //The initial function to call. Currently unsure why, but after every request, an error (I believe is just a connection timeout) is received.
-let storeTeams = function (storeDirectory){
-    teamDirectory = storeDirectory
-    internet.get(baseUrl, savePageJson).on("error", (error) => {})
+let storeTeams = function () {
+    internet.get(baseUrl, savePageJson).on("error", (error) => {
+    })
 
 }
 
-module.exports = {storeTeams}
+storeTeams()

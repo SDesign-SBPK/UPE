@@ -3,17 +3,16 @@
  * future iterations will hopefully have the ability to create the directory.
  */
 
-const internet = require('https')
-const fileStream = require("fs")
 const pageLimit = 129
-const baseUrl = 'https://www.backend.audlstats.com/web-api/team-game-stats?limit=20&page='
 let page = 1
 let interval
-const path = require('path')
 let pageOfGameHistory
-
+const internet = require('https')
+const fileStream = require("fs")
+const path = require('path')
+const baseUrl = 'https://www.backend.audlstats.com/web-api/team-game-stats?limit=20&page='
 /*
-Store the data being entered via https into a json format, and then save into a player file
+Store the data being entered via https into a json format, and then save into a team file
  */
 const savePageJson = function (res) {
     let body = ""
@@ -29,10 +28,10 @@ const savePageJson = function (res) {
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfGameHistory['stats'].length; index++){
-                let game = require(path.normalize('../audl-containers/team-game-stats'))
+                let game = require(path.normalize('..\\audl-containers\\team-game-stats.js'))
                 game.gameID = pageOfGameHistory['stats'][index]['gameID']
                 game.teamID = pageOfGameHistory['stats'][index]['teamID']
-                game.completionPercentage = pageOfGameHistory['stats'][index]['completions'] / pageOfGameHistory['stats'][index]['throwingAttempts']
+                game.completionPercentage = (pageOfGameHistory['stats'][index]['completions'] / pageOfGameHistory['stats'][index]['throwingAttempts'])
                 game.completions = pageOfGameHistory['stats'][index]['completions']
                 game.huckPercentage = pageOfGameHistory['stats'][index]['hucksCompleted'] / pageOfGameHistory['stats'][index]['hucksAttempted']
                 game.redZonePercentage = pageOfGameHistory['stats'][index]['redZoneScores'] / pageOfGameHistory['stats'][index]['redZonePossessions']
@@ -41,10 +40,10 @@ const savePageJson = function (res) {
                 game.score = -1
                 game.turnovers = pageOfGameHistory['stats'][index]['turnovers']
                 game.blocks = pageOfGameHistory['stats'][index]['blocks']
-                let teamGameFile = fileStream.createWriteStream(path.normalize(__dirname + '/../team-game-stats/' + game.gameID + '.json') )
-                teamGameFile.write(JSON.stringify(game), function () {
-                    teamGameFile.close();
-                })
+                    let teamGameFile = fileStream.createWriteStream(path.normalize(__dirname + '/../team-game-stats/' + game.gameID +'-'  + game.teamID + '.json'))
+                    teamGameFile.write(JSON.stringify(game), function () {
+                        teamGameFile.close()
+                    })
             }
             page++
             if(page > pageLimit){
@@ -56,11 +55,9 @@ const savePageJson = function (res) {
 
 
 //The initial function to call. Currently unsure why, but after every request, an error (I believe is just a connection timeout) is received.
-let storeGamesOnPage = function (){
-    internet.get(baseUrl + page, savePageJson).on("error", (error) => {})
-
+let storeTeams = function () {
+    internet.get(baseUrl + page, savePageJson).on("error", (error) => {
+    })
 }
 
-//Set this on an interval for each page. Has to be long enough as node.js is asynchronous which causes it to try and call
-//when it may not be done processing a page
-interval = setInterval(storeGamesOnPage, 10)
+interval = setInterval(storeTeams, 10)
