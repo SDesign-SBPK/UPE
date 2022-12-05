@@ -13,3 +13,4 @@ connection.json
 /.idea
 weather/game-history/
 weather/game-history2/
+__pycache__

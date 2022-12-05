@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const connection = require("./connection.json");
+const connection = require("../connection.json");
 
 /**
  * Sets up the database and all of the models
@@ -13,12 +13,6 @@ const sequelize = new Sequelize({
     port: connection.port,
     password: connection.pass,
     dialect: 'mysql'
-});
-
-sequelize.authenticate().then(() => {
-    console.log("Connection established");
-}).catch ((error) => {
-    console.error("Error connecting to database: ", error);
 });
 
 // Define models in DB

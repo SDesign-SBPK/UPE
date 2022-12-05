@@ -77,13 +77,15 @@ const getWeatherInterval = (gameID, intervalNumber) => {
  * @param updatedInterval Updated object entry for the interval
  */
 const updateWeatherInterval = (gameID, intervalNumber, updatedInterval) => {
-    db.models.WeatherInterval.update({
-        ...updatedInterval,
-        where: {
-            gameID: gameID,
-            intervalNumber: intervalNumber
+    db.models.WeatherInterval.update(
+        { ...updatedInterval },
+        {
+            where: {
+                gameID: gameID,
+                intervalNumber: intervalNumber
+            }
         }
-    }).then(res => {
+    ).then(res => {
         console.log(res);
     }).catch((error) => {
         console.log("Failed to update WeatherInterval: ", error);

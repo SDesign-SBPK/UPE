@@ -56,12 +56,14 @@ const getPlayer = (playerID) => {
  * @param updatedPlayer updated object entry for player
  */
 const updatePlayer = (playerID, updatedPlayer) => {
-    db.models.Player.update({
-        ...updatedPlayer,
-        where: {
-            playerID: playerID
+    db.models.Player.update(
+        { ...updatedPlayer },
+        {
+            where: {
+                playerID: playerID
+            }
         }
-    }).then(res => {
+    ).then(res => {
         console.log(res);
     }).catch((error) => {
         console.log("Failed to update Player: ", error);

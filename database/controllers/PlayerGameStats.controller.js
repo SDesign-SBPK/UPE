@@ -80,13 +80,15 @@ const getPlayerStatForGame = (playerID, gameID) => {
  * @param updatedStats The updated statistic object entry
  */
 const updatePlayerGameStat = (playerID, gameID, updatedStats) => {
-    db.models.PlayerGameStats.update({
-        ...updatedStats,
-        where: {
-            playerID: playerID,
-            gameID: gameID
+    db.models.PlayerGameStats.update(
+        { ...updatedStats },
+        {
+            where: {
+                playerID: playerID,
+                gameID: gameID
+            }
         }
-    }).then(res => {
+    ).then(res => {
         console.log(res);
     }).catch((error) => {
         console.log("Failed to update PlayerGameStat: ", error);
