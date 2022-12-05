@@ -28,13 +28,13 @@
       <div class="container-lg text-center">
         <div class="row">
           <div class="col">
-            <form action="input.html">
-              <input type="submit" class="btn btn-primary" value="Primary"/>
+            <form action="{{ url_for('input') }}">
+              <input type="submit" class="btn btn-primary" value="Predict Match" />
             </form>
           </div>
           <div class="col">
             <form action="input.html">
-              <input type="submit" class="btn btn-primary" value="Primary"/>
+              <input type="submit" class="btn btn-primary" value="Learn more about our prediction engine"/>
             </form> 
           </div>
         </div>
