@@ -1,5 +1,5 @@
 const controller = require("../../database/controllers/Game.controller")
-const fs = require("fs");
+const fs = require("fs")
 
 const pushGameFiles = function (directory){
 
@@ -17,7 +17,7 @@ const pushGameFiles = function (directory){
             let fullFilePath = directory + '/' + file.name
 
             //Read the data from the file using the file path into a string format
-            let data = that.fs.readFileSync(fullFilePath).toString()
+            let data = fs.readFileSync(fullFilePath).toString()
 
             //Storing the raw data from the file into a JSON format
             let json = JSON.parse(data)
