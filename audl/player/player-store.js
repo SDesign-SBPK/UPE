@@ -5,10 +5,11 @@
 
 const internet = require('https')
 const fileStream = require("fs")
+const path = require('path')
 let pageLimit = 149
 const baseUrl = 'https://www.backend.audlstats.com/web-api/player-stats?limit=20&page='
 let page = 1
-let directory = __dirname + '/../player-files/'
+let directory = path.normalize(__dirname + '/../player-files/')
 let interval
 
 let pageOfPlayers;
@@ -30,8 +31,7 @@ const savePageJson = function (res) {
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfPlayers['stats'].length; index++){
-                let player = require('../audl-containers/player')
-                console.log(pageOfPlayers['stats'][index]['playerID'])
+                let player = require(path.normalize('../audl-containers/player'))
                 player.playerID = pageOfPlayers['stats'][index]['playerID']
                 player.firstName = pageOfPlayers['stats'][index]['name'].split(' ')[0]
                 player.lastName = pageOfPlayers['stats'][index]['name'].split(' ')[1]
@@ -46,9 +46,10 @@ const savePageJson = function (res) {
                 player.drops = pageOfPlayers['stats'][index]['drops']
                 player.throwaways = pageOfPlayers['stats'][index]['throwaways']
                 player.blocks = pageOfPlayers['stats'][index]['blocks']
-                let playerFile = fileStream.createWriteStream(directory + player.lastName + ',' + player.firstName + '.json')
-                fileStream.writeFile(playerFile.path, JSON.stringify(player), 'utf-8', function () {})
-                playerFile.close()
+                let playerFile = fileStream.createWriteStream(path.normalize(directory + player.lastName + ',' + player.firstName + '.json'))
+                playerFile.write(JSON.stringify(player), function () {
+                    playerFile.close()
+                })
             }
             page++
             if(page > pageLimit){
@@ -62,7 +63,6 @@ const savePageJson = function (res) {
 //The initial function to call. Currently unsure why, but after every request, an error (I believe is just a connection timeout) is received.
 let storePayersOnPage = function (){
     internet.get(baseUrl + page, savePageJson).on("error", (error) => {})
-    console.log("Page Done: " + page)
 
 }
 

@@ -5,12 +5,13 @@
 
 const internet = require('https')
 const fileStream = require("fs")
+const path = require('path')
 const pageLimit = 145
 const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
 let page = 1
 let interval
 
-let pageOfGameHistory;
+let pageOfGameHistory
 
 /*
 Store the data being entered via https into a json format, and then save into a player file
@@ -29,7 +30,7 @@ const savePageJson = function (res) {
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfGameHistory['games'].length; index++){
-                let game = require('../audl-containers/game')
+                let game = require(path.normalize('../audl-containers/game'))
                 console.log(pageOfGameHistory['games'][index]['gameID'])
                 game.gameID = pageOfGameHistory['games'][index]['gameID']
                 game.awayTeam = pageOfGameHistory['games'][index]['awayTeamID']
@@ -43,9 +44,10 @@ const savePageJson = function (res) {
                 game.timestamp = pageOfGameHistory['games'][index]['startTimestamp']
                 game.timezone = pageOfGameHistory['games'][index]['startTimezone']
                 game.week = pageOfGameHistory['games'][index]['week']
-                let playerFile = fileStream.createWriteStream(__dirname + '/../game-history/' + game.gameID + '.json')
-                fileStream.writeFile(playerFile.path, JSON.stringify(game), 'utf-8', function () {})
-                playerFile.close()
+                let playerFile = fileStream.createWriteStream(path.normalize(__dirname + '/../game-history/' + game.gameID + '.json'))
+                playerFile.write(JSON.stringify(game) ,function () {
+                    playerFile.close()
+                })
             }
             page++
             if(page > pageLimit){
@@ -59,10 +61,9 @@ const savePageJson = function (res) {
 //The initial function to call. Currently unsure why, but after every request, an error (I believe is just a connection timeout) is received.
 let storeGamesOnPage = function (){
     internet.get(baseUrl + page, savePageJson).on("error", (error) => {})
-    console.log("Page Done: " + page)
 
 }
 
 //Set this on an interval for each page. Has to be long enough as node.js is asynchronous which causes it to try and call
 //when it may not be done processing a page
-interval = setInterval(storeGamesOnPage, 100)
+interval = setInterval(storeGamesOnPage, 10)

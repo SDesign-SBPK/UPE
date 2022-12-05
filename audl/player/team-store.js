@@ -1,8 +1,9 @@
 const internet = require('https')
 const fileStream = require("fs")
+const path = require('path')
 let baseUrl = 'https://www.backend.audlstats.com/web-api/team-stats?limit=50'
 let pageOfTeams
-let teamDirectory = __dirname + '/../team-files/'
+const teamDirectory = path.normalize(__dirname + '/../team-files/')
 /*
 Store the data being entered via https into a json format, and then save into a team file
  */
@@ -36,9 +37,10 @@ const savePageJson = function (res) {
                 team.turnovers = pageOfTeams['stats'][index]['turnovers']
                 team.blocks = pageOfTeams['stats'][index]['blocks']
                 team.redZonePercentage = pageOfTeams['stats'][index]['redZoneConversionPercentage']
-                let teamFile = fileStream.createWriteStream(teamDirectory + team.teamID + '.json')
-                fileStream.writeFile(teamFile.path, JSON.stringify(team), 'utf-8', function () {})
-                teamFile.close()
+                let teamFile = fileStream.createWriteStream(path.normalize(teamDirectory + team.teamID + '.json'))
+                teamFile.write(JSON.stringify(team), function () {
+                    teamFile.close()
+                })
             }
         })
     }catch (error){}
@@ -46,10 +48,10 @@ const savePageJson = function (res) {
 
 
 //The initial function to call. Currently unsure why, but after every request, an error (I believe is just a connection timeout) is received.
-let storeTeams = function (storeDirectory){
-    teamDirectory = storeDirectory
-    internet.get(baseUrl, savePageJson).on("error", (error) => {})
+let storeTeams = function () {
+    internet.get(baseUrl, savePageJson).on("error", (error) => {
+    })
 
 }
 
-module.exports = {storeTeams}
+storeTeams()

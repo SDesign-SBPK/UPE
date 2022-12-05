@@ -1,6 +1,12 @@
-require("./game-player-stat-push")
-const {GamePlayerStatPush} = require("./game-player-stat-push");
+const path = require('path')
+const {pushPlayerGameStatFiles} = require('./game-player-stat-push')
+const {resetDB, connectDB} = require('../../database')
 
-pusher = new GamePlayerStatPush(__dirname + '/../player-game-stats', '')
-pusher.directory = __dirname + '/../player-game-stats'
-pusher.pushAllFiles()
+
+let directory = path.normalize(__dirname + '/../player-game-stats')
+
+
+pushPlayerGameStatFiles(directory)
+
+
+
