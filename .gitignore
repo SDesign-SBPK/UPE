@@ -14,3 +14,5 @@ connection.json
 weather/game-history/
 weather/game-history2/
 __pycache__
+database/upeserver.pem
+database/ssh.json

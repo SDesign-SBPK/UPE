@@ -5,19 +5,34 @@ retrieve the necessary data, raw SQL queries must be made to retrieve data
 
 Uses the same `connection.json` file as the rest of the database files use
 """
-
-import mysql.connector as connector
 import json
 
-connection_file = open("../connection.json")
+import mysql.connector as connector
+
+import paramiko as paramiko
+
+from sshtunnel import SSHTunnelForwarder
+
+global tunnel
+global connection
+
+connection_file = open("connection.json")
 connection_details = json.load(connection_file)
-connection = connector.connect(
-    user = connection_details["user"],
-    password = connection_details["pass"],
-    host = connection_details["host"],
-    port = connection_details["port"],
-    database = connection_details["database"]
-)
+
+ssh_file = open("ssh.json")
+ssh_details = json.load(ssh_file)
+ssh_key = paramiko.RSAKey.from_private_key_file(ssh_details["ssh_key_file"], password=ssh_details["ssh_key_pass"])
+
+tunnel = SSHTunnelForwarder((ssh_details["host"], ssh_details["ssh_port"]), ssh_username=ssh_details["user"],
+                            ssh_pkey=ssh_key, remote_bind_address=(ssh_details["remote_host"], ssh_details["remote_port"]))
+
+tunnel.start()
+
+connection = connector.connect(host=connection_details["host"],
+                               user=connection_details["user"],
+                               passwd=connection_details["pass"],
+                               port=tunnel.local_bind_port,
+                               database=connection_details["database"])
 
 
 def getGame(gameID: str):
