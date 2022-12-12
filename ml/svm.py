@@ -45,11 +45,12 @@ def stringOfTeamId(array, total, teamId):
 
 
 def combineArrays(teamOne, teamTwo):
-    print(teamOne)
-    print(teamTwo)
-    for row in teamTwo:
-        teamOne.append(row)
-    return teamOne
+    combined = []
+    for x in teamOne:
+        combined.append(x)
+    for x in teamTwo:
+        combined.append(x)
+    return combined
 
 
 # This method should at least fit the model.
@@ -61,12 +62,8 @@ def predict(id1, id2):
     teamOneTargets = stringOfTeamId([], len(teamOneStats), id1)
     totalTeamTargets = stringOfTeamId(teamOneTargets, len(teamTwoStats), id2)
 
-    print(teamStats)
-    print(teamOneTargets)
-    print(totalTeamTargets)
-
-    # machine = svm.SVC(kernel="linear", C=1)
-    # machine.fit(teamStats, totalTeamTargets)
+    machine = svm.SVC(kernel="linear", C=1)
+    machine.fit(teamStats, totalTeamTargets)
 
     result = 0
     return result
