@@ -13,13 +13,11 @@ import paramiko as paramiko
 
 from sshtunnel import SSHTunnelForwarder
 
-global tunnel
-global connection
 
-connection_file = open("connection.json")
+connection_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/connection.json")
 connection_details = json.load(connection_file)
 
-ssh_file = open("ssh.json")
+ssh_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/ssh.json")
 ssh_details = json.load(ssh_file)
 ssh_key = paramiko.RSAKey.from_private_key_file(ssh_details["ssh_key_file"], password=ssh_details["ssh_key_pass"])
 
@@ -68,7 +66,7 @@ def getPlayer(playerID: str):
     return player
 
 
-def getAllStatsforPlayer(playerID: str):
+def getAllStatsForPlayer(playerID: str):
     """
     Gets all of the game stat entries for a specific player
     """
@@ -101,7 +99,7 @@ def getTeam(teamID: str):
     return team
 
 
-def getAllStatsforTeam(teamID: str):
+def getAllStatsForTeam(teamID: str):
     """
     Gets all of the game stat entries for a specific team
     """

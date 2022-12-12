@@ -5,6 +5,6 @@
     "remote_port": 3306,
     "remote_address": "upeTest",
     "user": "ec2-user",
-    "ssh_key_file": "upeserver.pem",
+    "ssh_key_file": "/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/upeserver.pem",
     "ssh_key_pass": "brandon-copy"
 }
