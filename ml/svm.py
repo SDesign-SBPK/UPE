@@ -1,8 +1,9 @@
 from sklearn import svm
 from flask import jsonify
 
-from database.ml_connector import getAllStatsForTeam, getGame
+from database.ml_connector import getAllStatsForTeam, getGame, getWeatherInterval, getTeam
 
+maxWindSpeed= 35.5
 
 def getTeamStats(teamId):
     gameHistory = []
@@ -10,6 +11,7 @@ def getTeamStats(teamId):
     for row in sqlGames:
         gameEntry = [float(row[2])]
         winHistory = getGame(row[0])
+        weatherInterval = getWeatherInterval(row[0], 5)
         if winHistory is not None:
             # Check to see if it is away or home team
             if teamId in winHistory[0][1]:
@@ -24,8 +26,13 @@ def getTeamStats(teamId):
                     gameEntry.append(-1)
         else:
             gameEntry.append(0)
+        if weatherInterval is not None:
+            gameEntry.append(float(weatherInterval[4])/maxWindSpeed)
+        else:
+            # TODO: Average/pull a different interval to use
+            gameEntry.append(0)
         gameHistory.append(gameEntry)
-        return gameHistory
+    return gameHistory
 
 
 def getStats():
@@ -52,6 +59,19 @@ def combineArrays(teamOne, teamTwo):
         combined.append(x)
     return combined
 
+def getStatAverage(teamId):
+    teamStats = getTeam(teamId)
+
+    formattedResult = []
+    if teamStats is not None:
+        formattedResult.append(teamStats[5])
+    else:
+        print("No completion percentage to use for team")
+        formattedResult.append(.5)
+    formattedResult.append(1)
+    formattedResult.append(maxWindSpeed/2)
+    return formattedResult
+
 
 # This method should at least fit the model.
 def predict(id1, id2):
@@ -64,9 +84,12 @@ def predict(id1, id2):
 
     machine = svm.SVC(kernel="linear", C=1)
     machine.fit(teamStats, totalTeamTargets)
+    teamOneStatAverage = getStatAverage(id1)
+    teamTwoStatAverage = getStatAverage(id2)
+    toPredict = [teamOneStatAverage, teamTwoStatAverage]
 
-    result = 0
-    return result
+    results = machine.predict(toPredict)
+    print(results)
 
 #
 # #This method is just for reference and testing
@@ -84,4 +107,4 @@ def predict(id1, id2):
 #     print(result)
 
 
-predict('empire', 'dragons')
+predict('glory','outlaws')
