@@ -69,7 +69,7 @@ def getStatAverage(teamId):
         print("No completion percentage to use for team")
         formattedResult.append(.5)
     formattedResult.append(1)
-    formattedResult.append(maxWindSpeed/2)
+    formattedResult.append(.5)
     return formattedResult
 
 
