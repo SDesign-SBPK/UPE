@@ -11,4 +11,8 @@ def index():
 def input():
   return render_template('input.html')
 
+@app.route('/output', methods=['GET', 'POST'])
+def output():
+  return render_template('output.html')
+
 app.run(host='0.0.0.0', port=8080)
