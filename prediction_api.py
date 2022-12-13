@@ -37,27 +37,29 @@ def home():
     )
 
 
-@app.route("/api/v1/predict/teams", methods = ["GET"])
+@app.route("/api/v1/predict/teams/", methods = ["GET"])
 def predict_teams():
     # Check valid parameters
     parameters = request.args
 
     team1 = parameters.get("team1")
     team2 = parameters.get("team2")
-    weather_list: dict = parameters.get("weather")
+    # weather_list: dict = parameters.get("weather")
+    wind_speed = parameters.get("wind_speed")
+    print(team1, team2, wind_speed)
 
-    if not (team1 or team2 or weather_list):
-        return invalid_endpoint(404)
+    if not (team1 or team2 or wind_speed):
+        return invalid_endpoint(404, custom_message="Missing parameters")
     elif len(team1) == 0 or len(team2) == 0:
-        return invalid_endpoint(404)
+        return invalid_endpoint(404, custom_message="Invalid parameters for teams")
     
-    if not weather_list["wind_speed"]:
-        return invalid_endpoint(404)
+    # if not weather_list["wind_speed"]:
+    #     return invalid_endpoint(404)
 
     # Pass prediction
-    result = predict(team1, team2, weather_list["wind_speed"])
+    result = predict(team1, team2, wind_speed)
     if not result:
-        return invalid_endpoint(404)
+        return invalid_endpoint(404, custom_message="No result from prediction")
     winner = result[0]
     if result[0] == result[1]:
         winner = "A tie"
@@ -71,22 +73,24 @@ def predict_teams():
     ), 200
 
 
-@app.route("/api/v1/predict/players", methods = ["GET"])
+@app.route("/api/v1/predict/players/", methods = ["GET"])
 def predict_players():
     pass
 
 
-@app.route("/api/v1/predict/teams_custom", methods = ["GET"])
+@app.route("/api/v1/predict/teams_custom/", methods = ["GET"])
 def predict_teams_custom():
     pass
 
 
 @app.errorhandler(404)
-def invalid_endpoint(e):
+def invalid_endpoint(e, custom_message = ""):
+    print(custom_message)
     return jsonify(
             {
-                "message": USAGE_MESSAGE
+                "message": USAGE_MESSAGE,
+                "info": custom_message
             }
         ), 404
 
-app.run()
+app.run(port=50300)

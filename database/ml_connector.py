@@ -9,12 +9,12 @@ import json
 
 import mysql.connector as connector
 
-import paramiko as paramiko
+# import paramiko as paramiko
 
-from sshtunnel import SSHTunnelForwarder
+# from sshtunnel import SSHTunnelForwarder
 
 
-connection_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/connection.json")
+connection_file = open("connection.json")
 connection_details = json.load(connection_file)
 
 # ssh_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/ssh.json")

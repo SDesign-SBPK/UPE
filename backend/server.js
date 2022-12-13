@@ -3,6 +3,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const connection = require("../database/connection.json");
+const http = require("http");
+const querystring = require("querystring");
 
 const con = mysql.createConnection({
 	host: connection.host,
@@ -48,6 +50,13 @@ app.post("/Prediction-Form", (req, res) => {
 	let windspeed = req.body.wind;
 
 	//Send homeTeam and awayTeam to ML
+	const url_object = {
+		team1: homeTeam,
+		team2: awayTeam,
+		wind_speed: windspeed
+	};
+	const url_args = querystring.stringify(url_object);
+	let prediction = http.get("http://localhost:50300/api/v1/predict/teams/?" + url_args);
 
 	res.sendFile(path.join(__dirname, '/../templates/output.html'));
 });
