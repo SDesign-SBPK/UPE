@@ -13,3 +13,7 @@ connection.json
 /.idea
 weather/game-history/
 weather/game-history2/
+database/upeserver.pem
+database/ssh.json
+__pycache__
+*.pem
