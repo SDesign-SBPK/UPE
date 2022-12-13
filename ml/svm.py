@@ -90,6 +90,3 @@ def predict(id1, id2, windSpeed):
     results = machine.predict(toPredict)
     return results
 
-
-results = predict('empire', 'outlaws', 14)
-print(results)
