@@ -43,8 +43,8 @@ app.get("/Prediction-Form", (req, res) => {
 
 app.post("/Prediction-Form", (req, res) => {
 	console.log(req.body);
-	let homeTeam = req.body.dropdown1;
-	let awayTeam = req.body.dropdown2;
+	let homeTeam = req.body.homeTeam;
+	let awayTeam = req.body.awayTeam;
 	let windspeed = req.body.wind;
 
 	//Send homeTeam and awayTeam to ML
