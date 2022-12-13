@@ -58,7 +58,7 @@ def combineArrays(teamOne, teamTwo):
         combined.append(x)
     return combined
 
-def getStatAverage(teamId):
+def getStatAverage(teamId, windSpeed):
     teamStats = getTeam(teamId)
 
     formattedResult = []
@@ -68,12 +68,12 @@ def getStatAverage(teamId):
         print("No completion percentage to use for team")
         formattedResult.append(.5)
     formattedResult.append(1)
-    formattedResult.append(.5)
+    formattedResult.append(windSpeed/maxWindSpeed)
     return formattedResult
 
 
 # This method should at least fit the model.
-def predict(id1, id2):
+def predict(id1, id2, windSpeed):
     teamOneStats = getTeamStats(id1)
     teamTwoStats = getTeamStats(id2)
 
@@ -83,9 +83,13 @@ def predict(id1, id2):
 
     machine = svm.SVC(kernel="linear", C=1)
     machine.fit(teamStats, totalTeamTargets)
-    teamOneStatAverage = getStatAverage(id1)
-    teamTwoStatAverage = getStatAverage(id2)
+    teamOneStatAverage = getStatAverage(id1, windSpeed)
+    teamTwoStatAverage = getStatAverage(id2, windSpeed)
     toPredict = [teamOneStatAverage, teamTwoStatAverage]
 
     results = machine.predict(toPredict)
     return results
+
+
+results = predict('empire', 'outlaws', 14)
+print(results)
