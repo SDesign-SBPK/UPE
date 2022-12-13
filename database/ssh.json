@@ -1,0 +1,10 @@
+{
+    "host": "ec2-107-23-111-187.compute-1.amazonaws.com",
+    "ssh_port": 22,
+    "remote_host": "127.0.0.1" ,
+    "remote_port": 3306,
+    "remote_address": "upeTest",
+    "user": "ec2-user",
+    "ssh_key_file": "/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/upeserver.pem",
+    "ssh_key_pass": "brandon-copy"
+}
