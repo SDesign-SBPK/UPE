@@ -22,11 +22,11 @@ Weather input is given a dictionary/json entry
 """
 
 from flask import Flask, request, jsonify
-#import ml
+from ml.svm import predict
 
 app = Flask(__name__)
 
-USAGE_MESSAGE = "Usage: TODO"
+USAGE_MESSAGE = "Usage: \n\tGET /api/v1/predict/teams\n"
 
 @app.route("/api/v1/", methods = ["GET"])
 def home():
@@ -44,13 +44,31 @@ def predict_teams():
 
     team1 = parameters.get("team1")
     team2 = parameters.get("team2")
-    weather_list = parameters.get("weather")
+    weather_list: dict = parameters.get("weather")
 
     if not (team1 or team2 or weather_list):
         return invalid_endpoint(404)
+    elif len(team1) == 0 or len(team2) == 0:
+        return invalid_endpoint(404)
+    
+    if not weather_list["wind_speed"]:
+        return invalid_endpoint(404)
 
-    # TODO: Need to call ML Engine prediction function with given info
-    pass
+    # Pass prediction
+    result = predict(team1, team2, weather_list["wind_speed"])
+    if not result:
+        return invalid_endpoint(404)
+    winner = result[0]
+    if result[0] == result[1]:
+        winner = "A tie"
+    
+    # Return result 
+    return jsonify(
+        {
+            "message": "Prediction successful",
+            "winner": winner
+        }
+    ), 200
 
 
 @app.route("/api/v1/predict/players", methods = ["GET"])
