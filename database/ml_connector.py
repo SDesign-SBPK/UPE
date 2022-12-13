@@ -17,19 +17,19 @@ from sshtunnel import SSHTunnelForwarder
 connection_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/connection.json")
 connection_details = json.load(connection_file)
 
-ssh_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/ssh.json")
-ssh_details = json.load(ssh_file)
-ssh_key = paramiko.RSAKey.from_private_key_file(ssh_details["ssh_key_file"], password=ssh_details["ssh_key_pass"])
-
-tunnel = SSHTunnelForwarder((ssh_details["host"], ssh_details["ssh_port"]), ssh_username=ssh_details["user"],
-                            ssh_pkey=ssh_key, remote_bind_address=(ssh_details["remote_host"], ssh_details["remote_port"]))
-
-tunnel.start()
+# ssh_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/ssh.json")
+# ssh_details = json.load(ssh_file)
+# ssh_key = paramiko.RSAKey.from_private_key_file(ssh_details["ssh_key_file"], password=ssh_details["ssh_key_pass"])
+#
+# tunnel = SSHTunnelForwarder((ssh_details["host"], ssh_details["ssh_port"]), ssh_username=ssh_details["user"],
+#                             ssh_pkey=ssh_key, remote_bind_address=(ssh_details["remote_host"], ssh_details["remote_port"]))
+#
+# tunnel.start()
 
 connection = connector.connect(host=connection_details["host"],
                                user=connection_details["user"],
                                passwd=connection_details["pass"],
-                               port=tunnel.local_bind_port,
+                               port=connection_details["port"],
                                database=connection_details["database"])
 
 
