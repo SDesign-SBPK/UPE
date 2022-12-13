@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, '/../static')));
 
 //Simple route for home page - file path will be changed
 app.get("/", (req, res) => {
-	res.sendFile('./index.html', { root: __dirname });
+	res.sendFile(path.join(__dirname, '/../templates/index.html'))
 });
 
 //Needs to be updated if we decide to add this
@@ -38,7 +38,7 @@ app.get("/Upcoming-Games", (req, res) => {
 
 //Form Pages - need to be added
 app.get("/Prediction-Form", (req, res) => {
-	res.sendFile("./input.html", { root: __dirname });
+	res.sendFile(path.join(__dirname, '/../templates/input.html'));
 });
 
 app.post("/Prediction-Form", (req, res) => {
@@ -49,7 +49,7 @@ app.post("/Prediction-Form", (req, res) => {
 
 	//Send homeTeam and awayTeam to ML
 
-	res.sendFile("./output.html", { root: __dirname });
+	res.sendFile(path.join(__dirname, '/../templates/output.html'));
 });
 
 app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
