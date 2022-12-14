@@ -8,26 +8,29 @@ Make sure you have Node and NPM installed - everything runs off these, so I'd be
 
 Make sure you have MySQL installed and setup on your system. You should be able to access your instance via some account - either the root or a user account. These will be needed to connect.
 
-Install the Sequelize ORM and the required MySQL adapter by running `npm install` in this directory.
-
-Create a new file `connection.json` in this directory. This will be used for your connection to the database. Add the following contents:
-```json
-{
-    "host": "<the host where your mysql is - likely 'localhost'>",
-    "port": 3306,
-    "database": "upe",
-    "user": "<your mysql username>",
-    "pass": "<your mysql password>"
-}
-```
-
-Once the file has been created, running `node database.js` will test the connection successfully.
+Ensure the `connection.json` file has been created. Then, running `node database.js` will test the connection successfully.
 
 To setup the database schema, you can import `index.js` into another file and call for the `connectDB()` and `resetDB()` functions. 
 
 The `database.sql` script is not used for anything at the moment and is left in the repository right now in order to have a reference of the overall schema.
 
 ## Interacting with the Database
+
+### For Python Files
+
+This section is mainly for the ML model.
+
+Import the `ml_connector.py` file into the necessary file by adding an import statement to the top of the file:
+```py
+import database.ml_connector as conn
+
+conn.getGame(gameID)
+
+# And so on
+```
+The functions will return any entries that are found matching the passed in parameter
+
+### For Node Files
 
 To interact with the database, import the relevant controller for the table you want to interact with:
 ```js
