@@ -125,6 +125,40 @@ app.get("/Showcase-game-wspd", (req, res) => {
 		if (err) throw err;
 		
 		games = rows;
+		let html_string = `<!DOCTYPE html>
+		<html>
+			<head>
+				<meta charset="utf-8">
+						<meta name="viewport" content="width=device-width, initial-scale=1">
+						<title>Highest Wind Speed Games</title>
+						<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+			</head>
+			<body>
+			<input type = "button" onclick="document.location='/'" value = "Home" class = "btn btn-link">
+			<div class = "container">
+				<h1>Games with the Highest Wind Speed</h1>
+				<div class = "row border-bottom">
+					<div class = "col-sm-2">Away</div>
+					<div class = "col-sm-2">Home</div>
+					<div class = "col-sm-2">Time</div>
+					<div class = "col-sm-2">Wind Speed</div>
+					<div class = "col-sm-2">Score</div>
+				</div>
+			`;
+
+		// Build table entries for each game
+		games.forEach((game) => {
+			html_string += `<div class = "row">
+				<div class = "col-sm-2">${game[2]}</div>
+				<div class = "col-sm-2">${game[1]}</div>
+				<div class = "col-sm-2">${game[4]}</div>
+				<div class = "col-sm-2">${game[3]}</div>
+				<div class = "col-sm-2">${game[6] + "-" + game[5]}</div>
+			</div>`;
+		});
+
+		html_string += `</div></body></html>`;
+		res.send(html_string);
 	});
 
 	con.end();
@@ -143,6 +177,41 @@ app.get("/Showcase-playerstats-goals", (req, res) => {
 		
 		playerGoals = rows;
 		console.log(playerGoals);
+
+		let html_string = `<!DOCTYPE html>
+		<html>
+			<head>
+				<meta charset="utf-8">
+						<meta name="viewport" content="width=device-width, initial-scale=1">
+						<title>Highest Windy Game Goals</title>
+						<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+			</head>
+			<body>
+			<input type = "button" onclick="document.location='/'" value = "Home" class = "btn btn-link">
+			<div class = "container">
+				<h1>Players with the Most Goals in Windy Games</h1>
+				<h2>Windy is classified as being above 15 mph</h2>
+				<div class = "row border-bottom">
+					<div class = "col-sm-2">Name</div>
+					<div class = "col-sm-2">Goals</div>
+					<div class = "col-sm-2">Away Team</div>
+					<div class = "col-sm-2">Home Team</div>
+					<div class = "col-sm-2">Wind Speed</div>
+				</div>
+			`;
+
+		playerGoals.forEach((entry) => {
+			html_string += `<div class = "row">
+				<div class = "col-sm-2>${entry[1] + " " + entry[2]}</div>
+				<div class = "col-sm-2>${entry[3]}</div>
+				<div class = "col-sm-2>${entry[5]}</div>
+				<div class = "col-sm-2>${entry[6]}</div>
+				<div class = "col-sm-2>${entry[4]}</div>
+			</div>`
+		});
+
+		html_string += `</div></body></html>`;
+		res.send(html_string);
 	});
 
 	con.end();
