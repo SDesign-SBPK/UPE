@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/Upcoming-Games", (req, res) => {
-	const mock_data = [
+	let mock_data = [
 		{
 			"homeTeam": "empire",
 			"awayTeam": "breeze",
@@ -94,24 +94,19 @@ app.get("/Upcoming-Games", (req, res) => {
 			let data = "";
 			response.on("data", chunk => {data += chunk});
 			response.on("end", () => {
+				console.log(data);
 				game.winner = JSON.parse(data).winner;
+				
+				html_string += `<div class = "row">
+					<div class = "col-sm-3">${game.awayTeam}</div>
+					<div class = "col-sm-3">${game.homeTeam}</div> 
+					<div class = "col-sm-3">${game.startTime}</div>
+					<div class = "col-sm-3">${game.winner}</div>
+					</div>`;
+				html_string += `</div></body></html>`;
 			});
 		});
 	});
-
-	console.log(mock_data);
-
-	// Build table entries for each game
-	mock_data.forEach((game) => {
-		html_string += `<div class = "row">
-			<div class = "col-sm-3">${game.awayTeam}</div>
-			<div class = "col-sm-3">${game.homeTeam}</div> 
-			<div class = "col-sm-3">${game.startTime}</div>
-			<div class = "col-sm-3">${game.winner}</div>
-			</div>`;
-	});
-
-	html_string += `</div></body></html>`;
 
 	res.send(html_string);
 });
@@ -120,8 +115,7 @@ app.get("/Upcoming-Games", (req, res) => {
 app.get("/Showcase-game-wspd", (req, res) => {
 	let games = 0;
 
-	con.connect();
-	con.query('SELECT gameID, homeTeam, awayTeam, averageWindSpeed, startTime, homeScore, awayScore FROM Games ORDER BY averageWindSpeed DESC LIMIT 10;', (err, rows, fields) => {
+	con.query('SELECT gameID, homeTeam, awayTeam, averageWindSpeed, startTime, homeScore, awayScore FROM Games ORDER BY averageWindSpeed DESC LIMIT 25;', (err, rows, fields) => {
 		if (err) throw err;
 		
 		games = rows;
@@ -147,36 +141,29 @@ app.get("/Showcase-game-wspd", (req, res) => {
 			`;
 
 		// Build table entries for each game
-		games.forEach((game) => {
+		for (let i = 0; i< games.length; i++){
 			html_string += `<div class = "row">
-				<div class = "col-sm-2">${game[2]}</div>
-				<div class = "col-sm-2">${game[1]}</div>
-				<div class = "col-sm-2">${game[4]}</div>
-				<div class = "col-sm-2">${game[3]}</div>
-				<div class = "col-sm-2">${game[6] + "-" + game[5]}</div>
+				<div class = "col-sm-2">${games[i].awayTeam}</div>
+				<div class = "col-sm-2">${games[i].homeTeam}</div>
+				<div class = "col-sm-2">${games[i].startTime}</div>
+				<div class = "col-sm-2">${games[i].averageWindSpeed}</div>
+				<div class = "col-sm-2">${games[i].awayScore + "-" + games[i].homeScore}</div>
 			</div>`;
-		});
+		}
 
 		html_string += `</div></body></html>`;
 		res.send(html_string);
 	});
-
-	con.end();
-
-	//Use games to display data in HTML file
-	res.send(/*Some HTML*/);
 })
 
 //Route for Showcasing the ten players with the highest with the highest goals scored in a single game when windspeed is above 15 mph
 app.get("/Showcase-playerstats-goals", (req, res) => {
 	let playerGoals = 0;
 
-	con.connect();
-	con.query('SELECT games.gameID, Players.firstName, Players.lastName, playergamestats.goals, games.averageWindSpeed, games.awayTeam, games.homeTeam FROM playergamestats INNER JOIN Games ON playergamestats.gameID = games.gameID AND games.averageWindSpeed >= 15 INNER JOIN Players ON playergamestats.playerID = players.playerID ORDER BY playergamestats.goals DESC LIMIT 10;', (err, rows, fields) => {
+	con.query('SELECT games.gameID, Players.firstName, Players.lastName, playergamestats.goals, games.averageWindSpeed, games.awayTeam, games.homeTeam FROM playergamestats INNER JOIN Games ON playergamestats.gameID = games.gameID AND games.averageWindSpeed >= 15 INNER JOIN Players ON playergamestats.playerID = players.playerID ORDER BY playergamestats.goals DESC LIMIT 25;', (err, rows, fields) => {
 		if (err) throw err;
 		
 		playerGoals = rows;
-		console.log(playerGoals);
 
 		let html_string = `<!DOCTYPE html>
 		<html>
@@ -200,24 +187,19 @@ app.get("/Showcase-playerstats-goals", (req, res) => {
 				</div>
 			`;
 
-		playerGoals.forEach((entry) => {
+		for (let i = 1; i < playerGoals.length; i++) {
 			html_string += `<div class = "row">
-				<div class = "col-sm-2>${entry[1] + " " + entry[2]}</div>
-				<div class = "col-sm-2>${entry[3]}</div>
-				<div class = "col-sm-2>${entry[5]}</div>
-				<div class = "col-sm-2>${entry[6]}</div>
-				<div class = "col-sm-2>${entry[4]}</div>
+				<div class = "col-sm-2">${playerGoals[i].firstName + " " + playerGoals[i].lastName}</div>
+				<div class = "col-sm-2">${playerGoals[i].goals}</div>
+				<div class = "col-sm-2">${playerGoals[i].homeTeam}</div>
+				<div class = "col-sm-2">${playerGoals[i].awayTeam}</div>
+				<div class = "col-sm-2">${playerGoals[i].averageWindSpeed}</div>
 			</div>`
-		});
+		}
 
 		html_string += `</div></body></html>`;
 		res.send(html_string);
 	});
-
-	con.end();
-
-	//Use playerGoals to display data in HTML file
-	res.send(/*Some HTML*/);
 })
 
 //Form Pages - need to be added
@@ -260,6 +242,7 @@ app.post("/Prediction-Form", (req, res) => {
 			  </head>
 			  <body>
 				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+				<input type = "button" onclick="document.location='/'" value = "Home" class = "btn btn-link">
 				<div class="container-md">
 				  <figure class="text-center">
 					<h1>Your Predicted Outcome!</h1>        
@@ -289,11 +272,6 @@ app.post("/Prediction-Form", (req, res) => {
 				</div>
 				<div class="container-lg text-center">
 				  <div class="row">
-					<div class="col">
-					  <form action="/">
-						<input type="submit" class="btn btn-primary" value="Return Home" />
-					  </form>
-					</div>
 				  </div>
 				</div>
 			

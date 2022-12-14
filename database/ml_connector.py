@@ -28,7 +28,7 @@ connection_details = json.load(connection_file)
 def getConnection():
     return connector.connect(host=connection_details["host"],
                                user=connection_details["user"],
-                               passwordd=connection_details["pass"],
+                               password=connection_details["pass"],
                                port=connection_details["port"],
                                database=connection_details["database"])
 
