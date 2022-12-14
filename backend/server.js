@@ -31,13 +31,48 @@ app.use(express.static(path.join(__dirname, '/../static')));
 
 //Simple route for home page - file path will be changed
 app.get("/", (req, res) => {
-	res.sendFile(path.join(__dirname, '/../templates/index.html'))
+	res.sendFile(path.join(__dirname, '/../templates/index.html'));
 });
 
 //Needs to be updated if we decide to add this
 app.get("/Upcoming-Games", (req, res) => {
 	res.send("Under Construction - List of Games");
 });
+
+//This route showcases the ten games with the highest average wind speed
+app.get("/Showcase-game-wspd", (req, res) => {
+	let games = 0;
+
+	con.connect();
+	con.query('SELECT gameID, homeTeam, awayTeam, averageWindSpeed, startTime, homeScore, awayScore FROM Games ORDER BY averageWindSpeed DESC LIMIT 10;', (err, rows, fields) => {
+		if (err) throw err;
+		
+		games = rows;
+	});
+
+	con.end();
+
+	//Use games to display data in HTML file
+	res.send(/*Some HTML*/);
+})
+
+//Route for Showcasing the ten players with the highest with the highest goals scored in a single game when windspeed is above 15 mph
+app.get("/Showcase-playerstats-goals", (req, res) => {
+	let playerGoals = 0;
+
+	con.connect();
+	con.query('SELECT games.gameID, Players.firstName, Players.lastName, playergamestats.goals, games.averageWindSpeed, games.awayTeam, games.homeTeam FROM playergamestats INNER JOIN Games ON playergamestats.gameID = games.gameID AND games.averageWindSpeed >= 15 INNER JOIN Players ON playergamestats.playerID = players.playerID ORDER BY playergamestats.goals DESC LIMIT 10;', (err, rows, fields) => {
+		if (err) throw err;
+		
+		playerGoals = rows;
+		console.log(playerGoals);
+	});
+
+	con.end();
+
+	//Use playerGoals to display data in HTML file
+	res.send(/*Some HTML*/);
+})
 
 //Form Pages - need to be added
 app.get("/Prediction-Form", (req, res) => {
