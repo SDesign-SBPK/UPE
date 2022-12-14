@@ -76,17 +76,17 @@ def getStatAverage(teamId, windSpeed):
 def predict(id1, id2, windSpeed):
     teamOneStats = getTeamStats(id1)
     teamTwoStats = getTeamStats(id2)
-
+    formattedWindSpeed = float(windSpeed)
     teamStats = combineArrays(teamOneStats, teamTwoStats)
     teamOneTargets = stringOfTeamId([], len(teamOneStats), id1)
     totalTeamTargets = stringOfTeamId(teamOneTargets, len(teamTwoStats), id2)
 
     machine = svm.SVC(kernel="linear", C=1)
     machine.fit(teamStats, totalTeamTargets)
-    teamOneStatAverage = getStatAverage(id1, windSpeed)
-    teamTwoStatAverage = getStatAverage(id2, windSpeed)
+    teamOneStatAverage = getStatAverage(id1, formattedWindSpeed)
+    teamTwoStatAverage = getStatAverage(id2, formattedWindSpeed)
     toPredict = [teamOneStatAverage, teamTwoStatAverage]
 
     results = machine.predict(toPredict)
-    return results
+    return results.tolist()
 

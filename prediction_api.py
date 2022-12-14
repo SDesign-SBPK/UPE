@@ -61,7 +61,7 @@ def predict_teams():
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
     winner = result[0]
-    if result[0] == result[1]:
+    if result[0] != result[1]:
         winner = "A tie"
     
     # Return result 
@@ -70,7 +70,7 @@ def predict_teams():
             "message": "Prediction successful",
             "winner": winner
         }
-    ), 200
+    )
 
 
 @app.route("/api/v1/predict/players/", methods = ["GET"])
