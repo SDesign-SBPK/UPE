@@ -6,8 +6,8 @@ const require = createRequire(import.meta.url);
 const fs = require('fs');
 const path = require('path');
 var moment = require('moment');
-const gameController = require("../database/controllers/Game.controller");
-const weatherController = require("../database/controllers/WeatherInterval.controller");
+const gameController = require("../../database/controllers/Game.controller");
+const weatherController = require("../../database/controllers/WeatherInterval.controller");
 
 gameDataRetrieval(fs, path);
 
