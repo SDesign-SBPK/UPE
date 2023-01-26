@@ -1,13 +1,11 @@
-//IMPORTANT: Must run command "npm install node-fetch" - then add the line: "type": "module" into package.json file.
-
 import fetch from "node-fetch";
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const fs = require('fs');
 const path = require('path');
 var moment = require('moment');
-const gameController = require("../database/controllers/Game.controller");
-const weatherController = require("../database/controllers/WeatherInterval.controller");
+const gameController = require("../../database/controllers/Game.controller");
+const weatherController = require("../../database/controllers/WeatherInterval.controller");
 
 gameDataRetrieval(fs, path);
 

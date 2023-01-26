@@ -1,6 +1,6 @@
 from sklearn import svm
 
-from database.ml_connector import getAllStatsForTeam, getGame, getWeatherInterval, getTeam
+from ml_connector import getAllStatsForTeam, getGame, getWeatherInterval, getTeam
 
 maxWindSpeed= 35.5
 
