@@ -1,5 +1,3 @@
-//IMPORTANT: Must run command "npm install node-fetch" - then add the line: "type": "module" into package.json file.
-
 import fetch from "node-fetch";
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
