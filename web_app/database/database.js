@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const connection = require("../connection.json");
+const connection = require("./connection.json");
 
 /**
  * Sets up the database and all of the models

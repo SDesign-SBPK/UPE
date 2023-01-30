@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 var moment = require('moment');
 const mysql = require('mysql');
-const connection = require("../database/connection.json");
+const connection = require("../../database/connection.json");
 const gameController = require("../../database/controllers/Game.controller");
 const weatherController = require("../../database/controllers/WeatherInterval.controller");
 
@@ -21,10 +21,10 @@ async function gameDataRetrieval() {
     con.query('SELECT * FROM games WHERE status = "Upcoming"', async (err, rows, fields) => {
 		if (err) throw err;
 
-        games = rows;
+        let games = rows;
 
         for (let i = 0; i < games.length; i++){
-            var startTime = (games[i].startTime).substring(0, 19);
+            var startTime = games[i].startTime;
             var location = games[i].homeTeamCity;
             let game = {
                 gameID: games[i].gameID,
@@ -48,6 +48,7 @@ async function gameDataRetrieval() {
             await wait(2500);
         }
 	});
+    return;
 }
 
 
@@ -62,13 +63,15 @@ function wait(milliseconds){
 async function getWeatherData(start, loc, game){
     try {
         //Automatically computes end timestamp based on the start of each game
-        var endTime = moment(start).add(2, 'h').toISOString(true);
-        var end = endTime.substring(0, 19);
-        game.endTime = end.replace("T", " ");
+        var dateString = game.gameID.substring(0, 10);
+        var startDateTime = dateString + "T" + start;
+        var endDateTime = moment(startDateTime).add(2, 'h').toISOString(true);
+        var endTime = endDateTime.substring(0, 19);
+        game.endTime = endTime.replace("T", " ");
         
         //Weather API Request
-        var uri = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/forecast?aggregateHours=1&startDateTime=" + start
-         + "&endDateTime=" + end + "&unitGroup=us&contentType=json&locationMode=single&location=" + loc + "&key=BXJMPGTKDASB9QYG9KQ595BQF";
+        var uri = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/forecast?aggregateHours=1"
+         + "&unitGroup=us&contentType=json&locationMode=single&location=" + loc + "&key=BXJMPGTKDASB9QYG9KQ595BQF";
          const response = await fetch(uri);
 
         if (!response.ok){
