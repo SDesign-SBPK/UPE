@@ -7,6 +7,7 @@ const connection = require("../../database/connection.json");
 const gameController = require("../../database/controllers/Game.controller");
 const weatherController = require("../../database/controllers/WeatherInterval.controller");
 
+//Connection to DB
 const con = mysql.createConnection({
 	host: connection.host,
 	user: connection.user,
@@ -18,11 +19,13 @@ gameDataRetrieval();
 
 async function gameDataRetrieval() {
 
+    //Selects Upcoming Games from Games Table
     con.query('SELECT * FROM games WHERE status = "Upcoming"', async (err, rows, fields) => {
 		if (err) throw err;
 
         let games = rows;
-
+        
+        //Create Game object for each Upcoming Game
         for (let i = 0; i < games.length; i++){
             var startTime = games[i].startTime;
             var location = games[i].homeTeamCity;
@@ -42,7 +45,8 @@ async function gameDataRetrieval() {
                 averagePrecipitation: 0,
                 averageHumidity: 0
             }
-
+            
+            //Get Forecasted Data for each game
             await wait(2500);
             getWeatherData(startTime, location, game);
             await wait(2500);
@@ -90,7 +94,7 @@ async function getWeatherData(start, loc, game){
     }
 }
 
-//Processes WeatherData into 15 minute intervals
+//Processes WeatherData into 12 hour intervals
 //Provides temp, wind speed, precipation, and humidity for each interval
 async function processWeatherData(weatherData, game){
     if (!weatherData) {
@@ -104,13 +108,14 @@ async function processWeatherData(weatherData, game){
 
     var location = weatherData['location'];
     var values = location['values'];
-    //console.log(values);
     console.log("Location: "+location.address);
     let sumTemp = 0;
     let sumPrecip = 0;
     let sumWspd = 0;
     let sumHumidity = 0;
 
+    //Gather Data for each weather Interval, then store in DB
+    //Also Calculates the average weather conditions for each game
     for (var i=0;i<values.length;i++) {
         console.log(values[i].datetimeStr+": temp="+values[i].temp+", wspd="+values[i].wspd+", precip="+values[i].precip+ ", humidity="+values[i].humidity);
         let timestamp = values[i].datetimeStr;
@@ -131,6 +136,7 @@ async function processWeatherData(weatherData, game){
         sumHumidity += values[i].humidity;
     }
     
+    //Update Average Conditions in Games Table
     game.averageTemperature = sumTemp / values.length;
     game.averagePrecipitation = sumPrecip / values.length;
     game.averageWindSpeed = sumWspd / values.length;
