@@ -136,18 +136,18 @@ async function processWeatherData(weatherData, game, startDateTime, endDateTime)
                 humidity: values[i].humidity
             };
             weatherController.createWeatherInterval(weatherInterval);
-            sumTemp += values[i].temp;
-            sumPrecip += values[i].precip;
-            sumWspd += values[i].wspd;
-            sumHumidity += values[i].humidity;
+            sumTemp = values[i].temp;
+            sumPrecip = values[i].precip;
+            sumWspd = values[i].wspd;
+            sumHumidity = values[i].humidity;
         }
     }
     
     //Update Average Conditions in Games Table
-    game.averageTemperature = sumTemp / values.length;
-    game.averagePrecipitation = sumPrecip / values.length;
-    game.averageWindSpeed = sumWspd / values.length;
-    game.averageHumidity = sumHumidity / values.length;
+    game.averageTemperature = sumTemp;
+    game.averagePrecipitation = sumPrecip;
+    game.averageWindSpeed = sumWspd;
+    game.averageHumidity = sumHumidity;
     console.log("AvgTemp=" + game.averageTemperature + ", AvgPrecip=" + game.averagePrecipitation + ", AvgWspd=" + game.averageWindSpeed + ", AvgHumidity=" + game.averageHumidity);
 
     gameController.updateGame(game.gameID, game);

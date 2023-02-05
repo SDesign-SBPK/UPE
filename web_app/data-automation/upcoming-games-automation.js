@@ -46,6 +46,7 @@ function calculatePredictions() {
                         games[i].awayTeam,
                         games[i].homeTeam, 
                         games[i].startTime, 
+                        games[i].timeZone,
                         winner, 
                         games[i].averageTemperature, 
                         games[i].averageWindSpeed, 
@@ -57,7 +58,7 @@ function calculatePredictions() {
                     ];
 
                     //Insert Prediction Results into Predicted Games Table
-                    con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, winner, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [records], (err, result, fields) => {
+                    con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, timeZone, winner, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [records], (err, result, fields) => {
                         
                         if (err) throw err;
 

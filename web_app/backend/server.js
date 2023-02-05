@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 
 app.get("/Upcoming-Games", (req, res) => {
 	
-	con.query('SELECT gameID, awayTeam, homeTeam, startTime, winner FROM predictedgames', (err, rows, fields) => {
+	con.query('SELECT gameID, awayTeam, homeTeam, startTime, timeZone, winner FROM predictedgames', (err, rows, fields) => {
 		if (err) throw err;
 		
 		games = rows;
@@ -62,10 +62,13 @@ app.get("/Upcoming-Games", (req, res) => {
 
 			// Build table entries for each game
 		for (let i = 0; i< games.length; i++){
+			let time = (games[i].startTime).toString();
+			time = time.substring(0, 28);
+			time = time.replace("GMT", games[i].timeZone);
 			html_string += `<div class = "row">
-				<div class = "col-sm-2">${games[i].awayTeam}</div>
-				<div class = "col-sm-2">${games[i].homeTeam}</div>
-				<div class = "col-sm-2">${games[i].startTime}</div>
+				<div class = "col-sm-3">${games[i].awayTeam}</div>
+				<div class = "col-sm-3">${games[i].homeTeam}</div>
+				<div class = "col-sm-3">${time}</div>
 				<div class = "col-sm-3">${games[i].winner}</div>
 			</div>`;
 		}
@@ -195,51 +198,56 @@ app.post("/Prediction-Form", (req, res) => {
 			console.log(data);
 			console.log(winner);
 			console.log(msg);
-			res.send(`<!doctype html>
-			<html lang="en">
-			  <head>
-				<meta charset="utf-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1">
-				<title>Output</title>
-				<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-			  </head>
-			  <body>
-				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-				<input type = "button" onclick="document.location='/'" value = "Home" class = "btn btn-link">
-				<div class="container-md">
-				  <figure class="text-center">
-					<h1>Your Predicted Outcome!</h1>        
-				  </div>
-				  <br>
-				  <div class="row">
-					<div class="col">
-						The predicted winner of your custom match-up is the: 
+			con.query('SELECT teamName FROM teams WHERE teamID = ?', [winner], (err, rows, fields) => {
+				if (err) throw err;
+
+				predictedWinner = rows;
+				res.send(`<!doctype html>
+				<html lang="en">
+				<head>
+					<meta charset="utf-8">
+					<meta name="viewport" content="width=device-width, initial-scale=1">
+					<title>Output</title>
+					<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+				</head>
+				<body>
+					<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+					<input type = "button" onclick="document.location='/'" value = "Home" class = "btn btn-link">
+					<div class="container-md">
+					<figure class="text-center">
+						<h1>Your Predicted Outcome!</h1>        
 					</div>
-					<div class="col">
-						<p class="text-danger">${ winner }</p>
+					<br>
+					<div class="row">
+						<div class="col">
+							The predicted winner of your custom match-up is the: 
+						</div>
+						<div class="col">
+							<p class="text-danger">${ predictedWinner[0].teamName }</p>
+						</div>
 					</div>
-				  </div>
-				  <br>
-				  <div class="row">
-					<div class="col">
-			
+					<br>
+					<div class="row">
+						<div class="col">
+				
+						</div>
+						<div class="col">
+							<img src="fans.jpeg" class="img-fluid" alt="...">
+						</div>
+						<div class="col">
+				
+						</div>
 					</div>
-					<div class="col">
-						<img src="fans.jpeg" class="img-fluid" alt="...">
+					
 					</div>
-					<div class="col">
-			
+					<div class="container-lg text-center">
+					<div class="row">
 					</div>
-				  </div>
-				  
-				</div>
-				<div class="container-lg text-center">
-				  <div class="row">
-				  </div>
-				</div>
-			
-			  </body>
-			</html>`);
+					</div>
+				
+				</body>
+				</html>`);
+			});
 		});
 
 	});
