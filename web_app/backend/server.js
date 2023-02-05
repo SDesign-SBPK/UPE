@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 
 app.get("/Upcoming-Games", (req, res) => {
 	
-	con.query('SELECT gameID, , homeTeam, startTime, winner FROM predictedgames', (err, rows, fields) => {
+	con.query('SELECT gameID, awayTeam, homeTeam, startTime, winner FROM predictedgames', (err, rows, fields) => {
 		if (err) throw err;
 		
 		games = rows;

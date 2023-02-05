@@ -27,7 +27,10 @@ async function gameDataRetrieval() {
         
         //Create Game object for each Upcoming Game
         for (let i = 0; i < games.length; i++){
-            var startTime = games[i].startTime;
+            var s = games[i].startTime;
+            s = moment(s).toISOString(true);
+            var startTime = s.substring(0, 19);
+            console.log(startTime);
             var location = games[i].homeTeamCity;
             let game = {
                 gameID: games[i].gameID,
@@ -67,8 +70,8 @@ function wait(milliseconds){
 async function getWeatherData(start, loc, game){
     try {
         //Automatically computes end timestamp based on the start of each game
-        var dateString = game.gameID.substring(0, 10);
-        var startDateTime = dateString + "T" + start;
+        var startDateTime = start;
+        console.log(startDateTime);
         var endDateTime = moment(startDateTime).add(2, 'h').toISOString(true);
         var endTime = endDateTime.substring(0, 19);
         game.endTime = endTime.replace("T", " ");
@@ -85,7 +88,7 @@ async function getWeatherData(start, loc, game){
         const result = await response.json();
         
         //Process and Extract Useful Weather Data
-        processWeatherData(result, game);
+        processWeatherData(result, game, startDateTime, endDateTime);
         return;
 
     } catch (err) {
@@ -96,7 +99,7 @@ async function getWeatherData(start, loc, game){
 
 //Processes WeatherData into 12 hour intervals
 //Provides temp, wind speed, precipation, and humidity for each interval
-async function processWeatherData(weatherData, game){
+async function processWeatherData(weatherData, game, startDateTime, endDateTime){
     if (!weatherData) {
         console.log("Empty response");
         return;
@@ -119,21 +122,25 @@ async function processWeatherData(weatherData, game){
     for (var i=0;i<values.length;i++) {
         console.log(values[i].datetimeStr+": temp="+values[i].temp+", wspd="+values[i].wspd+", precip="+values[i].precip+ ", humidity="+values[i].humidity);
         let timestamp = values[i].datetimeStr;
-        let intTime = (timestamp.substring(0, 19)).replace("T", " ");
-        let weatherInterval = {
-            gameID: game.gameID,
-            intervalNumber: i+1,
-            intervalTime: intTime,
-            temperature: values[i].temp,
-            windSpeed: values[i].wspd, 
-            precipitation: values[i].precip, 
-            humidity: values[i].humidity
-        };
-        weatherController.createWeatherInterval(weatherInterval);
-        sumTemp += values[i].temp;
-        sumPrecip += values[i].precip;
-        sumWspd += values[i].wspd;
-        sumHumidity += values[i].humidity;
+
+        //Only Stores Weather Intervals when the forecast time is within game start and end time
+        if (moment(timestamp).isBetween(startDateTime, endDateTime) == true){
+            let intTime = (timestamp.substring(0, 19)).replace("T", " ");
+            let weatherInterval = {
+                gameID: game.gameID,
+                intervalNumber: i+1,
+                intervalTime: intTime,
+                temperature: values[i].temp,
+                windSpeed: values[i].wspd, 
+                precipitation: values[i].precip, 
+                humidity: values[i].humidity
+            };
+            weatherController.createWeatherInterval(weatherInterval);
+            sumTemp += values[i].temp;
+            sumPrecip += values[i].precip;
+            sumWspd += values[i].wspd;
+            sumHumidity += values[i].humidity;
+        }
     }
     
     //Update Average Conditions in Games Table
