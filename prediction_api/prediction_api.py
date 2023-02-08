@@ -44,20 +44,18 @@ def predict_teams():
 
     team1 = parameters.get("team1")
     team2 = parameters.get("team2")
-    # weather_list: dict = parameters.get("weather")
     wind_speed = parameters.get("wind_speed")
-    print(team1, team2, wind_speed)
+    temperature = parameters.get("temperature")
+    precipitation = parameters.get("precipitation")
+    humidity = parameters.get("humidity")
 
-    if not (team1 or team2 or wind_speed):
+    if not (team1 or team2 or wind_speed or temperature or precipitation or humidity):
         return invalid_endpoint(404, custom_message="Missing parameters")
     elif len(team1) == 0 or len(team2) == 0:
         return invalid_endpoint(404, custom_message="Invalid parameters for teams")
     
-    # if not weather_list["wind_speed"]:
-    #     return invalid_endpoint(404)
-
     # Pass prediction
-    result = predict(team1, team2, wind_speed)
+    result = predict(team1, team2, temperature, wind_speed, precipitation, humidity)
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
     winner = result[0]
@@ -71,6 +69,7 @@ def predict_teams():
             "winner": winner
         }
     )
+
 
 
 @app.route("/api/v1/predict/players/", methods = ["GET"])

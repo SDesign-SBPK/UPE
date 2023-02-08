@@ -1,6 +1,6 @@
 from sklearn import svm
 
-from database.ml_connector import getAllStatsForTeam, getGame, getTeam
+from ml_connector import getAllStatsForTeam, getGame, getTeam
 
 
 def getTeamStats(teamId, yearStart, yearEnd):
@@ -143,7 +143,7 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     formattedPrecip = float(precipitation)
     formattedHumidity = float(humidity)
     teamStats = combineArrays(teamOneStats, teamTwoStats)
-    teamTargets = stringOfTeamId([], len(teamOneStats, teamOne))
+    teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
     # TODO: Check if C=.5 is having any impact
     machine = svm.SVC(kernel="linear", C=.5, probability=True)
@@ -168,7 +168,7 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
 # windSpeed: average wind speed to use for predicted game.
 # precipitation: average precipitation to use for predicted game.
 # humidity: average humidity to use for predicted game.
-def predict(teamOne, teamTwo, yearStart, yearEnd, temperature, windSpeed, precipitation, humidity):
+"""def predict(teamOne, teamTwo, yearStart, yearEnd, temperature, windSpeed, precipitation, humidity):
     teamOneStats = getTeamStats(teamOne, yearStart, yearEnd)
     teamTwoStats = getTeamStats(teamTwo, yearStart, yearEnd)
     formattedTemp = float(temperature)
@@ -189,4 +189,4 @@ def predict(teamOne, teamTwo, yearStart, yearEnd, temperature, windSpeed, precip
                                               formattedHumidity)
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
 
-    return machine.predict(toPredict).tolist()
+    return machine.predict(toPredict).tolist()"""

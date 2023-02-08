@@ -178,12 +178,18 @@ app.post("/Prediction-Form", (req, res) => {
 	let homeTeam = req.body.homeTeam;
 	let awayTeam = req.body.awayTeam;
 	let windspeed = req.body.wind;
+	let temp = req.body.temp;
+	let humidity = req.body.humid;
+	let precip = req.body.precip;
 
 	//Send homeTeam and awayTeam to ML
 	const url_object = {
 		team1: homeTeam,
 		team2: awayTeam,
-		wind_speed: windspeed
+		temperature: temp,
+		wind_speed: windspeed,
+		precipitation: precip,
+		humidity: humidity
 	};
 	const url_args = querystring.stringify(url_object);
 	let prediction = http.get("http://localhost:50300/api/v1/predict/teams/?" + url_args, response => {

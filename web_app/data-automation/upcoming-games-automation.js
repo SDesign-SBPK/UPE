@@ -27,7 +27,10 @@ function calculatePredictions() {
             const url_object = {
                 team1: games[i].homeTeam,
                 team2: games[i].awayTeam,
-                wind_speed: games[i].averageWindSpeed
+                temperature: games[i].averageTemperature,
+                wind_speed: games[i].averageWindSpeed,
+                precipitation: games[i].averagePrecipitation,
+                humidity: games[i].averageHumidity
             };
 
             //Send request to Prediction API
