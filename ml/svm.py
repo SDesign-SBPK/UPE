@@ -191,5 +191,3 @@ def predict(teamOne, teamTwo, yearStart, yearEnd, temperature, windSpeed, precip
 
     return machine.predict_proba(toPredict).tolist()
 
-
-print(predict('summit', 'empire', 2014, 2022, 65, 5, 0.00, 15.0))
