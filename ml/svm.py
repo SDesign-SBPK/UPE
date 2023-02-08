@@ -157,7 +157,7 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
                                               formattedHumidity)
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
 
-    return machine.predict_proba(toPredict).tolist()
+    return machine.predict(toPredict).tolist()
 
 
 # teamOne: teamOne id from database to use.
@@ -189,5 +189,5 @@ def predict(teamOne, teamTwo, yearStart, yearEnd, temperature, windSpeed, precip
                                               formattedHumidity)
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
 
-    return machine.predict_proba(toPredict).tolist()
+    return machine.predict(toPredict).tolist()
 
