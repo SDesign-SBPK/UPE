@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const connection = require("../database/connection.json");
+const upcomingGamesParser = require("../scrapers/player/upcoming-games-store.js")
 const http = require("http");
 const querystring = require("querystring");
 
@@ -11,8 +12,15 @@ const con = mysql.createConnection({
 	database: connection.database
 });
 
-calculatePredictions();
+updateUpcomingGames();
 
+
+//calculatePredictions();
+
+function updateUpcomingGames(){
+    upcomingGamesParser.storeGamesOnPage;
+}
+/*
 function calculatePredictions() {
 
     //Get all upcoming games from DB
@@ -76,4 +84,4 @@ function calculatePredictions() {
 
     return;
 
-}
+}*/

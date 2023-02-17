@@ -1,12 +1,20 @@
 const internet = require('https')
-const fileStream = require("fs")
-const path = require('path')
+const mysql = require('mysql');
+const connection = require("../../database/connection.json");
 const pageLimit = 145
 const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
 let page = 1
 let interval
 
 let pageOfGameHistory
+
+//Connection to DB
+const con = mysql.createConnection({
+	host: connection.host,
+	user: connection.user,
+	password: connection.pass,
+	database: connection.database
+});
 
 
 //Store the data being entered via https into a json format, and then save into a player file
@@ -20,30 +28,39 @@ const savePageJson = function (res) {
 
         //Once we've received all the json info, we parse in order to access it, then store it into the files.
         res.on("end", () => {
-            pageOfGameHistory = JSON.parse(body)
+            pageOfGameHistory = JSON.parse(body);
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfGameHistory['games'].length; index++){
-                let game = require(path.normalize('../audl-containers/game'))
-                console.log(pageOfGameHistory['games'][index]['gameID'])
-                game.gameID = pageOfGameHistory['games'][index]['gameID']
-                game.awayTeam = pageOfGameHistory['games'][index]['awayTeamID']
-                game.homeTeam = pageOfGameHistory['games'][index]['homeTeamID']
-                game.awayCity = pageOfGameHistory['games'][index]['awayTeamCity']
-                game.homeCity = pageOfGameHistory['games'][index]['homeTeamCity']
-                game.locationName = pageOfGameHistory['games'][index]['locationName']
-                game.awayScore = pageOfGameHistory['games'][index]['awayScore']
-                game.homeScore = pageOfGameHistory['games'][index]['homeScore']
-                game.status = pageOfGameHistory['games'][index]['status']
-                game.timestamp = pageOfGameHistory['games'][index]['startTimestamp']
-                game.timezone = pageOfGameHistory['games'][index]['startTimezone']
-                game.week = pageOfGameHistory['games'][index]['week']
-                let playerFile = fileStream.createWriteStream(path.normalize(__dirname + '/../game-history/' + game.gameID + '.json'))
-                playerFile.write(JSON.stringify(game) ,function () {
-                    playerFile.close()
-                })
+                if (pageOfGameHistory['games'][index]['status'] == "Upcoming"){
+                    let currentDate = new Date().toJSON().slice(0, 19);
+                    let records = [[
+                        pageOfGameHistory['games'][index]['gameID'], 
+                        pageOfGameHistory['games'][index]['awayTeamID'],
+                        pageOfGameHistory['games'][index]['homeTeamID'], 
+                        pageOfGameHistory['games'][index]['startTimestamp'], 
+                        pageOfGameHistory['games'][index]['startTimezone'], 
+                        pageOfGameHistory['games'][index]['status'],
+                        pageOfGameHistory['games'][index]['awayTeamCity'], 
+                        pageOfGameHistory['games'][index]['homeTeamCity'],
+                        currentDate,
+                        currentDate]
+                    ];
+                    console.log(pageOfGameHistory['games'][index]['gameID']);
+                    console.log(index);
+
+                    //Insert Upcoming game into games table
+                    con.query('INSERT INTO games (gameID, awayTeam, homeTeam, startTime, timeZone, status, awayTeamCity, homeTeamCity, createdAt, updatedAt) VALUES ?', [records], (err, result, fields) => {
+                        
+                        if (err) throw err;
+
+                        console.log(result);
+                    });
+                    
+                }
             }
             page++
+            console.log(page);
             if(page > pageLimit){
                 clearInterval(interval)
             }
