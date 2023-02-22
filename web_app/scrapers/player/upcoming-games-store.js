@@ -1,9 +1,8 @@
 const internet = require('https')
 const mysql = require('mysql');
-const connection = require("../../database/connection.json");
+const connection = require("../../../database/connection.json");
 const pageLimit = 145
-const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
-let page = 1
+const baseUrl = 'https://www.backend.audlstats.com/web-api/games?current'
 let interval
 
 let pageOfGameHistory
@@ -32,7 +31,6 @@ const savePageJson = function (res) {
             //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
             //stringify the instance and store it into a .json file named after the players lastname,firstname.
             for(let index = 0; index < pageOfGameHistory['games'].length; index++){
-                if (pageOfGameHistory['games'][index]['status'] == "Upcoming"){
                     let currentDate = new Date().toJSON().slice(0, 19);
                     let records = [[
                         pageOfGameHistory['games'][index]['gameID'], 
@@ -56,13 +54,6 @@ const savePageJson = function (res) {
 
                         console.log(result);
                     });
-                    
-                }
-            }
-            page++
-            console.log(page);
-            if(page > pageLimit){
-                clearInterval(interval)
             }
         })
     }catch (error){}
@@ -70,9 +61,5 @@ const savePageJson = function (res) {
 
 //The initial function to call.
 let storeGamesOnPage = function (){
-    internet.get(baseUrl + page, savePageJson).on("error", (error) => {})
-
+    internet.get(baseUrl, savePageJson).on("error", (error) => {})
 }
-
-//Set this on an interval for each page. 
-interval = setInterval(storeGamesOnPage, 10)
