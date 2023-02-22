@@ -1,0 +1,17 @@
+.game-event {
+    display: flex;
+    background-color: black;
+    color: white;
+    align-items: center;
+}
+
+.logo-container {
+    background-color: dimgray;
+    border-width: 10px;
+    border-radius: 100%;
+}
+
+p {
+    padding-left: 10px;
+    padding-right: 10px;
+}
