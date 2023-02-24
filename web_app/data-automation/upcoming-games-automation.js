@@ -12,14 +12,16 @@ const con = mysql.createConnection({
 	database: connection.database
 });
 
-updateUpcomingGames();
+function updateUpcomingGames(){
+    upcomingGamesParser.storeGamesOnPage
+    console.log("test");
+}
+
+updateUpcomingGames()
 
 
 //calculatePredictions();
 
-function updateUpcomingGames(){
-    upcomingGamesParser.storeGamesOnPage;
-}
 /*
 function calculatePredictions() {
 

@@ -1,9 +1,7 @@
 const internet = require('https')
 const mysql = require('mysql');
-const connection = require("../../../database/connection.json");
-const pageLimit = 145
+const connection = require("../../database/connection.json");
 const baseUrl = 'https://www.backend.audlstats.com/web-api/games?current'
-let interval
 
 let pageOfGameHistory
 
@@ -16,20 +14,20 @@ const con = mysql.createConnection({
 });
 
 
-//Store the data being entered via https into a json format, and then save into a player file
+//Collect Upcoming Games Data for the next week from AUDL and store in DB
 const savePageJson = function (res) {
-    let body = ""
+    let body = "";
     try {
         //Wait until the information received from the https request is the actual raw data, then store it in a temporary variable
         res.on("data", (chunk) => {
-            body += chunk
+            body += chunk;
         })
 
-        //Once we've received all the json info, we parse in order to access it, then store it into the files.
+        //Once we've received all the json info, we parse in order to access it, then store it into the DB.
         res.on("end", () => {
             pageOfGameHistory = JSON.parse(body);
-            //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
-            //stringify the instance and store it into a .json file named after the players lastname,firstname.
+            
+            //Loop through the Upcoming Games JSON and store each separate game into the DB 
             for(let index = 0; index < pageOfGameHistory['games'].length; index++){
                     let currentDate = new Date().toJSON().slice(0, 19);
                     let records = [[
@@ -45,7 +43,6 @@ const savePageJson = function (res) {
                         currentDate]
                     ];
                     console.log(pageOfGameHistory['games'][index]['gameID']);
-                    console.log(index);
 
                     //Insert Upcoming game into games table
                     con.query('INSERT INTO games (gameID, awayTeam, homeTeam, startTime, timeZone, status, awayTeamCity, homeTeamCity, createdAt, updatedAt) VALUES ?', [records], (err, result, fields) => {
@@ -55,11 +52,15 @@ const savePageJson = function (res) {
                         console.log(result);
                     });
             }
-        })
+            //Close DB Connection
+            con.end();
+        });
     }catch (error){}
 }
 
 //The initial function to call.
-let storeGamesOnPage = function (){
-    internet.get(baseUrl, savePageJson).on("error", (error) => {})
+function storeGamesOnPage (){
+    internet.get(baseUrl, savePageJson).on("error", (error) => {});
 }
+
+storeGamesOnPage();
