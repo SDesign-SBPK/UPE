@@ -14,7 +14,7 @@ const con = mysql.createConnection({
 	database: connection.database
 });
 
-updateUpcomingGames();
+//updateUpcomingGames();
 calculatePredictions();
 
 function updateUpcomingGames(){
@@ -24,7 +24,23 @@ function updateUpcomingGames(){
         if (err) throw err;
     });
 
-    //Implement way to Update Games from Upcoming to final after the start time date passes
+    //Updates Games from Upcoming to final status after the start time date passes
+    con.query('SELECT * FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
+        if (err) throw err;
+
+        let games = rows;
+        let date = new Date().toJSON();
+        let dateTime = date.substring(0, 19);
+        for (let i = 0; i < games.length; i++){
+            s = moment(games[i].startTime).toISOString(true);
+            var startTime = s.substring(0, 19);
+            if (moment(startTime).isBefore(dateTime) == true){
+                con.query('UPDATE games SET status = "Final" WHERE gameID = ?',[games[i].gameID], (err, rows, fields) => {
+                    if (err) throw err;
+                });
+            }
+        }
+    })
 
     upcomingGamesParser.storeGamesOnPage;
     //weatherForecastData.gameDataRetrieval;
@@ -93,7 +109,6 @@ function calculatePredictions() {
         }
     
     });
-    con.end();
 
     return;
 
