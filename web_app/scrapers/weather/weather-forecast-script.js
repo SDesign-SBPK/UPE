@@ -55,6 +55,7 @@ async function gameDataRetrieval() {
             await wait(2500);
         }
 	});
+    con.end();
     return;
 }
 

@@ -1,6 +1,8 @@
 const mysql = require('mysql');
 const connection = require("../database/connection.json");
-const upcomingGamesParser = require("../scrapers/player/upcoming-games-store.js")
+const upcomingGamesParser = require("../scrapers/player/upcoming-games-store.js");
+//import { weatherForecastData } from "../scrapers/weather/weather-forecast-script.js";
+const moment = require("moment");
 const http = require("http");
 const querystring = require("querystring");
 
@@ -12,17 +14,25 @@ const con = mysql.createConnection({
 	database: connection.database
 });
 
+updateUpcomingGames();
+calculatePredictions();
+
 function updateUpcomingGames(){
-    upcomingGamesParser.storeGamesOnPage
-    console.log("test");
+
+    //Deletes all current game predictions from DB
+    con.query('DELETE FROM predictedgames', (err, rows, fields) => {
+        if (err) throw err;
+    });
+
+    //Implement way to Update Games from Upcoming to final after the start time date passes
+
+    upcomingGamesParser.storeGamesOnPage;
+    //weatherForecastData.gameDataRetrieval;
+    return;
 }
 
-updateUpcomingGames()
-
-
-//calculatePredictions();
-
-/*
+//Calculates Predictions for Current Upcoming Games
+//Stores Predicted Information into predictedgames table
 function calculatePredictions() {
 
     //Get all upcoming games from DB
@@ -83,7 +93,8 @@ function calculatePredictions() {
         }
     
     });
+    con.end();
 
     return;
 
-}*/
+}
