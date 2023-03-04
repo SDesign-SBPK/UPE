@@ -6,8 +6,6 @@ const connection = require("../database/connection.json");
 const http = require("http");
 const querystring = require("querystring");
 const { response } = require('express');
-const cron = require('node-cron');
-const dataAutomation = require("../data-automation/upcoming-games-automation.js");
 
 const con = mysql.createConnection({
 	host: connection.host,
@@ -30,16 +28,6 @@ app.use(express.json());
 
 //Used to serve static files
 app.use(express.static(path.join(__dirname, '/../static')));
-
-cron.schedule('9 * * * * *', () => {
-	console.log('Updating Upcoming Games at 23:00 EST');
-	dataAutomation.updateUpcomingGames
-});
-
-cron.schedule('15 * * * * *', () => {
-	console.log('Calculating Predictions for Upcoming Games at 23:05 EST');
-	dataAutomation.calculatePredictions
-});
 
 //Simple route for home page - file path will be changed
 app.get("/", (req, res) => {

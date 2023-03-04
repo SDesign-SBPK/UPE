@@ -15,16 +15,16 @@ const con = mysql.createConnection({
 
 
 //Collect Upcoming Games Data for the next week from AUDL and store in DB
-const savePageJson = function (res) {
+const savePageJson = async function (res) {
     let body = "";
     try {
         //Wait until the information received from the https request is the actual raw data, then store it in a temporary variable
-        res.on("data", (chunk) => {
+        await res.on("data", (chunk) => {
             body += chunk;
         })
 
         //Once we've received all the json info, we parse in order to access it, then store it into the DB.
-        res.on("end", () => {
+        await res.on("end", () => {
             pageOfGameHistory = JSON.parse(body);
             
             //Loop through the Upcoming Games JSON and store each separate game into the DB 
@@ -56,11 +56,13 @@ const savePageJson = function (res) {
             con.end();
         });
     }catch (error){}
+    return;
 }
 
 //The initial function to call.
-function storeGamesOnPage (){
-    internet.get(baseUrl, savePageJson).on("error", (error) => {});
+async function storeGamesOnPage (){
+    await internet.get(baseUrl, savePageJson).on("error", (error) => {});
+    return;
 }
 
 storeGamesOnPage();
