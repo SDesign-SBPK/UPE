@@ -1,10 +1,12 @@
-// import './App.css';  
-import GameEvent from "./GameEvent";
+import './App.css';  
+import UpcomingGames from "./UpcomingGames";
+import PredictionInput from './PredictionInput';
 
 function App() {
   return (
     <div className="App">
-      <GameEvent team1 = "summit" team2 = "empire"/>
+      <UpcomingGames />
+      <PredictionInput />
     </div>
   );
 }

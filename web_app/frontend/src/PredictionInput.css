@@ -1,0 +1,22 @@
+.input-selections {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: #403C3C;
+}
+
+.input-option {
+    flex: 1 0 15%;
+}
+
+.input-selection {
+    flex: 1 0 45%;
+}
