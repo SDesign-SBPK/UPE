@@ -20,3 +20,11 @@
 .input-selection {
     flex: 1 0 45%;
 }
+
+.continute-button {
+    background-color: #403C3C;
+}
+
+.finish-button {
+    background-color: #6CA857;
+}

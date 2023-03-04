@@ -43,7 +43,9 @@ class PredictionInput extends Component {
             temperature: 0,
             humidity: 0,
             precipitation: 0,
-            wind: 0
+            wind: 0,
+            overwriteTeam1: true,
+            teamsInputted: false
         };
     }
 
@@ -63,32 +65,52 @@ class PredictionInput extends Component {
             });
         } else {
             // If selection already exists - overwrite in sequential order
+            if (this.state.overwriteTeam1) {
+                this.setState({
+                    team1: team.target.id,
+                    overwriteTeam1: false
+                });
+            } else {
+                this.setState({
+                    team2: team.target.id,
+                    overwriteTeam1: true
+                })
+            }
         }
     }
 
     // TODO: Fix the flex display to wrap correctly
     render() {
-        let team1_selection;
-        if (this.state.team1 !== "") {
-            team1_selection = <img src = {teamLogos("./" + this.state.team1 + ".png")}
-            id = {this.state.team1} 
-            alt = {this.state.team1 + " logo"}
-            />
-        } else {
-            team1_selection = "";
-        }
-        let team2_selection;
-        if (this.state.team2 !== "") {
-            team2_selection = <img src = {teamLogos("./" + this.state.team2 + ".png")}
-            id = {this.state.team2} 
-            alt = {this.state.team2 + " logo"}
-            />
-        } else {
-            team2_selection = "";
-        }
-        return (
-            <div>
-                <h2>Predict Input</h2>
+        let input_body;
+        if (!this.state.teamsInputted) {
+            // Check to see if a logo should be shown yet or not
+            let team1_selection;
+            if (this.state.team1 !== "") {
+                team1_selection = <img src = {teamLogos("./" + this.state.team1 + ".png")}
+                id = {this.state.team1} 
+                alt = {this.state.team1 + " logo"}
+                />
+            } else {
+                team1_selection = "";
+            }
+            let team2_selection;
+            if (this.state.team2 !== "") {
+                team2_selection = <img src = {teamLogos("./" + this.state.team2 + ".png")}
+                id = {this.state.team2} 
+                alt = {this.state.team2 + " logo"}
+                />
+            } else {
+                team2_selection = "";
+            }
+            // Build the rest of the body with the given state
+            input_body = <div>
+                <button className="continue-button" onClick={() => {
+                    if (this.state.team1 !== "" && this.state.team2 !== "" && this.state.team1 !== this.state.team2) {
+                        this.setState({
+                            teamsInputted: true  
+                        })
+                    }
+                }}>Next</button>
                 <div className="input-selections">
                     <div className="input-selection">
                         <h3>Team 1:</h3>
@@ -111,6 +133,46 @@ class PredictionInput extends Component {
                         ))
                     }
                 </div>
+            </div>;
+        } else {
+            // If teams are inputted, render weather input
+            input_body = <div>
+                <button className="continue-button" onClick={() => {
+                    this.setState({
+                        teamsInputted: false
+                    }) 
+                }}>Back</button>
+                <p>Wind Speed: 
+                    <input type = "text" value={this.state.wind} 
+                        onChange={(event) => {
+                            this.setState({wind: event.target.value})
+                        }} required /> mph</p>
+                <p>Precipitation: 
+                    <input type = "text" value={this.state.precipitation}
+                        onChange={(event) => {
+                            this.setState({precipitation: event.target.value})
+                        }} required /> inches</p>
+                <p>Temperature: 
+                    <input type = "text" value={this.state.temperature} 
+                        onChange={(event) => {
+                            this.setState({temperature: event.target.value})
+                        }} required /> °F</p>
+                <p>Humidity: 
+                    <input type = "text" value={this.state.humidity} 
+                        onChange={(event) => {
+                            this.setState({humidity: event.target.value})
+                        }} required /> %</p>
+                <button className="finish-button" onClick={() => {
+                    // Send off API request and prep to render outcome
+                    console.log(this.state);
+                }}>Predict!</button>
+            </div>
+        }
+
+        return (
+            <div>
+                <h2>Predict Input</h2>
+                {input_body}
             </div>
         );
     }
