@@ -15,12 +15,17 @@ const con = mysql.createConnection({
 	database: connection.database
   });
 
-gameDataRetrieval();
+loop();
+
+async function loop(){
+    //Run Weather Retrieval every 24 hours
+    setInterval(gameDataRetrieval, 1000 * 60 * 60 * 24);
+}
 
 async function gameDataRetrieval() {
 
     //Selects Upcoming Games from Games Table
-    con.query('SELECT * FROM games WHERE status = "Upcoming"', async (err, rows, fields) => {
+    await con.query('SELECT * FROM games WHERE status = "Upcoming"', async (err, rows, fields) => {
 		if (err) throw err;
 
         let games = rows;
@@ -50,12 +55,11 @@ async function gameDataRetrieval() {
             }
             
             //Get Forecasted Data for each game
-            await wait(2500);
+            await wait(1000);
             getWeatherData(startTime, location, game);
-            await wait(2500);
+            await wait(1000);
         }
 	});
-    con.end();
     return;
 }
 
@@ -89,7 +93,7 @@ async function getWeatherData(start, loc, game){
         const result = await response.json();
         
         //Process and Extract Useful Weather Data
-        processWeatherData(result, game, startDateTime, endDateTime);
+        await processWeatherData(result, game, startDateTime, endDateTime);
         return;
 
     } catch (err) {
@@ -136,7 +140,7 @@ async function processWeatherData(weatherData, game, startDateTime, endDateTime)
                 precipitation: values[i].precip, 
                 humidity: values[i].humidity
             };
-            weatherController.createWeatherInterval(weatherInterval);
+            await weatherController.createWeatherInterval(weatherInterval);
             sumTemp = values[i].temp;
             sumPrecip = values[i].precip;
             sumWspd = values[i].wspd;
@@ -151,7 +155,7 @@ async function processWeatherData(weatherData, game, startDateTime, endDateTime)
     game.averageHumidity = sumHumidity;
     console.log("AvgTemp=" + game.averageTemperature + ", AvgPrecip=" + game.averagePrecipitation + ", AvgWspd=" + game.averageWindSpeed + ", AvgHumidity=" + game.averageHumidity);
 
-    gameController.updateGame(game.gameID, game);
+    await gameController.updateGame(game.gameID, game);
 
     return;
 }
