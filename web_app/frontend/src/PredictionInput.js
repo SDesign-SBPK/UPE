@@ -84,6 +84,7 @@ class PredictionInput extends Component {
         let input_body;
         if (!this.state.teamsInputted) {
             // Check to see if a logo should be shown yet or not
+            // TODO: Make an empty box here, so that the page isn't changing format on its own
             let team1_selection;
             if (this.state.team1 !== "") {
                 team1_selection = <img src = {teamLogos("./" + this.state.team1 + ".png")}
