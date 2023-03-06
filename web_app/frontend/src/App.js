@@ -5,8 +5,18 @@ import PredictionInput from './PredictionInput';
 function App() {
   return (
     <div className="App">
-      <UpcomingGames />
-      <PredictionInput />
+      <div className="column-container">
+        <div className="sidebar">
+
+        </div>
+        <div className="main-content">
+          <UpcomingGames />
+          <PredictionInput />
+        </div>
+        <div className="sidebar">
+          
+        </div>
+      </div>
     </div>
   );
 }

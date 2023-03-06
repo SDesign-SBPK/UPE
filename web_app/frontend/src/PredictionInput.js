@@ -79,7 +79,7 @@ class PredictionInput extends Component {
         }
     }
 
-    // TODO: Fix the flex display to wrap correctly
+    // Nice to have - possible to have color outlines of selected teams
     render() {
         let input_body;
         if (!this.state.teamsInputted) {

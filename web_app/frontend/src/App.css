@@ -32,3 +32,15 @@ button {
   height: 36px;
   font-size: 24px;
 }
+
+.column-container {
+  display: flex;
+}
+
+.sidebar {
+  flex: 1 0 10%;
+}
+
+.main-content {
+  flex: 2 1 75%;
+}

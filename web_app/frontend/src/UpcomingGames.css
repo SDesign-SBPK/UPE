@@ -1,12 +1,12 @@
 .game-event {
     display: flex;
-    background-color: black;
+    background-color: #222232;
     color: white;
     align-items: center;
+    justify-content: center;
 }
 
 .logo-container {
-    background-color: dimgray;
     border-width: 10px;
     border-radius: 100%;
 }
@@ -14,4 +14,8 @@
 p {
     padding-left: 10px;
     padding-right: 10px;
+}
+
+.game-events {
+
 }
