@@ -42,6 +42,39 @@ class GameOutcomeTemp extends Component {
  */
 class GameOutcome extends Component {
     render() {
+        let bar_components;
+        // Generate the longer bar towards the winner side
+        if (this.props.winner === this.props.team1) {
+            bar_components = <div className="bar-split">
+                <div style={{
+                    width: `${this.props.percentage}%`,
+                    backgroundColor: "#6CA857",
+                    height: 30,
+                }}>
+                </div>
+                <div style={{
+                    width: `${100 - this.props.percentage}%`,
+                    backgroundColor: "#DE1E1E",
+                    height: 30,
+                }}>
+                </div>
+            </div>;
+        } else {
+            bar_components = <div className="bar-split">
+                <div style={{
+                    width: `${100 - this.props.percentage}%`,
+                    backgroundColor: "#6CA857",
+                    height: 30,
+                }}>
+                </div>
+                <div style={{
+                    width: `${this.props.percentage}%`,
+                    backgroundColor: "#DE1E1E",
+                    height: 30,
+                }}>
+                </div>
+            </div>;
+        }
         return (
             <div>
                 <h2>Matchup Winner</h2>
@@ -57,7 +90,7 @@ class GameOutcome extends Component {
                         />
                     </div>
                     <div className = "outcome-bars">
-                        <p>TEMP: BARS</p>
+                        { bar_components }
                     </div>
                     <div className="outcome-split-piece">
                         <img src = {teamLogos("./" + this.props.team2 + ".png")}
@@ -67,11 +100,13 @@ class GameOutcome extends Component {
                     </div>
                 </div>
                 <p>{this.props.percentage}% more likely to win</p>
-                <h3>Match Summary</h3>
-                <p>Wind: {this.props.wind} mph</p>
-                <p>Precipitation: {this.props.precipitation} inches</p>
-                <p>Temperature: {this.props.temperature} °F</p>
-                <p>Humidity: {this.props.humidity} %</p>
+                <div className="match-summary">
+                    <h3>Match Summary</h3> 
+                    <p>Wind: {this.props.wind} mph</p>
+                    <p>Precipitation: {this.props.precipitation} inches</p>
+                    <p>Temperature: {this.props.temperature} °F</p>
+                    <p>Humidity: {this.props.humidity} %</p>
+                </div>
             </div>
         );
     }

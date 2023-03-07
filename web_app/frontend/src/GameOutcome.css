@@ -9,3 +9,15 @@
 .outcome-split-piece {
     flex: 1 0 15%;
 }
+
+.outcome-bars {
+    flex: 1 0 60%;
+}
+
+.bar-split {
+    display: flex;
+}
+
+.match-summary {
+    color: lightslategray;
+}
