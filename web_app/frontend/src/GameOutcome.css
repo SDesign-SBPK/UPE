@@ -21,3 +21,8 @@
 .match-summary {
     color: lightslategray;
 }
+
+.summary-text {
+    display: flex;
+    text-align: left;
+}

@@ -102,10 +102,26 @@ class GameOutcome extends Component {
                 <p>{this.props.percentage}% more likely to win</p>
                 <div className="match-summary">
                     <h3>Match Summary</h3> 
-                    <p>Wind: {this.props.wind} mph</p>
-                    <p>Precipitation: {this.props.precipitation} inches</p>
-                    <p>Temperature: {this.props.temperature} °F</p>
-                    <p>Humidity: {this.props.humidity} %</p>
+                    <div className="summary-text">
+                        <div className="summary-text-col">
+                            <p>Wind</p>
+                            <p>Precipitation</p>
+                            <p>Temperature</p>
+                            <p>Humidity</p>
+                        </div>
+                        <div className="summary-text-col">
+                            <p>{this.props.wind}</p>
+                            <p>{this.props.precipitation}</p>
+                            <p>{this.props.temperature}</p>
+                            <p>{this.props.humidity}</p>
+                        </div>
+                        <div className="summary-text-col">
+                            <p>mph</p>
+                            <p>inches</p>
+                            <p>°F</p>
+                            <p>%</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
