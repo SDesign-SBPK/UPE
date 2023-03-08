@@ -2,40 +2,6 @@ import "./GameOutcome.css";
 import { Component } from "react";
 const teamLogos = require.context("../public/logos", true);
 
-// Sample API response - currently used for planning out the display
-const TEMP_WINNER = {
-    message: "Prediction successful",
-    team1: "alleycats",
-    team2: "summit",
-    winner: "summit",
-    percentage: 75,
-    wind: 15,
-    precipitation: 0,
-    temperature: 75,
-    humidity: 60
-};
-
-/**
- * Wrapper for testing, until the frontend is successfully connected to the rest
- * of the application
- */
-class GameOutcomeTemp extends Component {
-    render() {
-        return (
-            <GameOutcome 
-                team1 = {TEMP_WINNER.team1}
-                team2 = {TEMP_WINNER.team2}
-                winner = {TEMP_WINNER.winner}
-                percentage = {TEMP_WINNER.percentage}
-                wind = {TEMP_WINNER.wind}
-                precipitation = {TEMP_WINNER.precipitation}
-                temperature = {TEMP_WINNER.temperature}
-                humidity = {TEMP_WINNER.humidity}
-            />
-        );
-    }
-}
-
 /**
  * Show the outcome of a game. This is where we would want to have some kind of
  * breakdown of the prediction, if possible
@@ -128,4 +94,4 @@ class GameOutcome extends Component {
     }
 }
 
-export default GameOutcomeTemp;
+export default GameOutcome;

@@ -144,28 +144,47 @@ class PredictionInput extends Component {
                     }) 
                 }}>Back</button>
                 <p>Wind Speed: 
-                    <input type = "text" value={this.state.wind} 
+                    <input type = "number" value={this.state.wind} 
                         onChange={(event) => {
                             this.setState({wind: event.target.value})
-                        }} required /> mph</p>
+                        }} required
+                        min={0}    
+                        max={30}
+                    /> mph</p>
                 <p>Precipitation: 
-                    <input type = "text" value={this.state.precipitation}
+                    <input type = "decimal" value={this.state.precipitation}
                         onChange={(event) => {
                             this.setState({precipitation: event.target.value})
-                        }} required /> inches</p>
+                        }} required 
+                        min={0}    
+                        max={1}
+                    /> inches</p>
                 <p>Temperature: 
-                    <input type = "text" value={this.state.temperature} 
+                    <input type = "number" value={this.state.temperature} 
                         onChange={(event) => {
                             this.setState({temperature: event.target.value})
-                        }} required /> °F</p>
+                        }} required 
+                        min={30}
+                        max={100}
+                    /> °F</p>
                 <p>Humidity: 
-                    <input type = "text" value={this.state.humidity} 
+                    <input type = "number" value={this.state.humidity} 
                         onChange={(event) => {
                             this.setState({humidity: event.target.value})
-                        }} required /> %</p>
+                        }} required 
+                        min={1}    
+                        max= {100}
+                    /> %</p>
                 <button className="finish-button" onClick={() => {
-                    // Send off API request and prep to render outcome
-                    console.log(this.state);
+                    let prediction = {
+                        awayTeam: this.state.team1,
+                        homeTeam: this.state.team2,
+                        temp: this.state.temperature,
+                        humid: this.state.humidity,
+                        precip: this.state.precipitation,
+                        wind: this.state.wind
+                    };
+                    this.props.prediction_handler(prediction);
                 }}>Predict!</button>
             </div>
         }

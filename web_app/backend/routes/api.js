@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require("http");
+const querystring = require("querystring");
 const mysql = require('mysql');
 const connection = require("../../database/connection.json");
 
@@ -36,6 +38,7 @@ router.post("/Prediction-Form", (req, res) => {
 	let humidity = req.body.humid;
 	let precip = req.body.precip;
 
+	console.log(windspeed);
 	//Send homeTeam and awayTeam to ML
 	const url_object = {
 		team1: homeTeam,
@@ -45,7 +48,9 @@ router.post("/Prediction-Form", (req, res) => {
 		precipitation: precip,
 		humidity: humidity
 	};
+	console.log(url_object);
 	const url_args = querystring.stringify(url_object);
+	console.log(url_args);
 	let prediction = http.get("http://localhost:50300/api/v1/predict/teams/?" + url_args, response => {
 		let data = "";
 		response.on("data", chunk => {
@@ -58,13 +63,14 @@ router.post("/Prediction-Form", (req, res) => {
 			console.log(data);
 			console.log(winner);
 			console.log(msg);
-			con.query('SELECT teamName FROM teams WHERE teamID = ?', [winner], (err, rows, fields) => {
-				if (err) throw err;
+			res.send(data);
+			// con.query('SELECT teamName FROM teams WHERE teamID = ?', [winner], (err, rows, fields) => {
+			// 	if (err) throw err;
 
-				predictedWinner = rows;
-				res.send(predictedWinner[0].teamName);
+			// 	predictedWinner = rows;
+			// 	res.send(predictedWinner[0].teamName);
 				
-			});
+			// });
 		});
 	});
 });

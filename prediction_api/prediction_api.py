@@ -66,10 +66,10 @@ def predict_teams():
     return jsonify(
         {
             "message": "Prediction successful",
+            "winner": winner,
             "team1": team1,
             "team2": team2,
-            "winner": winner,
-            "percentage": "TODO",
+            "percentage": 50,
             "wind": wind_speed,
             "precipitation": precipitation,
             "temperature": temperature,

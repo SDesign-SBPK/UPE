@@ -39,7 +39,7 @@ def getGame(gameID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM Games WHERE gameID = %s", (gameID,))
+    c.execute("SELECT * FROM games WHERE gameID = %s", (gameID,))
     game = c.fetchone()
     c.close()
     connection.close()
@@ -52,7 +52,7 @@ def getLocation(teamID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM Locations WHERE teamID = %s", (teamID,))
+    c.execute("SELECT * FROM locations WHERE teamID = %s", (teamID,))
     location = c.fetchone()
     c.close()
     connection.close()
@@ -65,7 +65,7 @@ def getPlayer(playerID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM Players WHERE playerID = %s", (playerID,))
+    c.execute("SELECT * FROM players WHERE playerID = %s", (playerID,))
     player = c.fetchone()
     c.close()
     connection.close()
@@ -78,7 +78,7 @@ def getAllStatsForPlayer(playerID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM PlayerGameStats WHERE playerID = %s", (playerID,))
+    c.execute("SELECT * FROM playergamestats WHERE playerID = %s", (playerID,))
     stats = c.fetchall()
     c.close()
     connection.close()
@@ -91,7 +91,7 @@ def getGameStatForPlayer(playerID: str, gameID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM PlayerGameStats WHERE playerID = %s AND gameID = %s", (playerID, gameID))
+    c.execute("SELECT * FROM playergamestats WHERE playerID = %s AND gameID = %s", (playerID, gameID))
     stat = c.fetchone()
     c.close()
     connection.close()
@@ -104,7 +104,7 @@ def getTeam(teamID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM Teams WHERE teamID = %s", (teamID,))
+    c.execute("SELECT * FROM teams WHERE teamID = %s", (teamID,))
     team = c.fetchone()
     c.close()
     connection.close()
@@ -117,7 +117,7 @@ def getAllStatsForTeam(teamID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM TeamGameStats WHERE teamID = %s", (teamID,))
+    c.execute("SELECT * FROM teamgamestats WHERE teamID = %s", (teamID,))
     stats = c.fetchall()
     c.close()
     connection.close()
@@ -130,7 +130,7 @@ def getGameStatForTeam(teamID: str, gameID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM TeamGameStats WHERE teamID = %s AND gameID = %s", (teamID, gameID))
+    c.execute("SELECT * FROM teamgamestats WHERE teamID = %s AND gameID = %s", (teamID, gameID))
     stat = c.fetchone()
     c.close()
     connection.close()
@@ -143,7 +143,7 @@ def getGameWeatherIntervals(gameID: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM WeatherIntervals WHERE gameID = %s", (gameID,))
+    c.execute("SELECT * FROM weatherintervals WHERE gameID = %s", (gameID,))
     intervals = c.fetchall()
     c.close()
     connection.close()
@@ -156,7 +156,7 @@ def getWeatherInterval(gameID: str, intervalNumber: str):
     """
     connection = getConnection()
     c = connection.cursor(buffered = True)
-    c.execute("SELECT * FROM WeatherIntervals WHERE gameID = %s AND intervalNumber = %s", (gameID, intervalNumber))
+    c.execute("SELECT * FROM weatherintervals WHERE gameID = %s AND intervalNumber = %s", (gameID, intervalNumber))
     interval = c.fetchone()
     c.close()
     connection.close()
