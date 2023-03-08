@@ -2,7 +2,6 @@
 File that interfaces between the database and python files. Since Sequelize is
 used, there isn't a Python connector for it. For the ML algorithm to be able to
 retrieve the necessary data, raw SQL queries must be made to retrieve data
-
 Uses the same `connection.json` file as the rest of the database files use
 """
 import json
