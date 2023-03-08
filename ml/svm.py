@@ -1,7 +1,9 @@
 from sklearn import svm
 
-from ml_connector import getAllStatsForTeam, getGame, getTeam
+from prediction_api.ml_connector import getAllStatsForTeam, getGame, getTeam
 
+baseWeight = 4
+sampleWeights = []
 
 def getTeamStats(teamId, yearStart, yearEnd):
     gameHistory = []
@@ -14,6 +16,7 @@ def getTeamStats(teamId, yearStart, yearEnd):
 
         if skip:
             continue
+        currentWeight = baseWeight
         # Add the team completion%, hold%, break%, turnovers, blocks. Verified that there are no null values in DB first
         gameEntry = [float(row[2]), float(row[6]), float(row[7]), float(row[9]), float(row[10])]
         winHistory = getGame(row[0])
@@ -41,18 +44,23 @@ def getTeamStats(teamId, yearStart, yearEnd):
             humidity = winHistory[0][10]
             if '-' in temp:
                 temp = -1
+                currentWeight = currentWeight - 1
             if '-' in wind:
                 wind = -1
+                currentWeight =  currentWeight - 1
             if '-' in precip:
                 precip = -1
+                currentWeight = currentWeight - 1
             if '-' in humidity:
                 humidity = -1
+                currentWeight = currentWeight - 1
 
             gameEntry.append(temp)
             gameEntry.append(wind)
             gameEntry.append(precip)
             gameEntry.append(humidity)
             gameHistory.append(gameEntry)
+            sampleWeights.append(currentWeight)
 
     return gameHistory
 
@@ -113,7 +121,7 @@ def getStatAverage(teamId):
 
 
 def appendWeatherStats(stats, temp, wind, precip, humidity):
-    formattedStats = stats;
+    formattedStats = stats
     formattedStats.append(temp)
     formattedStats.append(wind)
     formattedStats.append(precip)
@@ -136,6 +144,7 @@ def predict(teamOne, teamTwo):
 # precipitation: average precipitation to use for predicted game.
 # humidity: average humidity to use for predicted game.
 def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
+    sampleWeights = []
     teamOneStats = getTeamStats(teamOne, 2014, 2022)
     teamTwoStats = getTeamStats(teamTwo, 2014, 2022)
     formattedTemp = float(temperature)
@@ -147,7 +156,7 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
     # TODO: Check if C=.5 is having any impact
     machine = svm.SVC(kernel="linear", C=.5, probability=True)
-    machine.fit(teamStats, teamTargets)
+    machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
 
     teamOneSeasonAverage = getStatAverage(teamOne)
     teamOneSeasonAverage = appendWeatherStats(teamOneSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
@@ -157,36 +166,4 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
                                               formattedHumidity)
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
 
-    return machine.predict(toPredict).tolist()
-
-
-# teamOne: teamOne id from database to use.
-# teamTwo: teamTwo id from database to use.
-# yearStart: The first year to start pulling data from.
-# yearEnd: The last year to pull data from. If this is the same as yearStart, it will use only that year.
-# temperature: average temperature to use for predicted game.
-# windSpeed: average wind speed to use for predicted game.
-# precipitation: average precipitation to use for predicted game.
-# humidity: average humidity to use for predicted game.
-"""def predict(teamOne, teamTwo, yearStart, yearEnd, temperature, windSpeed, precipitation, humidity):
-    teamOneStats = getTeamStats(teamOne, yearStart, yearEnd)
-    teamTwoStats = getTeamStats(teamTwo, yearStart, yearEnd)
-    formattedTemp = float(temperature)
-    formattedWind = float(windSpeed)
-    formattedPrecip = float(precipitation)
-    formattedHumidity = float(humidity)
-    teamStats = combineArrays(teamOneStats, teamTwoStats)
-    teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
-    teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
-    machine = svm.SVC(kernel="linear", C=1, probability=True)
-    machine.fit(teamStats, teamTargets)
-
-    teamOneSeasonAverage = getStatAverage(teamOne)
-    teamOneSeasonAverage = appendWeatherStats(teamOneSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
-    teamTwoSeasonAverage = getStatAverage(teamTwo)
-    teamTwoSeasonAverage = appendWeatherStats(teamTwoSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
-    toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
-
-    return machine.predict(toPredict).tolist()"""
+    return machine.predict_proba(toPredict).tolist()
