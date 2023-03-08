@@ -9,7 +9,9 @@ function App() {
       <h1>Ultimate Prediction Engine</h1>
       <div className="column-container">
         <div className="sidebar">
-
+          <p>Home</p>
+          <p>Upcoming Games</p>
+          <p>Prediction Input</p>
         </div>
         <div className="main-content">
           <UpcomingGames />

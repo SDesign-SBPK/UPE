@@ -39,6 +39,7 @@ button {
 
 .sidebar {
   flex: 1 0 10%;
+  text-align: left;
 }
 
 .main-content {
