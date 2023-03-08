@@ -1,0 +1,28 @@
+.outcome-split {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+}
+
+.outcome-split-piece {
+    flex: 1 0 15%;
+}
+
+.outcome-bars {
+    flex: 1 0 60%;
+}
+
+.bar-split {
+    display: flex;
+}
+
+.match-summary {
+    color: lightslategray;
+}
+
+.summary-text {
+    display: flex;
+    text-align: left;
+}

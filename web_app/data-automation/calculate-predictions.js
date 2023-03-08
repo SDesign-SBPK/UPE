@@ -17,7 +17,8 @@ loop();
 async function loop(){
 
     //Automatically Recalculates Predictions Every 24 Hours
-    setInterval(calculatePredictions, 1000 * 60 * 60 * 24);
+    // setInterval(calculatePredictions, 1000 * 60 * 60 * 24);
+    setInterval(calculatePredictions, 10000);
 }
 
 async function calculatePredictions() {
@@ -32,8 +33,10 @@ async function calculatePredictions() {
 		if (err) throw err;
 
         let games = rows;
-        for (let i = 4; i < games.length; i++){
-
+        for (let i = 0; i < games.length; i++){
+            if (i == 1) {
+                i++;
+            }
             //Argument sent to Prediction Algorithm
             //Will need to be changed when ML is updated
             const url_object = {

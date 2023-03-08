@@ -1,0 +1,31 @@
+.input-selections {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: #222232;
+}
+
+.input-option {
+    flex: 1 0 15%;
+}
+
+.input-selection {
+    flex: 1 0 45%;
+    height: 200px;
+}
+
+.continute-button {
+    background-color: #403C3C;
+}
+
+.finish-button {
+    background-color: #6CA857;
+}
