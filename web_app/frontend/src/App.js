@@ -26,7 +26,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      console.log("Successful: ", data)
+      data.percentage = data.percentage * 100
       this.setState({content_state: "outcome", outcome_object: data})
     })
     .catch(error => console.error("Error: ", error));

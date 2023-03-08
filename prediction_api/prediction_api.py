@@ -62,14 +62,13 @@ def predict_teams():
     # [team1 score, team2 score]
     # Average the scores out to see what is accurate
     win_percentage = 0
-    print(result)
-    winner =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
-    if winner[0] > winner[1]:
+    winner_percents =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
+    if winner_percents[0] > winner_percents[1]:
         winner = team1
-        win_percentage = winner[0]
+        win_percentage = winner_percents[0]
     else: 
         winner = team2
-        win_percentage = winner[1]
+        win_percentage = winner_percents[1]
     
     # Return result 
     return jsonify(

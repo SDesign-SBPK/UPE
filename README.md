@@ -1,9 +1,5 @@
 # UPE - Ultimate Prediction Engine
 
-Note: The `audl` folder in the root level of the repository simply contains scraped files.
-
-!TODO: Decide what to do with these, since the database has already been setup on AWS and local versions can be easily made with the copy of files in the drive folder.
-
 ## Setup
 
 Pre-requisites:
@@ -20,10 +16,17 @@ Create a new file `connection.json` in the base directory of each module. This i
 {
     "host": "<the host where your mysql is - likely 'localhost'>",
     "port": 3306,
-    "database": "upe",
+    "database": "upe-beta",
     "user": "<your mysql username>",
     "pass": "<your mysql password>"
 }
+```
+
+The connection file needs to be duplicated and put into both the `prediction_api` and the `web_app/database` directories.
+
+The database can be restored to a local copy by entering the `mysql` shell and running the following from the root level of the repository:
+```
+source backups/UPE-BETA-DB.sql;
 ```
 
 ### Predictions
@@ -59,5 +62,26 @@ This will install all of the packages for the web application module. Once the p
 # From web_app/ folder
 node backend/server.js
 ```
+
+#### Front End
+
+The front end is a separate module inside the web_app application. It has its own npm package list and needs to be run independently of the rest of the web_app.
+
+To install, navigate to the `web_app/frontend` directory and run the following:
+```bash
+npm install
+```
+
+This installs all of the depencies involved in the front end development and deployment. To start the front end, run the following:
+```bash
+npm start
+```
+
+## Conclusion
+
+There are three main parts that need to be running at all times for the application to be fully running:
+- The back end
+- The front end
+- The prediction API
 
 For other edge cases of running parts of the application (ex: database script, parsing scripts), see documentation in the relevant folder or ask the team.
