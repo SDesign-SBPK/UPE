@@ -1,61 +1,102 @@
 const internet = require('https')
-const fileStream = require("fs")
-const path = require('path')
-const pageLimit = 145
-const baseUrl = 'https://www.backend.audlstats.com/web-api/games?limit=10&page='
-let page = 1
-let interval
+const mysql = require('mysql');
+const moment = require("moment");
+const connection = require("../../database/connection.json");
+const baseUrl = 'https://www.backend.audlstats.com/web-api/games?current'
 
 let pageOfGameHistory
 
+//Connection to DB
+const con = mysql.createConnection({
+	host: connection.host,
+	user: connection.user,
+	password: connection.pass,
+	database: connection.database
+});
 
-//Store the data being entered via https into a json format, and then save into a player file
-const savePageJson = function (res) {
-    let body = ""
+loop();
+
+async function loop(){
+
+    //Gather new Upcoming Games from the AUDL every 24 hours
+    setInterval(storeGamesOnPage, 1000 * 60 * 60 * 24);
+}
+
+
+//Collect Upcoming Games Data for the next week from AUDL and store in DB
+const savePageJson = async function (res) {
+    let body = "";
+
+    //Deletes Any remaining predictedgames from DB
+    await con.query('DELETE FROM predictedgames', (err, rows, fields) => {
+        if (err) throw err;
+    });
+
+    //Deletes Any leftover upcoming games from DB
+    await con.query('DELETE FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
+        if (err) throw err;
+    });
+
+    //Updates Games from Upcoming to final status after the start time date passes
+    /*await con.query('SELECT * FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
+        if (err) throw err;
+
+        let games = rows;
+        let date = new Date().toJSON();
+        let dateTime = date.substring(0, 19);
+        for (let i = 0; i < games.length; i++){
+            s = moment(games[i].startTime).toISOString(true);
+            var startTime = s.substring(0, 19);
+            if (moment(startTime).isBefore(dateTime) == true){
+                con.query('UPDATE games SET status = "Final" WHERE gameID = ?',[games[i].gameID], (err, rows, fields) => {
+                    if (err) throw err;
+                });
+            }
+        }
+    })  */
+
     try {
         //Wait until the information received from the https request is the actual raw data, then store it in a temporary variable
-        res.on("data", (chunk) => {
-            body += chunk
+        await res.on("data", (chunk) => {
+            body += chunk;
         })
 
-        //Once we've received all the json info, we parse in order to access it, then store it into the files.
-        res.on("end", () => {
-            pageOfGameHistory = JSON.parse(body)
-            //Loop through the stats array of players in order to save each of the stats in an instance of the player class, then
-            //stringify the instance and store it into a .json file named after the players lastname,firstname.
+        //Once we've received all the json info, we parse in order to access it, then store it into the DB.
+        await res.on("end", () => {
+            pageOfGameHistory = JSON.parse(body);
+            
+            //Loop through the Upcoming Games JSON and store each separate game into the DB 
             for(let index = 0; index < pageOfGameHistory['games'].length; index++){
-                let game = require(path.normalize('../audl-containers/game'))
-                console.log(pageOfGameHistory['games'][index]['gameID'])
-                game.gameID = pageOfGameHistory['games'][index]['gameID']
-                game.awayTeam = pageOfGameHistory['games'][index]['awayTeamID']
-                game.homeTeam = pageOfGameHistory['games'][index]['homeTeamID']
-                game.awayCity = pageOfGameHistory['games'][index]['awayTeamCity']
-                game.homeCity = pageOfGameHistory['games'][index]['homeTeamCity']
-                game.locationName = pageOfGameHistory['games'][index]['locationName']
-                game.awayScore = pageOfGameHistory['games'][index]['awayScore']
-                game.homeScore = pageOfGameHistory['games'][index]['homeScore']
-                game.status = pageOfGameHistory['games'][index]['status']
-                game.timestamp = pageOfGameHistory['games'][index]['startTimestamp']
-                game.timezone = pageOfGameHistory['games'][index]['startTimezone']
-                game.week = pageOfGameHistory['games'][index]['week']
-                let playerFile = fileStream.createWriteStream(path.normalize(__dirname + '/../game-history/' + game.gameID + '.json'))
-                playerFile.write(JSON.stringify(game) ,function () {
-                    playerFile.close()
-                })
+                    let currentDate = new Date().toJSON().slice(0, 19);
+                    let records = [[
+                        pageOfGameHistory['games'][index]['gameID'], 
+                        pageOfGameHistory['games'][index]['awayTeamID'],
+                        pageOfGameHistory['games'][index]['homeTeamID'], 
+                        pageOfGameHistory['games'][index]['startTimestamp'], 
+                        pageOfGameHistory['games'][index]['startTimezone'], 
+                        pageOfGameHistory['games'][index]['status'],
+                        pageOfGameHistory['games'][index]['awayTeamCity'], 
+                        pageOfGameHistory['games'][index]['homeTeamCity'],
+                        currentDate,
+                        currentDate]
+                    ];
+                    console.log(pageOfGameHistory['games'][index]['gameID']);
+
+                    //Insert Upcoming game into games table
+                    con.query('INSERT INTO games (gameID, awayTeam, homeTeam, startTime, timeZone, status, awayTeamCity, homeTeamCity, createdAt, updatedAt) VALUES ?', [records], (err, result, fields) => {
+                        
+                        if (err) throw err;
+
+                        console.log(result);
+                    });
             }
-            page++
-            if(page > pageLimit){
-                clearInterval(interval)
-            }
-        })
+        });
     }catch (error){}
+    return;
 }
 
 //The initial function to call.
-let storeGamesOnPage = function (){
-    internet.get(baseUrl + page, savePageJson).on("error", (error) => {})
-
+async function storeGamesOnPage (){
+    await internet.get(baseUrl, savePageJson).on("error", (error) => {});
+    return;
 }
-
-//Set this on an interval for each page. 
-interval = setInterval(storeGamesOnPage, 10)
