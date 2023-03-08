@@ -12,7 +12,7 @@ class App extends Component {
       outcome_object: {
         "winner": "none"
       },
-      content_state: "input"
+      content_state: "home"
     }; 
   }
 
@@ -59,9 +59,27 @@ class App extends Component {
         <h1>Ultimate Prediction Engine</h1>
         <div className="column-container">
           <div className="sidebar">
-            <p>Home</p>
-            <p>Upcoming Games</p>
-            <p>Prediction Input</p>
+            <div className='nav-option' onClick={() => {
+                this.setState({
+                  content_state: "home"
+                })
+              }}>
+              <p>Home</p>
+            </div>
+            <div className='nav-option' onClick={() => {
+                this.setState({
+                  content_state: "upcomingGames"
+                })
+              }}>
+              <p>Upcoming Games</p>
+            </div>
+            <div className='nav-option' onClick={() => {
+                this.setState({
+                  content_state: "input"
+                })
+              }}>
+              <p>Prediction Input</p>
+            </div>
           </div>
           <div className="main-content">
             { content_body }
