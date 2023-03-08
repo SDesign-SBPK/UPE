@@ -14,7 +14,7 @@ import mysql.connector as connector
 # from sshtunnel import SSHTunnelForwarder
 
 
-connection_file = open("connection.json")
+connection_file = open("../ml/connection.json")
 connection_details = json.load(connection_file)
 
 # ssh_file = open("/Users/brandonharvey/Documents/gwu/2022/fall/senior-design/UPE/database/ssh.json")
