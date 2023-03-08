@@ -58,9 +58,18 @@ def predict_teams():
     result = predict(team1, team2, temperature, wind_speed, precipitation, humidity)
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
-    winner = result[0]
-    if result[0] != result[1]:
-        winner = "A tie"
+    # [team1 score, team2 score]
+    # [team1 score, team2 score]
+    # Average the scores out to see what is accurate
+    win_percentage = 0
+    print(result)
+    winner =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
+    if winner[0] > winner[1]:
+        winner = team1
+        win_percentage = winner[0]
+    else: 
+        winner = team2
+        win_percentage = winner[1]
     
     # Return result 
     return jsonify(
@@ -69,7 +78,7 @@ def predict_teams():
             "winner": winner,
             "team1": team1,
             "team2": team2,
-            "percentage": 50,
+            "percentage": win_percentage,
             "wind": wind_speed,
             "precipitation": precipitation,
             "temperature": temperature,

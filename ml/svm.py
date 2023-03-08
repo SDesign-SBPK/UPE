@@ -165,5 +165,6 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     teamTwoSeasonAverage = appendWeatherStats(teamTwoSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
                                               formattedHumidity)
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
-
-    return machine.predict_proba(toPredict).tolist()
+    result = machine.predict_proba(toPredict).tolist()
+    print(result)
+    return result
