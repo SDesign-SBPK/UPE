@@ -20,7 +20,15 @@ class UpcomingGames extends Component {
             .then(res => res.text())
             .then(res => {
                 let arr = JSON.parse(res);
-                this.setState({ upcoming_games: arr })
+                let games = arr;
+                // Only get a set number of games, if directed
+                if (this.props.gameLimit > 0) {
+                    games = [];
+                    for (let i = 0; i < this.props.gameLimit; i++) {
+                        games.push(arr[i]);
+                    }
+                }
+                this.setState({ upcoming_games: games })
             })
     }
 
