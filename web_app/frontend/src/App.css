@@ -60,3 +60,9 @@ button {
   background-color: darkslategrey;
   cursor: pointer;
 }
+
+.prediction-banner-ad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -3,6 +3,7 @@ import UpcomingGames from "./UpcomingGames";
 import PredictionInput from './PredictionInput';
 import GameOutcome from './GameOutcome';
 import { Component } from 'react';
+const logos = require.context("../public/logos", true);
 
 class App extends Component {
 
@@ -49,10 +50,27 @@ class App extends Component {
       content_body = <PredictionInput 
         prediction_handler = {prediction => this.sendPrediction(prediction)} />
     } else if (this.state.content_state === "upcomingGames") {
-      content_body = <UpcomingGames />
+      content_body = <UpcomingGames gameLimit = {0} />
     } else {
-      content_body = <PredictionInput 
-        prediction_handler = {prediction => this.sendPrediction(prediction)} />
+      content_body = <div>
+        <UpcomingGames gameLimit = {3} />
+        <p className='nav-option' onClick={() => {
+          this.setState({
+            content_state: "upcomingGames"
+          })
+        }}>See More</p>
+        <div className='prediction-banner-ad'>
+          <img src={ logos("./audl.gif") } alt = "audl logo" />
+          <div>
+            <p>Create your own matchups! Choose from two existing teams and specified weather conditions and we'll tell you who is most likely to win!</p>
+            <h4 onClick={() => {
+              this.setState({
+                content_state: "input"
+              })
+            }}>Lets Go! {">>>"}</h4>
+          </div>
+        </div>
+      </div>;
     }
     return (
       <div className="App">
