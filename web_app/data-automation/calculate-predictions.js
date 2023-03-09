@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const connection = require("../database/connection.json");
+const moment = require("moment");
 const http = require("http");
 const querystring = require("querystring");
 
@@ -11,17 +12,30 @@ const con = mysql.createConnection({
 	database: connection.database
 });
 
-calculatePredictions();
+loop();
 
-function calculatePredictions() {
+async function loop(){
+
+    //Automatically Recalculates Predictions Every 24 Hours
+    setInterval(calculatePredictions, 1000 * 60 * 60 * 24);
+}
+
+async function calculatePredictions() {
+
+    //Delete All current predictions stored in DB
+    await con.query('DELETE FROM predictedgames', (err, rows, fields) => {
+        if (err) throw err;
+    })
 
     //Get all upcoming games from DB
-    con.query('SELECT * FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
+    await con.query('SELECT * FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
 		if (err) throw err;
 
         let games = rows;
         for (let i = 0; i < games.length; i++){
-
+            if (i == 1) {
+                i++;
+            }
             //Argument sent to Prediction Algorithm
             //Will need to be changed when ML is updated
             const url_object = {
@@ -34,12 +48,12 @@ function calculatePredictions() {
             };
 
             //Send request to Prediction API
-            const url_args = querystring.stringify(url_object);
+            const url_args =  querystring.stringify(url_object);
             let prediction = http.get("http://localhost:50300/api/v1/predict/teams/?" + url_args, response => {
                 let data = "";
                 response.on("data", chunk => {data += chunk});
                 response.on("end", () => {
-                    //console.log(data);
+                
                     let winner = JSON.parse(data).winner;
                     console.log(winner);
                     
@@ -71,7 +85,6 @@ function calculatePredictions() {
                 });
             });
         }
-    
     });
 
     return;

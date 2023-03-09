@@ -2,8 +2,6 @@ from sklearn import svm
 
 from ml_connector import getAllStatsForTeam, getGame, getTeam
 
-baseWeight = 4
-sampleWeights = []
 
 def getTeamStats(teamId, yearStart, yearEnd):
     gameHistory = []
@@ -16,7 +14,6 @@ def getTeamStats(teamId, yearStart, yearEnd):
 
         if skip:
             continue
-        currentWeight = baseWeight
         # Add the team completion%, hold%, break%, turnovers, blocks. Verified that there are no null values in DB first
         gameEntry = [float(row[2]), float(row[6]), float(row[7]), float(row[9]), float(row[10])]
         winHistory = getGame(row[0])
@@ -37,41 +34,7 @@ def getTeamStats(teamId, yearStart, yearEnd):
                     # Append the team lost
                     gameEntry.append(-1)
             # Add the average  temp, wind, precip, humidity from th game data
-            # TODO: Verify if there are any null cases to look for.
-            temp = winHistory[0][7]
-            wind = winHistory[0][8]
-            precip = winHistory[0][9]
-            humidity = winHistory[0][10]
-            if '-' in temp:
-                temp = -1
-                currentWeight = currentWeight - 1
-            if '-' in wind:
-                wind = -1
-                currentWeight =  currentWeight - 1
-            if '-' in precip:
-                precip = -1
-                currentWeight = currentWeight - 1
-            if '-' in humidity:
-                humidity = -1
-                currentWeight = currentWeight - 1
-
-            gameEntry.append(temp)
-            gameEntry.append(wind)
-            gameEntry.append(precip)
-            gameEntry.append(humidity)
             gameHistory.append(gameEntry)
-            sampleWeights.append(currentWeight)
-
-    return gameHistory
-
-
-def getStats():
-    gameHistory = []
-    for x in range(20):
-        temp = []
-        for y in range(2):
-            temp.append(x)
-        gameHistory.append(temp)
     return gameHistory
 
 
@@ -113,57 +76,26 @@ def getStatAverage(teamId):
             blocks = 0
         formattedResult = [completion, hold, breakPercentage, turnovers, blocks]
     else:
-        print("No completion percentage to use for team")
         formattedResult = [.5, .5, .5, .5, 0, 0]
     #   Append a 1 for as a 'win' since that is what we are checking for
     formattedResult.append(1)
     return formattedResult
 
 
-def appendWeatherStats(stats, temp, wind, precip, humidity):
-    formattedStats = stats
-    formattedStats.append(temp)
-    formattedStats.append(wind)
-    formattedStats.append(precip)
-    formattedStats.append(humidity)
-    return formattedStats
-
-
-# teamOne: first team id that's used
-# teamTwo: second team id that's used
-# return: A 2-D array of games with the first using the average stats for the season of first team id for the first
-# index followed by the second teams average stats
-def predict(teamOne, teamTwo):
-    return
-
-
 # teamOne: teamOne id from database to use.
 # teamTwo: teamTwo id from database to use.
-# temperature: average temperature to use for predicted game.
-# windSpeed: average wind speed to use for predicted game.
-# precipitation: average precipitation to use for predicted game.
-# humidity: average humidity to use for predicted game.
-def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
-    sampleWeights = []
+def predict(teamOne, teamTwo):
     teamOneStats = getTeamStats(teamOne, 2014, 2022)
     teamTwoStats = getTeamStats(teamTwo, 2014, 2022)
-    formattedTemp = float(temperature)
-    formattedWind = float(windSpeed)
-    formattedPrecip = float(precipitation)
-    formattedHumidity = float(humidity)
     teamStats = combineArrays(teamOneStats, teamTwoStats)
     teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
-    # TODO: Check if C=.5 is having any impact
     machine = svm.SVC(kernel="linear", C=.5, probability=True)
-    machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
+    machine.fit(teamStats, teamTargets)
 
     teamOneSeasonAverage = getStatAverage(teamOne)
-    teamOneSeasonAverage = appendWeatherStats(teamOneSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
     teamTwoSeasonAverage = getStatAverage(teamTwo)
-    teamTwoSeasonAverage = appendWeatherStats(teamTwoSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
+
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
     result = machine.predict_proba(toPredict).tolist()
     return result
