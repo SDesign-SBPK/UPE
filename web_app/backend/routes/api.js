@@ -24,6 +24,15 @@ router.get("/Upcoming-Games", (req, res) => {
 	});
 });
 
+router.post("/Select-Upcoming-Game", (req, res) => {
+	
+	con.query('SELECT gameID, awayTeam, homeTeam, startTime, timeZone, winner, winnerPercentage, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, awayTeamCity, homeTeamCity FROM predictedgames WHERE gameID = ?', [req.body.gameID], (err, rows, fields) => {
+		if (err) throw err;
+
+		res.send(rows);
+	});
+})
+
 //Form Page
 router.get("/Prediction-Form", (req, res) => {
 	
