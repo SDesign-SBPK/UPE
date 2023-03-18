@@ -38,7 +38,7 @@ const savePageJson = async function (res) {
     });
 
     //Updates Games from Upcoming to final status after the start time date passes
-    /*await con.query('SELECT * FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
+    await con.query('SELECT * FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
         if (err) throw err;
 
         let games = rows;
@@ -53,7 +53,7 @@ const savePageJson = async function (res) {
                 });
             }
         }
-    })  */
+    })  
 
     try {
         //Wait until the information received from the https request is the actual raw data, then store it in a temporary variable
