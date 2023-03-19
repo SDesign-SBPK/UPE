@@ -12,4 +12,6 @@ class PlayerGameStats{
     secondsPlayed;
     yardsThrown;
     yardsReceived;
+
+    isHomeTeam;
 }
