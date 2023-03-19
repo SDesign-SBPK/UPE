@@ -32,6 +32,11 @@ const savePageJson = async function (res) {
         if (err) throw err;
     });
 
+    //Deletes all previously calculated weather intervals from DB
+    await con.query('DELETE weatherintervals FROM weatherintervals INNER JOIN games ON weatherintervals.gameID = games.gameID WHERE games.status = "Upcoming"', (err, rows, fields) => {
+        if (err) throw err;
+    });
+
     //Deletes Any leftover upcoming games from DB
     await con.query('DELETE FROM games WHERE status = "Upcoming"', (err, rows, fields) => {
         if (err) throw err;
