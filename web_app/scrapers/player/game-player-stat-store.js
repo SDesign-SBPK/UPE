@@ -55,6 +55,7 @@ let storePlayerGameStats = function(pageNumber){
                                                 let playerGameStat = require(path.normalize('../audl-containers/player-game-stats'))
                                                 playerGameStat.gameID = parsedYear['stats'][game]['gameID']
                                                 playerGameStat.playerID = list[index]
+                                                playerGameStat.isHomeTeam = parsedYear['stats'][game]['isHome']
                                                 playerGameStat.goals = parsedYear['stats'][game]['goals']
                                                 playerGameStat.assists = parsedYear['stats'][game]['assists']
                                                 playerGameStat.throwaways = parsedYear['stats'][game]['throwaways']
