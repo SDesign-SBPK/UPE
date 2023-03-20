@@ -36,8 +36,8 @@ async function calculatePredictions() {
             if (i == 1) {
                 i++;
             }
+            
             //Argument sent to Prediction Algorithm
-            //Will need to be changed when ML is updated
             const url_object = {
                 team1: games[i].homeTeam,
                 team2: games[i].awayTeam,
@@ -55,7 +55,9 @@ async function calculatePredictions() {
                 response.on("end", () => {
                 
                     let winner = JSON.parse(data).winner;
+                    let percentage = JSON.parse(data).percentage;
                     console.log(winner);
+                    console.log(percentage);
                     
                     //Store Prediction Results
                     let records = [[
@@ -65,6 +67,7 @@ async function calculatePredictions() {
                         games[i].startTime, 
                         games[i].timeZone,
                         winner, 
+                        percentage, 
                         games[i].averageTemperature, 
                         games[i].averageWindSpeed, 
                         games[i].averagePrecipitation, 
@@ -75,7 +78,7 @@ async function calculatePredictions() {
                     ];
 
                     //Insert Prediction Results into Predicted Games Table
-                    con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, timeZone, winner, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [records], (err, result, fields) => {
+                    con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, timeZone, winner, winnerPercentage, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [records], (err, result, fields) => {
                         
                         if (err) throw err;
 
