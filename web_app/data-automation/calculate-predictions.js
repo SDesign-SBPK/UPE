@@ -17,7 +17,8 @@ loop();
 async function loop(){
 
     //Automatically Recalculates Predictions Every 24 Hours
-    setInterval(calculatePredictions, 1000 * 60 * 60 * 24);
+    // setInterval(calculatePredictions, 1000 * 60 * 60 * 24);
+    setInterval(calculatePredictions, 10000);
 }
 
 async function calculatePredictions() {

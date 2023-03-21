@@ -38,9 +38,6 @@ class UpcomingGames extends Component {
 
     render() {
         // Render the top upcoming games, sorting by recency
-
-        // TODO: Insert a call to the backend here to retrieve the games
-        //  instead of just the temp entries        
         return (
             <div>
                 <h2>Upcoming Games</h2>
@@ -52,10 +49,12 @@ class UpcomingGames extends Component {
                             return (
                                 <GameEvent 
                                     key= {game.gameID}
+                                    gameID = {game.gameID}
                                     team1 = { game.awayTeam }
                                     team2 = { game.homeTeam }
                                     time = { time_string }
                                     projectedWinner = { game.winner }
+                                    clickHandler = {game => this.props.gameEventClickHandler(game) }
                                 />
                             )
                         })
@@ -80,6 +79,9 @@ class GameEvent extends Component {
                 <p>{ this.props.time }</p>
                 <img src = {teamLogos("./" + this.props.team2 + ".png")} alt = {this.props.team2 + " logo"} className = "logo-container" />
                 <p>{this.props.team2}</p>
+                <p onClick={() => {
+                    this.props.clickHandler(this.props.gameID);
+                }}>{this.props.projectedWinner}</p>
             </div>
         );
     }

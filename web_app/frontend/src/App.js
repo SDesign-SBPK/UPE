@@ -5,9 +5,20 @@ import GameOutcome from './GameOutcome';
 import { Component } from 'react';
 const logos = require.context("../public/logos", true);
 
+const BACKEND_HOST = "http://localhost:8080";
+
+/**
+ * Content states:
+ * - home -> Displays 3 upcoming games, banner for input
+ * - outcome -> Displays a predicted outcome of a matchup, using the returned data
+ * - input -> Displays the input page for predictions
+ *    !TODO: Once player inputs added, change this state to team_input
+ * - upcomingGames -> Shows all available upcoming games currently stored
+ */
+
 class App extends Component {
 
-  constructor(props) {
+	constructor(props) {
     super(props);
     this.state = {
       outcome_object: {
@@ -17,20 +28,49 @@ class App extends Component {
     }; 
   }
 
+  /**
+   * Sends a user-created team prediction over to the prediction API and waits for 
+   * a response. Upon success, captures the result and transitions the content
+   * state to show the outcome breakdown
+   * @param prediction The object containing all of the fields from the prediction input
+   */
   sendPrediction(prediction) {
-    fetch("http://localhost:8080/api/Prediction-Form", {
+    fetch(BACKEND_HOST + "/api/Prediction-Form", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(prediction)
     })
     .then(res => res.json())
     .then(data => {
-      data.percentage = data.percentage * 100
+      data.percentage = data.percentage * 100;
       this.setState({content_state: "outcome", outcome_object: data})
     })
     .catch(error => console.error("Error: ", error));
+  }
+
+  /**
+   * Retrieves the prediction breakdown for an upcoming game. Transitions the content
+   * state to the outcome page to show the prediction breakdopwn
+   * @param game The gameID to be retrieved
+   */
+  displayUpcomingGamePrediction(game) {
+    fetch("http://localhost:8080/api/Select-Upcoming-Game/" + game)
+		.then(res => res.json())
+		.then(data => {
+			data.percentage = data.winnerPercentage * 100;
+      let outcome_data = {
+        team1: data.awayTeam,
+        team2: data.homeTeam,
+        winner: data.winner,
+        percentage: data.winnerPercentage,
+        wind: data.forecastedWindSpeed,
+        precipitation: data.forecastedPrecipitation,
+        temperature: data.forecastedTemp,
+        humidity: data.forecastedHumidity
+      };
+			this.setState({content_state: "outcome", outcome_object: outcome_data})
+		})
+		.catch(error => console.error("Error: ", error));
   }
 
   render() {
@@ -48,12 +88,19 @@ class App extends Component {
       /> 
     } else if (this.state.content_state === "input") {
       content_body = <PredictionInput 
-        prediction_handler = {prediction => this.sendPrediction(prediction)} />
+        prediction_handler = {prediction => this.sendPrediction(prediction)} 
+      />
     } else if (this.state.content_state === "upcomingGames") {
-      content_body = <UpcomingGames gameLimit = {0} />
+      content_body = <UpcomingGames 
+        gameLimit = {0} 
+        gameEventClickHandler = {game => this.displayUpcomingGamePrediction(game)}
+      />
     } else {
       content_body = <div>
-        <UpcomingGames gameLimit = {3} />
+        <UpcomingGames 
+          gameLimit = {3} 
+          gameEventClickHandler = {game => this.displayUpcomingGamePrediction(game)} 
+        />
         <p className='nav-option' onClick={() => {
           this.setState({
             content_state: "upcomingGames"
