@@ -54,7 +54,7 @@ class App extends Component {
    * @param game The gameID to be retrieved
    */
   displayUpcomingGamePrediction(game) {
-    fetch("http://localhost:8080/api/Select-Upcoming-Game/" + game)
+    fetch(BACKEND_HOST + "/api/Select-Upcoming-Game/" + game)
 		.then(res => res.json())
 		.then(data => {
 			data.percentage = data.winnerPercentage * 100;
