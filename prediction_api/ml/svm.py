@@ -1,8 +1,9 @@
 from sklearn import svm
 
-from ml_connector import getAllStatsForTeam, getGame, getTeam
+from prediction_api.ml_connector import getAllStatsForTeam, getGame, getTeam
 
-baseWeight = 4
+
+baseWeight = 1
 sampleWeights = []
 
 def getTeamStats(teamId, yearStart, yearEnd):
@@ -44,16 +45,16 @@ def getTeamStats(teamId, yearStart, yearEnd):
             humidity = winHistory[0][10]
             if '-' in temp:
                 temp = -1
-                currentWeight = currentWeight - 1
+                currentWeight = currentWeight - .15
             if '-' in wind:
                 wind = -1
-                currentWeight =  currentWeight - 1
+                currentWeight =  currentWeight - .2
             if '-' in precip:
                 precip = -1
-                currentWeight = currentWeight - 1
+                currentWeight = currentWeight - .2
             if '-' in humidity:
                 humidity = -1
-                currentWeight = currentWeight - 1
+                currentWeight = currentWeight - .1
 
             gameEntry.append(temp)
             gameEntry.append(wind)
@@ -146,7 +147,9 @@ def predict(teamOne, teamTwo):
 def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     sampleWeights = []
     teamOneStats = getTeamStats(teamOne, 2014, 2022)
+    print(teamOneStats)
     teamTwoStats = getTeamStats(teamTwo, 2014, 2022)
+    print(teamTwoStats)
     formattedTemp = float(temperature)
     formattedWind = float(windSpeed)
     formattedPrecip = float(precipitation)
@@ -155,7 +158,7 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
     # TODO: Check if C=.5 is having any impact
-    machine = svm.SVC(kernel="linear", C=.5, probability=True)
+    machine = svm.SVC(kernel="linear", C=1, probability=True, class_weight='balanced')
     machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
 
     teamOneSeasonAverage = getStatAverage(teamOne)
@@ -167,3 +170,5 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
     result = machine.predict_proba(toPredict).tolist()
     return result
+
+print(predict('phoenix', 'empire', 65, 5, 0, 60))
