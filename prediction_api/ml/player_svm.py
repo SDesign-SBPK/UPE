@@ -17,47 +17,48 @@ def getPlayerStats(playerList, yearStart, yearEnd):
         for game in gameStatsFiltered:
             nextRecord = []
             ##Store the value if the player was on the away team or home team
-            away = game[-1]
+            away = game[2]
             ## Get the record of the game for the weather stats
             gameRecord = getGame(game[0])
-            if away:
-                if gameRecord[5] > gameRecord[6]:
-                    nextRecord.append(1)
+            if gameRecord is not None:
+                if away:
+                    if gameRecord[6] > gameRecord[7]:
+                        nextRecord.append(1)
+                    else:
+                        nextRecord.append(0)
                 else:
-                    nextRecord.append(0)
-            else:
-                if gameRecord[6] > gameRecord[5]:
-                    nextRecord.append(1)
-                else:
-                    nextRecord.append(0)
-            ## Append goals
-            nextRecord.append(game[2])
-            ## Append assists
-            nextRecord.append(game[3])
-            ## Append completions
-            nextRecord.append(game[4])
+                    if gameRecord[7] > gameRecord[6]:
+                        nextRecord.append(1)
+                    else:
+                        nextRecord.append(0)
+                ## Append goals
+                nextRecord.append(game[2])
+                ## Append assists
+                nextRecord.append(game[3])
+                ## Append completions
+                nextRecord.append(game[4])
 
-            ## Weather data appending
-            temp = gameRecord[7]
-            wind = gameRecord[8]
-            precip = gameRecord[9]
-            humid = gameRecord[10]
+                ## Weather data appending
+                temp = gameRecord[7]
+                wind = gameRecord[8]
+                precip = gameRecord[9]
+                humid = gameRecord[10]
 
-            ## Error checking
-            if '-' in temp:
-                temp = -1
-            if '-' in wind:
-                wind = -1
-            if '-' in precip:
-                precip = -1
-            if '-' in humid:
-                humid = -1
+                ## Error checking
+                if None == temp:
+                    temp = -1
+                if None == wind:
+                    wind = -1
+                if None == precip:
+                    precip = -1
+                if None == humid:
+                    humid = -1
 
-            nextRecord.append(temp)
-            nextRecord.append(wind)
-            nextRecord.append(precip)
-            nextRecord.append(humid)
-            records.append(nextRecord)
+                nextRecord.append(temp)
+                nextRecord.append(wind)
+                nextRecord.append(precip)
+                nextRecord.append(humid)
+                records.append(nextRecord)
 
     return records
 
@@ -65,9 +66,10 @@ def getAverageStats(playerList):
     averageStats = [1, 0.0, 0.0, 0.0]
     for player in playerList:
         stats = getPlayer(player)
-        averageStats[1] += stats[5]
-        averageStats[2] += stats[6]
-        averageStats[3] += stats[4]
+        if stats is not None:
+            averageStats[1] += stats[5]
+            averageStats[2] += stats[6]
+            averageStats[3] += stats[4]
     for stat in averageStats:
         stat = (stat/len(playerList))
     return averageStats
@@ -116,3 +118,9 @@ def predict(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, precipitatio
     toPredict = [teamOneAverage, teamTwoAverage]
     result = machine.predict_proba(toPredict).tolist()
     return result
+
+
+teamOne = ['bkatzl', 'blevy', 'fbreton', 'ewarner']
+teamTwo = ['ewilliams', 'jerb', 'jrichmond', 'jrobarge']
+
+print(predict(teamOne, teamTwo, 65, 5, .5, 60))
