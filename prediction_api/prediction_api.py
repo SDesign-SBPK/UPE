@@ -147,6 +147,56 @@ def predict_players():
     )
 
 
+@app.route("/api/v1/predict/historical_teams/", methods = ["GET"])
+def predict_historical_teams():
+    # Check valid parameters
+    parameters = request.args
+
+    gameID = parameters.get("gameID")
+    team1 = parameters.get("team1")
+    team2 = parameters.get("team2")
+    wind_speed = parameters.get("wind_speed")
+    temperature = parameters.get("temperature")
+    precipitation = parameters.get("precipitation")
+    humidity = parameters.get("humidity")
+
+    if not (gameID or team1 or team2 or wind_speed or temperature or precipitation or humidity):
+        return invalid_endpoint(404, custom_message="Missing parameters")
+    elif len(team1) == 0 or len(team2) == 0 or len(gameID) == 0:
+        return invalid_endpoint(404, custom_message="Invalid parameters for teams or gameID")
+    
+    # Pass prediction
+    result = predict(gameID, team1, team2, temperature, wind_speed, precipitation, humidity)
+    if not result:
+        return invalid_endpoint(404, custom_message="No result from prediction")
+    
+    # Average the scores out to see what is accurate
+    win_percentage = 0
+    winner_percents =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
+    if winner_percents[0] > winner_percents[1]:
+        winner = team1
+        win_percentage = winner_percents[0]
+    else: 
+        winner = team2
+        win_percentage = winner_percents[1]
+    
+    # Return result 
+    return jsonify(
+        {
+            "message": "Prediction successful",
+            "winner": winner,
+            "gameID": gameID,
+            "team1": team1,
+            "team2": team2,
+            "percentage": win_percentage,
+            "wind": wind_speed,
+            "precipitation": precipitation,
+            "temperature": temperature,
+            "humidity": humidity
+        }
+    )
+
+
 @app.route("/api/v1/predict/teams_custom/", methods = ["GET"])
 def predict_teams_custom():
     pass
