@@ -4,6 +4,7 @@
     color: white;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .logo-container {
@@ -14,4 +15,20 @@
 p {
     padding-left: 10px;
     padding-right: 10px;
+}
+
+.game-event-winner {
+    flex: 1 0 15%;
+}
+
+.game-event-piece {
+    display: flex;
+    flex: 1 0 25%;
+    text-align: center;
+    align-items: center;
+    justify-items: center;
+}
+
+.piece-item {
+    flex: 1 0 50%;
 }

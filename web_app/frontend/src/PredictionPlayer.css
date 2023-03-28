@@ -1,0 +1,9 @@
+.picture-players-container {
+    display: flex;
+}
+
+.picture-player {
+    flex: 1 0 15%;
+    height: 100px;
+    width: 100px;
+}

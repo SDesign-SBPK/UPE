@@ -1,6 +1,7 @@
 import "./UpcomingGames.css";
 import { Component } from "react";
 const teamLogos = require.context("../public/logos", true);
+const teamNames = require("./teamDictionary.json");
 
 /**
  * The overall container for showing game events. This takes in a set amount
@@ -42,6 +43,12 @@ class UpcomingGames extends Component {
             <div>
                 <h2>Upcoming Games</h2>
                 <div className="game-events">
+                    <div className="game-event">
+                        <p className="game-event-piece">Away Team</p>
+                        <p className="game-event-piece">Time</p>
+                        <p className="game-event-piece">Home Team</p>
+                        <p className="game-event-winner">Projected Winner</p>
+                    </div>
                     {
                         this.state.upcoming_games?.map(game => {
                             let time_string_pieces = game.startTime.split(" ");
@@ -74,14 +81,18 @@ class GameEvent extends Component {
     render() {
         return (
             <div className="game-event">
-                <p>{this.props.team1}</p>
-                <img src = {teamLogos("./" + this.props.team1 + ".png")} alt = {this.props.team1 + " logo"} className = "logo-container" />
-                <p>{ this.props.time }</p>
-                <img src = {teamLogos("./" + this.props.team2 + ".png")} alt = {this.props.team2 + " logo"} className = "logo-container" />
-                <p>{this.props.team2}</p>
-                <p onClick={() => {
+                <div className="game-event-piece">
+                    <p className="piece-item">{teamNames[this.props.team1]}</p>
+                    <img className="logo-container" src = {teamLogos("./" + this.props.team1 + ".png")} alt = {this.props.team1 + " logo"} />
+                </div>
+                <p className="game-event-piece">{ this.props.time }</p>
+                <div className="game-event-piece">
+                    <img className="logo-container" src = {teamLogos("./" + this.props.team2 + ".png")} alt = {this.props.team2 + " logo"} />
+                    <p className="piece-item">{teamNames[this.props.team2]}</p>
+                </div>
+                <p className="clickable-link game-event-winner" onClick={() => {
                     this.props.clickHandler(this.props.gameID);
-                }}>{this.props.projectedWinner}</p>
+                }}>{teamNames[this.props.projectedWinner]}</p>
             </div>
         );
     }

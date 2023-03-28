@@ -13,6 +13,8 @@ const con = mysql.createConnection({
 
 var router = express.Router();
 
+const API_HOST = "http://localhost:50300";
+
 /**
  * Collects all upcoming games from the database
  */
@@ -39,9 +41,37 @@ router.get("/Select-Upcoming-Game/:id", (req, res) => {
 });
 
 /**
+ * Forwards a prediction request to the prediction API (player-based)
+ */
+router.post("/Prediction-Form-Player", (req, res) => {
+	// Retrieve parameters from request
+	let windspeed = req.body.wind;
+	let temp = req.body.temp;
+	let humidity = req.body.humid;
+	let precip = req.body.precip;
+	let team1Players = req.body.team1Players;
+	let team2Players = req.body.team2Players;
+
+	// Create a url object to send over
+	const url_object = {
+		team1Players: team1Players,
+		team2Players: team2Players,
+		temperature: temp,
+		wind_speed: windspeed,
+		precipitation: precip,
+		humdidity: humidity
+	};
+	const url_args = querystring.stringify(url_object);
+
+	// Send request to prediction API
+	// TODO: Once Prection API has been udpated, update method to send request correctly
+	console.log("Received request: " + url_args);
+});
+
+/**
  * Forwards a prediction request to the prediction API (team-based)
  */
-router.post("/Prediction-Form", (req, res) => {
+router.post("/Prediction-Form-Team", (req, res) => {
 	let homeTeam = req.body.homeTeam;
 	let awayTeam = req.body.awayTeam;
 	let windspeed = req.body.wind;
@@ -61,7 +91,7 @@ router.post("/Prediction-Form", (req, res) => {
 	const url_args = querystring.stringify(url_object);
 
 	// Send request
-	let prediction = http.get("http://localhost:50300/api/v1/predict/teams/?" + url_args, response => {
+	let prediction = http.get(API_HOST + "/api/v1/predict/teams/?" + url_args, response => {
 		let data = "";
 		response.on("data", chunk => {
 			data += chunk;

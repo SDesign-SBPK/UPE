@@ -66,3 +66,11 @@ button {
   align-items: center;
   justify-content: center;
 }
+
+.clickable-link:hover {
+  cursor: pointer;
+}
+
+.clickable-link {
+  text-decoration-line: underline;
+}

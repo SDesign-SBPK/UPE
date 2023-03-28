@@ -1,6 +1,7 @@
 import { Component } from "react";
 import "./PredictionInput.css";
 const teamLogos = require.context("../public/logos", true);
+const teamNames = require("./teamDictionary.json");
 
 const teams_list = [
     "alleycats",
@@ -87,19 +88,25 @@ class PredictionInput extends Component {
             // TODO: Make an empty box here, so that the page isn't changing format on its own
             let team1_selection;
             if (this.state.team1 !== "") {
-                team1_selection = <img src = {teamLogos("./" + this.state.team1 + ".png")}
-                id = {this.state.team1} 
-                alt = {this.state.team1 + " logo"}
-                />
+                team1_selection = <div>
+                    <p>{ teamNames[this.state.team1] }</p>
+                    <img src = {teamLogos("./" + this.state.team1 + ".png")}
+                    id = {this.state.team1} 
+                    alt = {this.state.team1 + " logo"}
+                    />
+                </div>;
             } else {
                 team1_selection = "";
             }
             let team2_selection;
             if (this.state.team2 !== "") {
-                team2_selection = <img src = {teamLogos("./" + this.state.team2 + ".png")}
-                id = {this.state.team2} 
-                alt = {this.state.team2 + " logo"}
-                />
+                team2_selection = <div>
+                    <p>{ teamNames[this.state.team2] }</p>
+                    <img src = {teamLogos("./" + this.state.team2 + ".png")}
+                        id = {this.state.team2} 
+                        alt = {this.state.team2 + " logo"}
+                    />
+                </div>;
             } else {
                 team2_selection = "";
             }
