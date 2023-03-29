@@ -93,30 +93,30 @@ def predict_players():
     # Check Valid Parameters
     parameters = request.args
 
-    team1 = parameters.get("team1")
-    team2 = parameters.get("team2")
+    team1Players = parameters.get("team1Players")
+    team2Players = parameters.get("team2Players")
     wind_speed = parameters.get("wind_speed")
     temperature = parameters.get("temperature")
     precipitation = parameters.get("precipitation")
     humidity = parameters.get("humidity")
 
-    if not (team1 or team2 or wind_speed or temperature or precipitation or humidity):
+    if not (team1Players or team2Players or wind_speed or temperature or precipitation or humidity):
         return invalid_endpoint(404, custom_message="Missing parameters")
-    elif len(team1) < 7 or len(team2) < 7 or len(team1) > 14 or len(team2) > 14:
+    elif len(team1Players) < 7 or len(team2Players) < 7 or len(team1Players) > 14 or len(team2Players) > 14:
         return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do either contain less than 7 or more than 14 players")
-    elif len(team1) != len(team2):
+    elif len(team1Players) != len(team2Players):
         return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do not contain an equal amount of players")
     
-    for i in team1:
-        if (len(team1[i]) == 0):
+    for i in team1Players:
+        if (len(team1Players[i]) == 0):
             return invalid_endpoint(404, custom_message="Invalid parameters for player in team1")
-    for i in team2:
-        if (len(team2[i]) == 0):
+    for i in team2Players:
+        if (len(team2Players[i]) == 0):
             return invalid_endpoint(404, custom_message="Invalid parameters for a player in team2")
         
     # Pass prediction
     #Will need to change the predict method name
-    result = predict(team1, team2, temperature, wind_speed, precipitation, humidity)
+    result = predict(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
 
@@ -124,10 +124,10 @@ def predict_players():
     win_percentage = 0
     winner_percents =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
     if winner_percents[0] > winner_percents[1]:
-        winner = team1
+        winner = team1Players
         win_percentage = winner_percents[0]
     else: 
-        winner = team2
+        winner = team2Players
         win_percentage = winner_percents[1]
 
     # Return result 
@@ -136,8 +136,68 @@ def predict_players():
             "message": "Prediction successful",
             "winner": winner,
             # Will most likely need to change how we return the players in JSON Format
-            "team1": team1,
-            "team2": team2,
+            "team1": team1Players,
+            "team2": team2Players,
+            "percentage": win_percentage,
+            "wind": wind_speed,
+            "precipitation": precipitation,
+            "temperature": temperature,
+            "humidity": humidity
+        }
+    )
+
+@app.route("/api/v1/predict/historical_players/", methods = ["GET"])
+def predict_players():
+    # Check Valid Parameters
+    parameters = request.args
+
+    gameID = parameters.get("gameID")
+    team1Players = parameters.get("team1Players")
+    team2Players = parameters.get("team2Players")
+    wind_speed = parameters.get("wind_speed")
+    temperature = parameters.get("temperature")
+    precipitation = parameters.get("precipitation")
+    humidity = parameters.get("humidity")
+
+    if not (gameID or team1Players or team2Players or wind_speed or temperature or precipitation or humidity):
+        return invalid_endpoint(404, custom_message="Missing parameters")
+    elif len(team1Players) < 7 or len(team2Players) < 7 or len(team1Players) > 14 or len(team2Players) > 14:
+        return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do either contain less than 7 or more than 14 players")
+    elif len(team1Players) != len(team2Players):
+        return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do not contain an equal amount of players")
+    
+    for i in team1Players:
+        if (len(team1Players[i]) == 0):
+            return invalid_endpoint(404, custom_message="Invalid parameters for player in team1")
+    for i in team2Players:
+        if (len(team2Players[i]) == 0):
+            return invalid_endpoint(404, custom_message="Invalid parameters for a player in team2")
+        
+    # Pass prediction
+    #Will need to change the predict method name
+    result = predict(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
+    if not result:
+        return invalid_endpoint(404, custom_message="No result from prediction")
+
+    # Average the scores out to see what is accurate
+    win_percentage = 0
+    winner_percents =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
+    if winner_percents[0] > winner_percents[1]:
+        winner = team1Players
+        win_percentage = winner_percents[0]
+    else: 
+        winner = team2Players
+        win_percentage = winner_percents[1]
+
+    # Return result 
+    return jsonify(
+        {
+            "message": "Prediction successful",
+            "winner": winner,
+            "gameID": gameID,
+            # Will most likely need to change how we return the players in JSON Format
+            "team1": team1Players,
+            "team2": team2Players,
             "percentage": win_percentage,
             "wind": wind_speed,
             "precipitation": precipitation,
@@ -195,11 +255,6 @@ def predict_historical_teams():
             "humidity": humidity
         }
     )
-
-
-@app.route("/api/v1/predict/teams_custom/", methods = ["GET"])
-def predict_teams_custom():
-    pass
 
 
 @app.errorhandler(404)
