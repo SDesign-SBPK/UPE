@@ -2,7 +2,8 @@ from sklearn import svm
 
 from prediction_api.ml_connector import getAllStatsForPlayer, getGame, getPlayer
 
-
+baseWeight = 1
+sampleWeights = []
 def getPlayerStats(playerList, yearStart, yearEnd):
     records = []
     for player in playerList:
@@ -20,6 +21,7 @@ def getPlayerStats(playerList, yearStart, yearEnd):
             away = game[2]
             ## Get the record of the game for the weather stats
             gameRecord = getGame(game[0])
+            recordWeight = baseWeight
             if gameRecord is not None:
                 if away:
                     if gameRecord[6] > gameRecord[7]:
@@ -47,18 +49,23 @@ def getPlayerStats(playerList, yearStart, yearEnd):
                 ## Error checking
                 if None == temp:
                     temp = -1
+                    recordWeight -= .1
                 if None == wind:
                     wind = -1
+                    recordWeight -= .25
                 if None == precip:
                     precip = -1
+                    recordWeight -= .25
                 if None == humid:
                     humid = -1
+                    recordWeight -= .1
 
                 nextRecord.append(temp)
                 nextRecord.append(wind)
                 nextRecord.append(precip)
                 nextRecord.append(humid)
                 records.append(nextRecord)
+                sampleWeights.append(recordWeight)
 
     return records
 
@@ -96,7 +103,8 @@ def appendWeatherStats(stats, temp, wind, precip, humidity):
     formattedStats.append(humidity)
     return formattedStats
 
-def predict(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, precipitation, humidity):
+def predictByPlayers(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, precipitation, humidity):
+    sampleWeights = []
     teamOneStats = getPlayerStats(teamOnePlayers, 2014, 2022)
     teamTwoStats = getPlayerStats(teamTwoPlayers, 2014, 2022)
     formattedTemp = float(temperature)
@@ -107,7 +115,7 @@ def predict(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, precipitatio
     teamTargets = stringOfTeamId([], len(teamOneStats), 'teamOne')
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), 'teamTwo')
     machine = svm.SVC(kernel="linear", C=1, probability=True)
-    machine.fit(teamStats, teamTargets)
+    machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
 
     teamOneAverage = getAverageStats(teamOnePlayers)
     teamOneAverage = appendWeatherStats(teamOneAverage, formattedTemp, formattedWind, formattedPrecip,
@@ -123,4 +131,4 @@ def predict(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, precipitatio
 teamOne = ['bkatzl', 'blevy', 'fbreton', 'ewarner']
 teamTwo = ['ewilliams', 'jerb', 'jrichmond', 'jrobarge']
 
-print(predict(teamOne, teamTwo, 65, 5, .5, 60))
+print(predictByPlayers(teamOne, teamTwo, 65, 5, .5, 60))

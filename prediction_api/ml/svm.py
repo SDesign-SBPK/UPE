@@ -1,5 +1,6 @@
 from sklearn import svm
 
+from prediction_api.ml.player_svm import predictByPlayers
 from prediction_api.ml_connector import getAllStatsForTeam, getGame, getTeam
 
 
@@ -129,14 +130,8 @@ def appendWeatherStats(stats, temp, wind, precip, humidity):
     formattedStats.append(humidity)
     return formattedStats
 
-
-# teamOne: first team id that's used
-# teamTwo: second team id that's used
-# return: A 2-D array of games with the first using the average stats for the season of first team id for the first
-# index followed by the second teams average stats
-def predict(teamOne, teamTwo):
+def getTeamPlayers(teamID, gameID):
     return
-
 
 # teamOne: teamOne id from database to use.
 # teamTwo: teamTwo id from database to use.
@@ -147,9 +142,11 @@ def predict(teamOne, teamTwo):
 def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     sampleWeights = []
     teamOneStats = getTeamStats(teamOne, 2014, 2022)
-    print(teamOneStats)
     teamTwoStats = getTeamStats(teamTwo, 2014, 2022)
-    print(teamTwoStats)
+
+    if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
+        return predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation, humidity)
+
     formattedTemp = float(temperature)
     formattedWind = float(windSpeed)
     formattedPrecip = float(precipitation)
@@ -171,4 +168,3 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     result = machine.predict_proba(toPredict).tolist()
     return result
 
-print(predict('phoenix', 'empire', 65, 5, 0, 60))
