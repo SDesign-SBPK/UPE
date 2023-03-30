@@ -78,7 +78,13 @@ class PredictionPlayer extends Component {
                 team1_selection = <div>
                     {
                         this.state.team1.map(player => (
-                            <p key = {player}>{ playerInfo[player] }</p>
+                            <div className = "selection-summary">
+                                <PredictionOption
+                                    key = {player + "img"}
+                                    player = {player}
+                                />
+                                <p key = {player + "name"}>{ playerInfo[player] }</p>
+                            </div>
                         ))
                     }
                 </div>
@@ -91,39 +97,57 @@ class PredictionPlayer extends Component {
                 team2_selection = <div>
                     {
                         this.state.team2.map(player => (
-                            <p key = {player}>{ playerInfo[player] }</p>
+                            <div className="selection-summary">
+                                <PredictionOption
+                                    key = {player + "img"}
+                                    player = {player}
+                                />
+                                <p key = {player + "name"}>{ playerInfo[player] }</p>
+                            </div>
                         ))
                     }
                 </div>;
             } else {
                 team2_selection = <p>No players inputted for team 2</p>
             }
-            input_body = <div className="input-selections">
-                <div className="input-selection">
-                    <h3>Team 1</h3>
-                    { team1_selection }
-                    <button className="" onClick={() => {
-                        this.setState({
-                            display_state: "add_player",
-                            team1Input: true
-                        })
-                    }}>Add to Team 1</button>
-                </div>
-                <div className="input-selection">
-                    <h3>Team 2</h3>
-                    { team2_selection }
-                    <button className="" onClick={() => {
-                        this.setState({
-                            display_state: "add_player",
-                            team1Input: false
-                        })
-                    }}>Add to Team 2</button>
-                </div>
+            input_body = <div>
                 <button className="continue-button" onClick={() => {
                     this.setState({
                         display_state: "weather"
                     })
                 }}>Next</button>
+                <div className="input-selections">
+                    <div className="input-selection">
+                        <h3>Team 1</h3>
+                        { team1_selection }
+                        <button className="" onClick={() => {
+                            this.setState({
+                                display_state: "add_player",
+                                team1Input: true
+                            })
+                        }}>Add to Team 1</button>
+                    </div>
+                    <div className="input-selection">
+                        {
+                            (this.state.team1.length > 0) ? <TeamPlayerStats playerList = {this.state.team1} teamnum = {1}/> : "Add players to View Stats"
+                        }
+                    </div>
+                    <div className="input-selection">
+                        <h3>Team 2</h3>
+                        { team2_selection }
+                        <button className="" onClick={() => {
+                            this.setState({
+                                display_state: "add_player",
+                                team1Input: false
+                            })
+                        }}>Add to Team 2</button>
+                    </div>
+                    <div className="input-selection">
+                        {
+                            (this.state.team2.length > 0) ? <TeamPlayerStats playerList = {this.state.team2} teamnum = {2}/> : "Add players to View Stats"
+                        }
+                    </div>
+                </div>
             </div>
         } else if (this.state.display_state === "add_player") {
             // Adding another player to a team
@@ -142,6 +166,7 @@ class PredictionPlayer extends Component {
                         display_state: "selections"
                     })
                 }}>See Selections</button>
+                <h3>{ (this.state.team1Input) ? "Adding to Team 1" : "Adding to Team 2"}</h3>
                 <div className="add-player-container">
                     <div className="add-player-col picture-players-container">
                         {
@@ -340,6 +365,143 @@ class PlayerStatDisplay extends Component {
                     </div>
                 </div>
                 <button id = {this.props.player} onClick = {this.props.clickHandler}>Add to Team</button>
+            </div>
+        );
+    }
+}
+
+/**
+ * Displays the composite/average stats for a player-made team
+ */
+class TeamPlayerStats extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: []
+        }
+    }
+
+    /**
+     * Retrieve all of the stats for the selected players in a custom team
+     */
+    retrieveStats() {
+        this.props.playerList.forEach((player) => {
+            fetch("http://localhost:8080/api/Player-Stats/" + player)
+            .then(res => res.json())
+            .then(res => {
+                this.setState({
+                    data: [
+                        ...this.state.data,
+                        res
+                    ]
+                })
+            })
+        })
+    }
+
+    componentDidMount() {
+        this.retrieveStats();
+    }
+
+    render() {
+        // Get the average for each stat based on the player
+        let average_stats = Array(15).fill(0);
+        let num_entries = Array(15).fill(1);
+        this.state.data.forEach(player => {
+            if (player.completionPercentage != null || player.completionPercentage !== 0) {
+                average_stats[0] += player.completionPercentage;
+                num_entries[0]++;
+            }
+            if (player.completions != null || player.completions !== 0) {
+                average_stats[1] += player.completions;
+                num_entries[1]++;
+            }
+            if (player.goals != null || player.goals !== 0) {
+                average_stats[2] += player.goals;
+                num_entries[2]++;
+            }
+            if (player.assists != null || player.assists !== 0) {
+                average_stats[3] += player.assists;
+                num_entries[3]++;
+            }
+            if (player.plusMinus != null || player.plusMinus !== 0) {
+                average_stats[4] += player.plusMinus;
+                num_entries[4]++;
+            }
+            if (player.gamesPlayed != null || player.gamesPlayed !== 0) {
+                average_stats[5] += player.gamesPlayed;
+                num_entries[5]++;
+            }
+            if (player.minutesPlayed != null || player.minutesPlayed !== 0) {
+                average_stats[6] += player.minutesPlayed;
+                num_entries[6]++;
+            }
+            if (player.pointsPlayed != null || player.pointsPlayed !== 0) {
+                average_stats[7] += player.pointsPlayed;
+                num_entries[7]++;
+            }
+            if (player.huckPercentage != null || player.huckPercentage !== 0) {
+                average_stats[8] += player.huckPercentage;
+                num_entries[8]++;
+            }
+            if (player.drops != null || player.drops !== 0) {
+                average_stats[9] += player.drops;
+                num_entries[9]++;
+            }
+            if (player.throwaways != null || player.throwaways !== 0) {
+                average_stats[10] += player.throwaways;
+                num_entries[10]++;
+            }
+            if (player.blocks != null || player.blocks !== 0) {
+                average_stats[11] += player.blocks;
+                num_entries[11]++;
+            }
+            if (player.yardsThrown != null || player.yardsThrown !== 0) {
+                average_stats[12] += player.yardsThrown;
+                num_entries[12]++;
+            }
+            if (player.yardsReceived != null || player.yardsReceived !== 0) {
+                average_stats[13] += player.yardsReceived;
+                num_entries[13]++;
+            }
+            if (player.offenseEfficiency != null || player.offenseEfficiency !== 0) {
+                average_stats[14] += player.offenseEfficiency;
+                num_entries[14]++;
+            }
+        });
+
+        for (let i = 0; i < 15; i++) {
+            average_stats[i] /= num_entries[i];   
+        }
+        return (
+            <div>
+                <h4>Average Stats for Team {this.props.teamnum}</h4>
+                <div className="stat-summary">
+                    <div className="stat-summary-col">
+                        <p>Completion Percentage</p>
+                        <p>Completions</p>
+                        <p>Goals</p>
+                        <p>Assists</p>
+                        <p>Plus/Minus</p>
+                        <p>Games Played</p>
+                        <p>Minutes Played</p>
+                        <p>Points Played</p>
+                        <p>Huck Percentage</p>
+                        <p>Drops</p>
+                        <p>Throwaways</p>
+                        <p>Blocks</p>
+                        <p>Yards Thrown</p>
+                        <p>Yards Received</p>
+                        <p>Offense Efficiency</p>
+                    </div>
+                    <div className="stat-summary-col">
+                        {
+                            average_stats.map((stat, index) => (
+                                <p key={"stat" + index}>{stat}</p>
+                            ))
+                        }
+                    </div>
+                </div>
             </div>
         );
     }

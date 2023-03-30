@@ -26,3 +26,18 @@
 .add-player-col {
     flex: 2 0 50%;
 }
+
+.selection-summary { 
+    display: flex;
+    justify-content: center;
+}
+
+.input-selections {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-items: center;
+}
+
+.input-selection {
+    flex: 1 0 20%;
+}
