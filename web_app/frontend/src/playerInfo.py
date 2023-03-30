@@ -16,7 +16,7 @@ connection = connector.connect(
     password = "",
 )
 c = connection.cursor(buffered = True)
-c.execute("SELECT playerID, firstName, lastName FROM players")
+c.execute("SELECT players.playerID, players.firstName, players.lastName FROM players JOIN playergamestats ON players.playerID = playergamestats.playerID GROUP BY playerID ORDER BY playerID ASC")
 info = c.fetchall()
 c.close()
 connection.close()

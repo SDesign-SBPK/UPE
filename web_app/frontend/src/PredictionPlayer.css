@@ -1,9 +1,25 @@
 .picture-players-container {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .picture-player {
     flex: 1 0 15%;
-    height: 100px;
-    width: 100px;
+}
+
+.stat-summary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-summary-col {
+    text-align: left;
+}
+
+.add-player-container {
+    display: flex;
+    justify-content: center;
 }

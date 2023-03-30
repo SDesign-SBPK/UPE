@@ -23,7 +23,6 @@ router.get("/Upcoming-Games", (req, res) => {
 	con.query('SELECT gameID, awayTeam, homeTeam, startTime, timeZone, winner, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, awayTeamCity, homeTeamCity FROM predictedgames', (err, rows, fields) => {
 		if (err) throw err;
 		res.send(rows);
-
 	});
 });
 
@@ -39,6 +38,28 @@ router.get("/Select-Upcoming-Game/:id", (req, res) => {
 		res.send(rows[0]);
 	});
 });
+
+/**
+ * Returns the average stats for all players in the AUDL
+ */
+router.get("/Player-Stats", (req, res) => {
+	con.query("SELECT playerID, firstName, lastName, completionPercentage, completions, goals, assists, plusMinus, gamesPlayed, minutesPlayed, pointsPlayed, huckPercentage, drops, throwaways, blocks, yardsThrown, yardsReceived, offenseEfficiency FROM players", (err, rows, fields) => {
+		if (err) throw err;
+		res.send(rows);
+	})
+});
+
+/**
+ * Returns the average stat for a specified player
+ */
+router.get("/Player-Stats/:id", (req, res) => {
+	console.log(req.params.id);
+	con.query("SELECT playerID, firstName, lastName, completionPercentage, completions, goals, assists, plusMinus, gamesPlayed, minutesPlayed, pointsPlayed, huckPercentage, drops, throwaways, blocks, yardsThrown, yardsReceived, offenseEfficiency FROM players WHERE playerID = ?", [req.params.id], (err, rows, fields) => {
+		if (err) throw err;
+		console.log(rows);
+		res.send(rows[0]);
+	})
+})
 
 /**
  * Forwards a prediction request to the prediction API (player-based)
