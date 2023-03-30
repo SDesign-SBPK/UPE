@@ -24,11 +24,12 @@ class PredictionPlayer extends Component {
             wind: 0,
             team1: [],
             team2: [],
-            teamsInputted: false,
             team1Input: true,
             display_state: "selections",
-            player_stat: ""
+            player_stat: "",
         };
+
+        this.handleInput = this.handleInput.bind(this);
     }
 
     /**
@@ -37,20 +38,22 @@ class PredictionPlayer extends Component {
      */
     handleInput(player) {
         // Check which team is currently being inputted for
-        if (this.state.team1Input) {
+        // Check to prevent duplicates in both teams
+        let id = player.target.id;
+        if (this.state.team1Input && !this.state.team1.includes(id) && !this.state.team2.includes(id)) {
             // Add the player to the first team being made
             this.setState({
                 team1: [
                     ...this.state.team1,
-                    player
+                    id
                 ]
             })
-        } else if (!this.state.team1Input) {
+        } else if (!this.state.team1Input && !this.state.team1.includes(id) && !this.state.team2.includes(id)) {
             // Add player to second team
             this.setState({
                 team2: [
                     ...this.state.team2,
-                    player
+                    id
                 ]
             })
         }
@@ -61,9 +64,8 @@ class PredictionPlayer extends Component {
      * @param player The playerID to display
      */
     displayPlayerStat(player) {
-        console.log("Setting player_stat to ", player);
         this.setState({
-            player_stat: player
+            player_stat: player.target.id,
         })
     }
 
@@ -117,6 +119,11 @@ class PredictionPlayer extends Component {
                         })
                     }}>Add to Team 2</button>
                 </div>
+                <button className="continue-button" onClick={() => {
+                    this.setState({
+                        display_state: "weather"
+                    })
+                }}>Next</button>
             </div>
         } else if (this.state.display_state === "add_player") {
             // Adding another player to a team
@@ -125,7 +132,7 @@ class PredictionPlayer extends Component {
                 player_stat_body = <PlayerStatDisplay
                     player = {this.state.player_stat}
                     clickHandler = {this.handleInput}
-                />
+                />;
             } else {
                 player_stat_body = <p>Click a player to view their stats</p>;
             }
@@ -136,18 +143,18 @@ class PredictionPlayer extends Component {
                     })
                 }}>See Selections</button>
                 <div className="add-player-container">
-                    <div className="picture-players-container">
+                    <div className="add-player-col picture-players-container">
                         {
                             playerInfo.ids.map(player => (
                                 <PredictionOption
                                     key={player}
                                     player={player}
-                                    clickHandler = {() => this.displayPlayerStat(this.props.player)}
+                                    clickHandler = {player=> this.displayPlayerStat(player)}
                                 />
                             ))
                         }
                     </div>
-                    <div className="player-stat-display-container">
+                    <div className="add-player-col player-stat-display-container">
                         { player_stat_body }
                     </div>
                 </div>
@@ -157,7 +164,7 @@ class PredictionPlayer extends Component {
             input_body = <div>
                 <button className="continue-button" onClick={() => {
                     this.setState({
-                        teamsInputted: false
+                        display_state: "selections"
                     }) 
                 }}>Back</button>
                 <p>Wind Speed: 
@@ -199,7 +206,13 @@ class PredictionPlayer extends Component {
                         temp: this.state.temperature,
                         humid: this.state.humidity,
                         precip: this.state.precipitation,
-                        wind: this.state.wind
+                        wind: this.state.wind,
+                        team1Players: [
+                            ...this.state.team1
+                        ],
+                        team2Players: [
+                            ...this.state.team2
+                        ]
                     };
                     this.props.prediction_handler(prediction);
                 }}>Predict!</button>
@@ -266,16 +279,18 @@ class PlayerStatDisplay extends Component {
     }
 
     retrieveStats() {
-        console.log("Retrieving stats for " + this.props.player);
         fetch("http://localhost:8080/api/Player-Stats/" + this.props.player)
         .then(res => res.json())
         .then(res => {
             this.setState({ data: res })
         })
-
     }
 
     componentDidMount() {
+        this.retrieveStats()
+    }
+
+    componentDidUpdate() {
         this.retrieveStats()
     }
 
@@ -285,6 +300,7 @@ class PlayerStatDisplay extends Component {
                 <h3>{this.state.data.firstName + " " + this.state.data.lastName}</h3>
                 <PredictionOption
                     player = {this.props.player}
+                    clickHandler = {() => {}}
                 />
                 <h4>Stats</h4>
                 <div className="stat-summary">
@@ -323,7 +339,7 @@ class PlayerStatDisplay extends Component {
                         <p>{this.state.data.offenseEfficiency}</p>
                     </div>
                 </div>
-                <button onClick={() => this.props.clickHandler(this.props.player)}>Add to Team</button>
+                <button id = {this.props.player} onClick = {this.props.clickHandler}>Add to Team</button>
             </div>
         );
     }

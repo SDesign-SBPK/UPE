@@ -129,7 +129,9 @@ class App extends Component {
       />
     } else if (this.state.content_state === "input_player") {
       // Render the input for a player prediction
-      content_body = <PredictionPlayer />
+      content_body = <PredictionPlayer 
+        prediction_handler = {prediction => this.sendPredictionPlayers(prediction)}
+      />
     } else if (this.state.content_state === "outcome_player") {
       // Render the outcome of a player prediction
     } else {

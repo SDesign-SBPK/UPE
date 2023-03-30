@@ -31,12 +31,6 @@ body {
   color: white;
 }
 
-button {
-  width: 96px;
-  height: 36px;
-  font-size: 24px;
-}
-
 .column-container {
   display: flex;
 }
