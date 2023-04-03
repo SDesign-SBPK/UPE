@@ -118,6 +118,11 @@ class PredictionPlayer extends Component {
                 }}>Next</button>
                 <div className="input-selections">
                     <div className="input-selection">
+                        {
+                            (this.state.team1.length > 0) ? <TeamPlayerStats playerList = {this.state.team1} teamnum = {1}/> : "Add players to View Stats"
+                        }
+                    </div>
+                    <div className="input-selection">
                         <h3>Team 1</h3>
                         { team1_selection }
                         <button className="" onClick={() => {
@@ -126,11 +131,6 @@ class PredictionPlayer extends Component {
                                 team1Input: true
                             })
                         }}>Add to Team 1</button>
-                    </div>
-                    <div className="input-selection">
-                        {
-                            (this.state.team1.length > 0) ? <TeamPlayerStats playerList = {this.state.team1} teamnum = {1}/> : "Add players to View Stats"
-                        }
                     </div>
                     <div className="input-selection">
                         <h3>Team 2</h3>

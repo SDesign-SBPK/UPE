@@ -121,12 +121,22 @@ class PredictionInput extends Component {
                 }}>Next</button>
                 <div className="input-selections">
                     <div className="input-selection">
+                        {
+                            (this.state.team1 !== "") ? <TeamStatDisplay team = {this.state.team1} /> : ""
+                        }
+                    </div>
+                    <div className="input-selection">
                         <h3>Team 1:</h3>
                         {team1_selection}
                     </div>
                     <div className="input-selection">
                         <h3>Team 2:</h3>
                         {team2_selection}
+                    </div>
+                    <div className="input-selection">
+                        {
+                            (this.state.team2 !== "") ? <TeamStatDisplay team = {this.state.team2} /> : ""
+                        }
                     </div>
                 </div>
                 <div className="input-options">
@@ -218,6 +228,74 @@ class PredictionOption extends Component {
                     alt = {this.props.team + " logo"}
                     onClick = {this.props.clickHandler}    
                 />
+            </div>
+        );
+    }
+}
+
+class TeamStatDisplay extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: {}
+        }
+    }
+
+    retrieveStats() {
+        fetch("http://localhost:8080/api/Team-Stats/" + this.props.team)
+        .then(res => res.json())
+        .then(res => {
+            this.setState({ data: res })
+        })
+    }
+
+    componentDidUpdate() {
+        this.retrieveStats();
+    }
+
+    componentDidMount() {
+        this.retrieveStats();
+    }
+
+    render() {
+        return (
+            <div>
+                <h3>{this.state.data.teamName}</h3>
+                <PredictionOption
+                    team = {this.props.team}
+                    clickHandler = {() => {}}
+                />
+                <h4>Stats</h4>
+                <div className="stat-summary">
+                    <div className="stat-summary-col">
+                        <p>Wins</p>
+                        <p>Losses</p>
+                        <p>Games Played</p>
+                        <p>Completion Percentage</p>
+                        <p>Hold Percentage</p>
+                        <p>Break Percentage</p>
+                        <p>Huck Percentage</p>
+                        <p>Turnovers</p>
+                        <p>Blocks</p>
+                        <p>Red Zone Percentage</p>
+                        <p>Scores For</p>
+                        <p>Scores Against</p>
+                    </div>
+                    <div className="stat-summary-col">
+                        <p>{this.state.data.wins}</p>
+                        <p>{this.state.data.losses}</p>
+                        <p>{this.state.data.gamesPlayed}</p>
+                        <p>{this.state.data.completionPercentage}</p>
+                        <p>{this.state.data.holdPercentage}</p>
+                        <p>{this.state.data.breakPercentage}</p>
+                        <p>{this.state.data.huckPercentage}</p>
+                        <p>{this.state.data.turnovers}</p>
+                        <p>{this.state.data.blocks}</p>
+                        <p>{this.state.data.redZonePercentage}</p>
+                        <p>{this.state.data.scoresFor}</p>
+                        <p>{this.state.data.scoresAgainst}</p>
+                    </div>
+                </div>
             </div>
         );
     }

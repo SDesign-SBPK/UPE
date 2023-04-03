@@ -40,20 +40,20 @@ router.get("/Select-Upcoming-Game/:id", (req, res) => {
 });
 
 /**
- * Returns the average stats for all players in the AUDL
+ * Returns the average stats for a specified team
  */
-router.get("/Player-Stats", (req, res) => {
-	con.query("SELECT playerID, firstName, lastName, completionPercentage, completions, goals, assists, plusMinus, gamesPlayed, minutesPlayed, pointsPlayed, huckPercentage, drops, throwaways, blocks, yardsThrown, yardsReceived, offenseEfficiency FROM players", (err, rows, fields) => {
+router.get("/Team-Stats/:id", (req, res) => {
+	con.query("SELECT teamID, teamName, wins, losses, gamesPlayed, completionPercentage, holdPercentage, breakPercentage, huckPercentage, turnovers, blocks, redZonePercentage, scoresFor, scoresAgainst FROM teams WHERE teamID = ?", [req.params.id], (err, rows, fields) => {
 		if (err) throw err;
-		res.send(rows);
+		console.log(rows);
+		res.send(rows[0]);
 	})
-});
+})
 
 /**
  * Returns the average stat for a specified player
  */
 router.get("/Player-Stats/:id", (req, res) => {
-	console.log(req.params.id);
 	con.query("SELECT playerID, firstName, lastName, completionPercentage, completions, goals, assists, plusMinus, gamesPlayed, minutesPlayed, pointsPlayed, huckPercentage, drops, throwaways, blocks, yardsThrown, yardsReceived, offenseEfficiency FROM players WHERE playerID = ?", [req.params.id], (err, rows, fields) => {
 		if (err) throw err;
 		console.log(rows);
