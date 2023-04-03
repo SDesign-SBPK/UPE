@@ -2,11 +2,41 @@ import './App.css';
 import UpcomingGames from "./UpcomingGames";
 import PredictionInput from './PredictionInput';
 import GameOutcome from './GameOutcome';
-import PredictionPlayer from "./PredictionPlayer";
+import { PredictionPlayer } from './PredictionPlayer';
 import { Component } from 'react';
+import PlayerOutcome from './PlayerOutcome';
 const logos = require.context("../public/logos", true);
 
 const BACKEND_HOST = "http://localhost:8080";
+
+
+const MOCK_DATA = {
+  winner: "team1",
+  team1: [
+    "bjagt",
+    "amerriman",
+    "aatkins",
+    "acarr",
+    "amclean",
+    "bspielman",
+    "abartenst",
+    "bmurphy"
+  ],
+  team2: [
+    "acohen",
+    "acurtis",
+    "adelreal",
+    "adrews",
+    "aduffel",
+    "aengel",
+    "achoi"
+  ],
+  percentage: 64,
+  wind: 10,
+  precipitation: 0.01,
+  temperature: 75,
+  humidity: 54
+};
 
 /**
  * Content states:
@@ -26,7 +56,7 @@ class App extends Component {
       outcome_object: {
         "winner": "none"
       },
-      content_state: "home"
+      content_state: "outcome_player"
     }; 
   }
 
@@ -134,6 +164,16 @@ class App extends Component {
       />
     } else if (this.state.content_state === "outcome_player") {
       // Render the outcome of a player prediction
+      content_body = <PlayerOutcome
+        team1 = {MOCK_DATA.team1}
+        team2 = {MOCK_DATA.team2}
+        winner = {MOCK_DATA.winner}
+        percentage = {MOCK_DATA.percentage}
+        wind = {MOCK_DATA.wind}
+        precipitation = {MOCK_DATA.precipitation}
+        temperature = {MOCK_DATA.temperature}
+        humidity = {MOCK_DATA.humidity}
+      />
     } else {
       // Render the home page
       content_body = <div>

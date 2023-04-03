@@ -14,7 +14,7 @@ const playerInfo = require("./playerDictionary.json");
  *      - Right side has current selection, btns to add to team, and stats of player
  * - weather -> Display the weather form
  */
-class PredictionPlayer extends Component {
+export class PredictionPlayer extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -79,7 +79,7 @@ class PredictionPlayer extends Component {
                     {
                         this.state.team1.map(player => (
                             <div className = "selection-summary">
-                                <PredictionOption
+                                <PlayerPredictionOption
                                     key = {player + "img"}
                                     player = {player}
                                 />
@@ -98,7 +98,7 @@ class PredictionPlayer extends Component {
                     {
                         this.state.team2.map(player => (
                             <div className="selection-summary">
-                                <PredictionOption
+                                <PlayerPredictionOption
                                     key = {player + "img"}
                                     player = {player}
                                 />
@@ -171,7 +171,7 @@ class PredictionPlayer extends Component {
                     <div className="add-player-col picture-players-container">
                         {
                             playerInfo.ids.map(player => (
-                                <PredictionOption
+                                <PlayerPredictionOption
                                     key={player}
                                     player={player}
                                     clickHandler = {player=> this.displayPlayerStat(player)}
@@ -253,7 +253,7 @@ class PredictionPlayer extends Component {
     }
 }
 
-class PredictionOption extends Component {
+export class PlayerPredictionOption extends Component {
     render() {
         let img;
         try {
@@ -323,7 +323,7 @@ class PlayerStatDisplay extends Component {
         return (
             <div>
                 <h3>{this.state.data.firstName + " " + this.state.data.lastName}</h3>
-                <PredictionOption
+                <PlayerPredictionOption
                     player = {this.props.player}
                     clickHandler = {() => {}}
                 />
@@ -506,5 +506,3 @@ class TeamPlayerStats extends Component {
         );
     }
 }
-
-export default PredictionPlayer;
