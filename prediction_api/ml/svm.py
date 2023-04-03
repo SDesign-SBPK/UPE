@@ -1,11 +1,11 @@
 from sklearn import svm
 
 from prediction_api.ml.player_svm import predictByPlayers
-from prediction_api.ml_connector import getAllStatsForTeam, getGame, getTeam
-
+from prediction_api.ml_connector import getAllStatsForTeam, getGame, getTeam, getGameFromTeamID, getTeamGameRoster
 
 baseWeight = 1
 sampleWeights = []
+
 
 def getTeamStatsFiltered(teamId, gameID):
     gameHistory = []
@@ -23,8 +23,6 @@ def getTeamStatsFiltered(teamId, gameID):
                 elif int(rowSplit[1]) == int(dateSplit[1]):
                     if int(rowSplit[2]) < int(dateSplit[2]):
                         skip = False
-
-
 
         if skip:
             continue
@@ -59,7 +57,7 @@ def getTeamStatsFiltered(teamId, gameID):
                 currentWeight = currentWeight - .15
             if '-' in wind:
                 wind = -1
-                currentWeight =  currentWeight - .2
+                currentWeight = currentWeight - .2
             if '-' in precip:
                 precip = -1
                 currentWeight = currentWeight - .2
@@ -75,6 +73,7 @@ def getTeamStatsFiltered(teamId, gameID):
             sampleWeights.append(currentWeight)
 
     return gameHistory
+
 
 def getTeamStats(teamId):
     gameHistory = []
@@ -112,7 +111,7 @@ def getTeamStats(teamId):
                 currentWeight = currentWeight - .15
             if '-' in wind:
                 wind = -1
-                currentWeight =  currentWeight - .2
+                currentWeight = currentWeight - .2
             if '-' in precip:
                 precip = -1
                 currentWeight = currentWeight - .2
@@ -161,7 +160,7 @@ def getStatAverage(teamId):
     formattedResult = []
     if teamStats is not None:
         # Add the team completion%, hold%, break%, turnovers, blocks. Verified that there are no null values in DB first
-        completion = float(teamStats[5]);
+        completion = float(teamStats[5])
         if completion is None:
             completion = .5
         hold = float(teamStats[6])
@@ -178,7 +177,6 @@ def getStatAverage(teamId):
             blocks = 0
         formattedResult = [completion, hold, breakPercentage, turnovers, blocks]
     else:
-        print("No completion percentage to use for team")
         formattedResult = [.5, .5, .5, .5, 0, 0]
     #   Append a 1 for as a 'win' since that is what we are checking for
     formattedResult.append(1)
@@ -193,8 +191,63 @@ def appendWeatherStats(stats, temp, wind, precip, humidity):
     formattedStats.append(humidity)
     return formattedStats
 
+
+def beforeDate(gameDateOne, gameDateTwo):
+    if gameDateOne[0] < gameDateTwo[0]:
+        return True
+    elif gameDateOne[0] == gameDateTwo[0]:
+        if gameDateOne[1] < gameDateTwo[1]:
+            return True
+        elif gameDateOne[1] == gameDateTwo[1]:
+            if gameDateOne[2] < gameDateTwo[2]:
+                return True
+    return False
+
+
+def moreRecent(gameOne, gameTwo):
+    if beforeDate(gameOne[0].split('-'), gameTwo[0].split('-')):
+        return gameTwo
+    return gameOne
+
+
+def getTeamPlayersBeforeGame(teamID, gameID):
+    gameList = getGameFromTeamID(teamID)
+    gameIdDate = gameID.split('-')
+    if gameList is None or len(gameList) == 0:
+        return None
+    selectedGame = gameList[0]
+    for game in gameList:
+        selectedGameDate = selectedGame[0].split('-')
+        gameDate = game[0].split('-')
+        if not beforeDate(selectedGameDate, gameIdDate):
+            selectedGame = game
+        if beforeDate(gameDate, gameIdDate):
+            selectedGame = moreRecent(game, selectedGame)
+    awayGame = True
+    if selectedGame[2] == teamID:
+        awayGame = False
+    return getTeamRoster(selectedGame, awayGame)
+
 def getTeamPlayers(teamID):
-    return
+    gameList = getGameFromTeamID(teamID)
+    if gameList is None or len(gameList) == 0:
+        return None
+    selectedGame = gameList[0]
+    for game in gameList:
+        selectedGame = moreRecent(game, selectedGame)
+    awayGame = True
+    if selectedGame[2] == teamID:
+        awayGame = False
+    return getTeamRoster(selectedGame, awayGame)
+
+
+def getTeamRoster(gameID, away):
+    queries = getTeamGameRoster(gameID, away)
+    teamIdList = []
+    for x in queries:
+        teamIdList.append(x[1])
+    return teamIdList
+
 
 # teamOne: teamOne id from database to use.
 # teamTwo: teamTwo id from database to use.
@@ -208,7 +261,8 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     teamTwoStats = getTeamStats(teamTwo)
 
     if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
-        return predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation, humidity)
+        return predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation,
+                                humidity)
 
     formattedTemp = float(temperature)
     formattedWind = float(windSpeed)
@@ -230,14 +284,14 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     result = machine.predict_proba(toPredict).tolist()
     return result
 
+
 def predictPriorToGame(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity, game):
     sampleWeights = []
     teamOneStats = getTeamStatsFiltered(teamOne, game)
     teamTwoStats = getTeamStatsFiltered(teamTwo, game)
 
     if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
-        # return predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation, humidity)
-        return
+        return predictByPlayers(getTeamPlayersBeforeGame(teamOne, game), getTeamPlayersBeforeGame(teamTwo, game), temperature, windSpeed, precipitation, humidity)
 
     formattedTemp = float(temperature)
     formattedWind = float(windSpeed)
