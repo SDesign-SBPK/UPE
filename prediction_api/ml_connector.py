@@ -164,7 +164,7 @@ def getWeatherInterval(gameID: str, intervalNumber: str):
 def getGameFromTeamID(teamID):
     connection = getConnection()
     c = connection.cursor(buffered=True)
-    c.execute("SELECT * FROM games WHERE awayTeam = %s OR homeTeam = %s", (teamID, teamID))
+    c.execute("SELECT * FROM games WHERE awayTeam = %s OR homeTeam = %s ORDER BY gameID desc", (teamID, teamID))
     results = c.fetchall()
     c.close()
     connection.close()
@@ -176,7 +176,7 @@ def getTeamGameRoster(gameID, away):
         home = 0
     connection = getConnection()
     c = connection.cursor(buffered=True)
-    c.execute("SELECT * FROM playergamestats WHERE gameID = %s AND isHome = %s", (gameID[0], home))
+    c.execute("SELECT * FROM playergamestats WHERE gameID = %s AND isHome = %s ORDER BY gameID desc", (gameID[0], home))
     results = c.fetchall()
     c.close()
     connection.close()
