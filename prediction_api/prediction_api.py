@@ -23,6 +23,8 @@ Weather input is given a dictionary/json entry
 
 from flask import Flask, request, jsonify
 from ml.svm import predict
+from ml.player_svm import predictByPlayers
+
 # Will need to add import for ml.player_svm
 # May also need to change each predict method name, so there is no overlap
 
@@ -116,7 +118,7 @@ def predict_players():
         
     # Pass prediction
     #Will need to change the predict method name
-    result = predict(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
+    result = predictByPlayers(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
 
