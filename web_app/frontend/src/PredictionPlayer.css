@@ -41,3 +41,20 @@
 .input-selection {
     flex: 1 0 20%;
 }
+
+.sticky {
+    position: fixed;
+    right: 20%;
+    top: 10%;
+}
+
+.add-options { 
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-items: center;
+}
+
+.add-option {
+    flex: 1 0 20%;
+}

@@ -27,6 +27,7 @@ export class PredictionPlayer extends Component {
             team1Input: true,
             display_state: "selections",
             player_stat: "",
+            searching: ""
         };
 
         this.handleInput = this.handleInput.bind(this);
@@ -66,7 +67,7 @@ export class PredictionPlayer extends Component {
     displayPlayerStat(player) {
         this.setState({
             player_stat: player.target.id,
-        })
+        });
     }
 
     render() {
@@ -160,23 +161,44 @@ export class PredictionPlayer extends Component {
             } else {
                 player_stat_body = <p>Click a player to view their stats</p>;
             }
+            let players_shown = playerInfo.ids.map(player => (
+                <PlayerPredictionOption
+                    key={player}
+                    player={player}
+                    name = {playerInfo[player]}
+                    clickHandler = {player=> this.displayPlayerStat(player)}
+                />
+            ))
+            if (this.state.searching !== "") {
+                players_shown = players_shown.filter(player => 
+                    player.props.name.substring(0, this.state.searching.length).toLowerCase() === this.state.searching.toLowerCase()
+                )
+            }
             input_body = <div>
                 <button onClick={() => {
                     this.setState({
                         display_state: "selections"
                     })
                 }}>See Selections</button>
-                <h3>{ (this.state.team1Input) ? "Adding to Team 1" : "Adding to Team 2"}</h3>
+                <div className="add_options">
+                    <div className="add-option">
+                        <input
+                            type = "text"
+                            placeholder="Search"
+                            onChange={(event) => {
+                                this.setState({
+                                    searching: event.target.value
+                                })
+                            }}
+                            value = {this.state.searching}
+                            />
+                        <h3 className="add-option">{ (this.state.team1Input) ? "Adding to Team 1" : "Adding to Team 2"}</h3>
+                    </div>
+                </div>
                 <div className="add-player-container">
                     <div className="add-player-col picture-players-container">
                         {
-                            playerInfo.ids.map(player => (
-                                <PlayerPredictionOption
-                                    key={player}
-                                    player={player}
-                                    clickHandler = {player=> this.displayPlayerStat(player)}
-                                />
-                            ))
+                            players_shown
                         }
                     </div>
                     <div className="add-player-col player-stat-display-container">
@@ -321,7 +343,7 @@ class PlayerStatDisplay extends Component {
 
     render() {
         return (
-            <div>
+            <div className="sticky">
                 <h3>{this.state.data.firstName + " " + this.state.data.lastName}</h3>
                 <PlayerPredictionOption
                     player = {this.props.player}
