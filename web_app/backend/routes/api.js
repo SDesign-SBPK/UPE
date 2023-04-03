@@ -13,33 +13,86 @@ const con = mysql.createConnection({
 
 var router = express.Router();
 
-//Collects Upcoming Games From DB
+const API_HOST = "http://localhost:50300";
+
+/**
+ * Collects all upcoming games from the database
+ */
 router.get("/Upcoming-Games", (req, res) => {
 	
 	con.query('SELECT gameID, awayTeam, homeTeam, startTime, timeZone, winner, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, awayTeamCity, homeTeamCity FROM predictedgames', (err, rows, fields) => {
 		if (err) throw err;
-		
 		res.send(rows);
-
 	});
 });
 
-router.post("/Select-Upcoming-Game", (req, res) => {
+/**
+ * Returns a predicted game entry
+ * Requires a valid gameID
+ */
+router.get("/Select-Upcoming-Game/:id", (req, res) => {
 	
-	con.query('SELECT gameID, awayTeam, homeTeam, startTime, timeZone, winner, winnerPercentage, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, awayTeamCity, homeTeamCity FROM predictedgames WHERE gameID = ?', [req.body.gameID], (err, rows, fields) => {
+	con.query('SELECT gameID, awayTeam, homeTeam, startTime, timeZone, winner, winnerPercentage, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, awayTeamCity, homeTeamCity FROM predictedgames WHERE gameID = ?', [req.params.id], (err, rows, fields) => {
 		if (err) throw err;
 
-		res.send(rows);
+		res.send(rows[0]);
 	});
-})
-
-//Form Page
-router.get("/Prediction-Form", (req, res) => {
-	
 });
 
-router.post("/Prediction-Form", (req, res) => {
-	console.log(req.body);
+/**
+ * Returns the average stats for a specified team
+ */
+router.get("/Team-Stats/:id", (req, res) => {
+	con.query("SELECT teamID, teamName, wins, losses, gamesPlayed, completionPercentage, holdPercentage, breakPercentage, huckPercentage, turnovers, blocks, redZonePercentage, scoresFor, scoresAgainst FROM teams WHERE teamID = ?", [req.params.id], (err, rows, fields) => {
+		if (err) throw err;
+		console.log(rows);
+		res.send(rows[0]);
+	})
+})
+
+/**
+ * Returns the average stat for a specified player
+ */
+router.get("/Player-Stats/:id", (req, res) => {
+	con.query("SELECT playerID, firstName, lastName, completionPercentage, completions, goals, assists, plusMinus, gamesPlayed, minutesPlayed, pointsPlayed, huckPercentage, drops, throwaways, blocks, yardsThrown, yardsReceived, offenseEfficiency FROM players WHERE playerID = ?", [req.params.id], (err, rows, fields) => {
+		if (err) throw err;
+		console.log(rows);
+		res.send(rows[0]);
+	})
+})
+
+/**
+ * Forwards a prediction request to the prediction API (player-based)
+ */
+router.post("/Prediction-Form-Player", (req, res) => {
+	// Retrieve parameters from request
+	let windspeed = req.body.wind;
+	let temp = req.body.temp;
+	let humidity = req.body.humid;
+	let precip = req.body.precip;
+	let team1Players = req.body.team1Players;
+	let team2Players = req.body.team2Players;
+
+	// Create a url object to send over
+	const url_object = {
+		team1Players: team1Players,
+		team2Players: team2Players,
+		temperature: temp,
+		wind_speed: windspeed,
+		precipitation: precip,
+		humdidity: humidity
+	};
+	const url_args = querystring.stringify(url_object);
+
+	// Send request to prediction API
+	// TODO: Once Prection API has been udpated, update method to send request correctly
+	console.log("Received request: " + url_args);
+});
+
+/**
+ * Forwards a prediction request to the prediction API (team-based)
+ */
+router.post("/Prediction-Form-Team", (req, res) => {
 	let homeTeam = req.body.homeTeam;
 	let awayTeam = req.body.awayTeam;
 	let windspeed = req.body.wind;
@@ -47,8 +100,7 @@ router.post("/Prediction-Form", (req, res) => {
 	let humidity = req.body.humid;
 	let precip = req.body.precip;
 
-	console.log(windspeed);
-	//Send homeTeam and awayTeam to ML
+	// Create an object to be sent
 	const url_object = {
 		team1: homeTeam,
 		team2: awayTeam,
@@ -57,10 +109,10 @@ router.post("/Prediction-Form", (req, res) => {
 		precipitation: precip,
 		humidity: humidity
 	};
-	console.log(url_object);
 	const url_args = querystring.stringify(url_object);
-	console.log(url_args);
-	let prediction = http.get("http://localhost:50300/api/v1/predict/teams/?" + url_args, response => {
+
+	// Send request
+	let prediction = http.get(API_HOST + "/api/v1/predict/teams/?" + url_args, response => {
 		let data = "";
 		response.on("data", chunk => {
 			data += chunk;
@@ -69,17 +121,7 @@ router.post("/Prediction-Form", (req, res) => {
 		response.on("end", () => {
 			let msg = JSON.parse(data).message;
 			let winner = JSON.parse(data).winner;
-			console.log(data);
-			console.log(winner);
-			console.log(msg);
 			res.send(data);
-			// con.query('SELECT teamName FROM teams WHERE teamID = ?', [winner], (err, rows, fields) => {
-			// 	if (err) throw err;
-
-			// 	predictedWinner = rows;
-			// 	res.send(predictedWinner[0].teamName);
-				
-			// });
 		});
 	});
 });

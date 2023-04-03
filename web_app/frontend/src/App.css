@@ -31,12 +31,6 @@ body {
   color: white;
 }
 
-button {
-  width: 96px;
-  height: 36px;
-  font-size: 24px;
-}
-
 .column-container {
   display: flex;
 }
@@ -65,4 +59,12 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.clickable-link:hover {
+  cursor: pointer;
+}
+
+.clickable-link {
+  text-decoration-line: underline;
 }

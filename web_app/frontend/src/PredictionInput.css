@@ -18,11 +18,11 @@
 }
 
 .input-selection {
-    flex: 1 0 45%;
-    height: 200px;
+    flex: 1 0 20%;
+    height: 700px;
 }
 
-.continute-button {
+.continue-button {
     background-color: #403C3C;
 }
 

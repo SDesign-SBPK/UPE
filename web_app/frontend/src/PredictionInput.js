@@ -1,6 +1,7 @@
 import { Component } from "react";
 import "./PredictionInput.css";
 const teamLogos = require.context("../public/logos", true);
+const teamNames = require("./teamDictionary.json");
 
 const teams_list = [
     "alleycats",
@@ -87,19 +88,25 @@ class PredictionInput extends Component {
             // TODO: Make an empty box here, so that the page isn't changing format on its own
             let team1_selection;
             if (this.state.team1 !== "") {
-                team1_selection = <img src = {teamLogos("./" + this.state.team1 + ".png")}
-                id = {this.state.team1} 
-                alt = {this.state.team1 + " logo"}
-                />
+                team1_selection = <div>
+                    <p>{ teamNames[this.state.team1] }</p>
+                    <img src = {teamLogos("./" + this.state.team1 + ".png")}
+                    id = {this.state.team1} 
+                    alt = {this.state.team1 + " logo"}
+                    />
+                </div>;
             } else {
                 team1_selection = "";
             }
             let team2_selection;
             if (this.state.team2 !== "") {
-                team2_selection = <img src = {teamLogos("./" + this.state.team2 + ".png")}
-                id = {this.state.team2} 
-                alt = {this.state.team2 + " logo"}
-                />
+                team2_selection = <div>
+                    <p>{ teamNames[this.state.team2] }</p>
+                    <img src = {teamLogos("./" + this.state.team2 + ".png")}
+                        id = {this.state.team2} 
+                        alt = {this.state.team2 + " logo"}
+                    />
+                </div>;
             } else {
                 team2_selection = "";
             }
@@ -114,12 +121,22 @@ class PredictionInput extends Component {
                 }}>Next</button>
                 <div className="input-selections">
                     <div className="input-selection">
+                        {
+                            (this.state.team1 !== "") ? <TeamStatDisplay team = {this.state.team1} /> : ""
+                        }
+                    </div>
+                    <div className="input-selection">
                         <h3>Team 1:</h3>
                         {team1_selection}
                     </div>
                     <div className="input-selection">
                         <h3>Team 2:</h3>
                         {team2_selection}
+                    </div>
+                    <div className="input-selection">
+                        {
+                            (this.state.team2 !== "") ? <TeamStatDisplay team = {this.state.team2} /> : ""
+                        }
                     </div>
                 </div>
                 <div className="input-options">
@@ -211,6 +228,74 @@ class PredictionOption extends Component {
                     alt = {this.props.team + " logo"}
                     onClick = {this.props.clickHandler}    
                 />
+            </div>
+        );
+    }
+}
+
+class TeamStatDisplay extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: {}
+        }
+    }
+
+    retrieveStats() {
+        fetch("http://localhost:8080/api/Team-Stats/" + this.props.team)
+        .then(res => res.json())
+        .then(res => {
+            this.setState({ data: res })
+        })
+    }
+
+    componentDidUpdate() {
+        this.retrieveStats();
+    }
+
+    componentDidMount() {
+        this.retrieveStats();
+    }
+
+    render() {
+        return (
+            <div>
+                <h3>{this.state.data.teamName}</h3>
+                <PredictionOption
+                    team = {this.props.team}
+                    clickHandler = {() => {}}
+                />
+                <h4>Stats</h4>
+                <div className="stat-summary">
+                    <div className="stat-summary-col">
+                        <p>Wins</p>
+                        <p>Losses</p>
+                        <p>Games Played</p>
+                        <p>Completion Percentage</p>
+                        <p>Hold Percentage</p>
+                        <p>Break Percentage</p>
+                        <p>Huck Percentage</p>
+                        <p>Turnovers</p>
+                        <p>Blocks</p>
+                        <p>Red Zone Percentage</p>
+                        <p>Scores For</p>
+                        <p>Scores Against</p>
+                    </div>
+                    <div className="stat-summary-col">
+                        <p>{this.state.data.wins}</p>
+                        <p>{this.state.data.losses}</p>
+                        <p>{this.state.data.gamesPlayed}</p>
+                        <p>{this.state.data.completionPercentage}</p>
+                        <p>{this.state.data.holdPercentage}</p>
+                        <p>{this.state.data.breakPercentage}</p>
+                        <p>{this.state.data.huckPercentage}</p>
+                        <p>{this.state.data.turnovers}</p>
+                        <p>{this.state.data.blocks}</p>
+                        <p>{this.state.data.redZonePercentage}</p>
+                        <p>{this.state.data.scoresFor}</p>
+                        <p>{this.state.data.scoresAgainst}</p>
+                    </div>
+                </div>
             </div>
         );
     }
