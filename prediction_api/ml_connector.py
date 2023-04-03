@@ -169,3 +169,15 @@ def getGameFromTeamID(teamID):
     c.close()
     connection.close()
     return results
+
+def getTeamGameRoster(gameID, away):
+    home = 1
+    if away:
+        home = 0
+    connection = getConnection()
+    c = connection.cursor(buffered=True)
+    c.execute("SELECT * FROM playergamestats WHERE gameID = %s AND isHome = %s", (gameID[0], home))
+    results = c.fetchall()
+    c.close()
+    connection.close()
+    return results

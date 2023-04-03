@@ -105,6 +105,8 @@ def appendWeatherStats(stats, temp, wind, precip, humidity):
 
 def predictByPlayers(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, precipitation, humidity):
     sampleWeights = []
+    if len(teamOnePlayers) < 7 or len(teamTwoPlayers) < 7:
+        return None
     teamOneStats = getPlayerStats(teamOnePlayers, 2014, 2022)
     teamTwoStats = getPlayerStats(teamTwoPlayers, 2014, 2022)
     formattedTemp = float(temperature)
@@ -126,6 +128,3 @@ def predictByPlayers(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, pre
     toPredict = [teamOneAverage, teamTwoAverage]
     result = machine.predict_proba(toPredict).tolist()
     return result
-
-def getLatestTeamPlayers(teamID):
-    return
