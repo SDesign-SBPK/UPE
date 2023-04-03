@@ -127,8 +127,5 @@ def predictByPlayers(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, pre
     result = machine.predict_proba(toPredict).tolist()
     return result
 
-
-teamOne = ['bkatzl', 'blevy', 'fbreton', 'ewarner']
-teamTwo = ['ewilliams', 'jerb', 'jrichmond', 'jrobarge']
-
-print(predictByPlayers(teamOne, teamTwo, 65, 5, .5, 60))
+def getLatestTeamPlayers(teamID):
+    return
