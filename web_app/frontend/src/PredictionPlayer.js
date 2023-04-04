@@ -78,13 +78,19 @@ export class PredictionPlayer extends Component {
             if (this.state.team1.length > 0) {
                 team1_selection = <div>
                     {
-                        this.state.team1.map(player => (
+                        this.state.team1.map((player, index) => (
                             <div className = "selection-summary">
                                 <PlayerPredictionOption
                                     key = {player + "img"}
                                     player = {player}
                                 />
                                 <p key = {player + "name"}>{ playerInfo[player] }</p>
+                                <p key = {player + "remove"} className = "remove-btn" onClick={() => {
+                                    this.state.team1.splice(index, 1);
+                                    this.setState({
+                                        team1: this.state.team1
+                                    })
+                                }}>✕</p>
                             </div>
                         ))
                     }
@@ -97,13 +103,19 @@ export class PredictionPlayer extends Component {
             if (this.state.team2.length > 0) {
                 team2_selection = <div>
                     {
-                        this.state.team2.map(player => (
+                        this.state.team2.map((player, index) => (
                             <div className="selection-summary">
                                 <PlayerPredictionOption
                                     key = {player + "img"}
                                     player = {player}
                                 />
                                 <p key = {player + "name"}>{ playerInfo[player] }</p>
+                                <p key = {player + "remove"} className = "remove-btn" onClick={() => {
+                                    this.state.team2.splice(index, 1);
+                                    this.setState({
+                                        team2: this.state.team2
+                                    })
+                                }}>✕</p>
                             </div>
                         ))
                     }
@@ -428,7 +440,7 @@ class TeamPlayerStats extends Component {
     render() {
         // Get the average for each stat based on the player
         let average_stats = Array(15).fill(0);
-        let num_entries = Array(15).fill(1);
+        let num_entries = Array(15).fill(0);
         this.state.data.forEach(player => {
             if (player.completionPercentage != null || player.completionPercentage !== 0) {
                 average_stats[0] += player.completionPercentage;
@@ -519,7 +531,7 @@ class TeamPlayerStats extends Component {
                     <div className="stat-summary-col">
                         {
                             average_stats.map((stat, index) => (
-                                <p key={"stat" + index}>{stat}</p>
+                                <p key={"stat" + index}>{stat.toFixed(2)}</p>
                             ))
                         }
                     </div>
