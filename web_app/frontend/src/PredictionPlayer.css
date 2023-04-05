@@ -58,3 +58,11 @@
 .add-option {
     flex: 1 0 20%;
 }
+
+.remove-btn {
+    color: red;
+}
+
+.remove-btn:hover {
+    cursor: pointer;
+}

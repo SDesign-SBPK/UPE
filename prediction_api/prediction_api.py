@@ -101,8 +101,6 @@ def predict_players():
     temperature = parameters.get("temperature")
     precipitation = parameters.get("precipitation")
     humidity = parameters.get("humidity")
-    print(team1Players)
-    print(team2Players)
 
     if not (team1Players or team2Players or wind_speed or temperature or precipitation or humidity):
         return invalid_endpoint(404, custom_message="Missing parameters")
@@ -110,12 +108,13 @@ def predict_players():
         return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do either contain less than 7 or more than 14 players")
     elif len(team1Players) != len(team2Players):
         return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do not contain an equal amount of players")
-    
+
     for players in team1Players:
         if (len(players) == 0):
             return invalid_endpoint(404, custom_message="Invalid parameters for player in team1")
     for players in team2Players:
         if (len(players) == 0):
+
             return invalid_endpoint(404, custom_message="Invalid parameters for a player in team2")
         
     # Pass prediction
@@ -152,6 +151,7 @@ def predict_players():
     )
 
 @app.route("/api/v1/predict/historical_players/", methods = ["GET"])
+
 def historical_predict_players():
     # Check Valid Parameters
     parameters = request.args

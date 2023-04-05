@@ -83,9 +83,7 @@ router.post("/Prediction-Form-Player", (req, res) => {
 	const url_args = querystring.stringify(url_object);
 
 	// Send request to prediction API
-	// TODO: Once Prection API has been udpated, update method to send request correctly
-	console.log("Received request: " + url_args);
-
+	// TODO: Once Prection API has been ud
 	let prediction = http.get(API_HOST + "/api/v1/predict/players/?" + url_args, response => {
 		let data = "";
 		response.on("data", chunk => {
@@ -95,7 +93,6 @@ router.post("/Prediction-Form-Player", (req, res) => {
 		response.on("end", () => {
 			let msg = JSON.parse(data).message;
 			let winner = JSON.parse(data).winner;
-			console.log(data);
 			res.send(data);
 		});
 	});
