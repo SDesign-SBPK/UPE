@@ -34,10 +34,6 @@ async function calculatePredictions() {
 
         let games = rows;
         for (let i = 0; i < games.length; i++){
-            if (i == 1) {
-                i++;
-            }
-            
             //Argument sent to Prediction Algorithm
             const url_object = {
                 team1: games[i].homeTeam,
@@ -47,6 +43,41 @@ async function calculatePredictions() {
                 precipitation: games[i].averagePrecipitation,
                 humidity: games[i].averageHumidity
             };
+
+            if (games[i].homeTeam == "havoc" || games[i].awayTeam == "havoc"){
+                var win;
+                if (games[i].homeTeam == "havoc"){
+                    win = games[i].awayTeam;
+                }
+                else {
+                    win = games[i].homeTeam;
+                }
+                var response = [[
+                    games[i].gameID, 
+                    games[i].awayTeam,
+                    games[i].homeTeam, 
+                    games[i].startTime, 
+                    games[i].timeZone,
+                    win, 
+                    0.50, 
+                    games[i].averageTemperature, 
+                    games[i].averageWindSpeed, 
+                    games[i].averagePrecipitation, 
+                    games[i].averageHumidity, 
+                    games[i].homeTeamCity, 
+                    games[i].awayTeamCity, 
+                    games[i].homeTeamCity
+
+                ]];
+
+                con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, timeZone, winner, winnerPercentage, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [response], (err, result, fields) => {
+                        
+                    if (err) throw err;
+
+                    console.log(result);
+                });
+                continue;
+            }
 
             //Send request to Prediction API
             const url_args =  querystring.stringify(url_object);
