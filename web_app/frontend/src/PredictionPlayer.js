@@ -90,6 +90,7 @@ export class PredictionPlayer extends Component {
                                     this.setState({
                                         team1: this.state.team1
                                     })
+                                    console.log(this.state.team1, this.state.team1.length);
                                 }}>✕</p>
                             </div>
                         ))
@@ -115,6 +116,7 @@ export class PredictionPlayer extends Component {
                                     this.setState({
                                         team2: this.state.team2
                                     })
+                                    console.log(this.state.team2, this.state.team2.length);
                                 }}>✕</p>
                             </div>
                         ))
