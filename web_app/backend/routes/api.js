@@ -45,7 +45,6 @@ router.get("/Select-Upcoming-Game/:id", (req, res) => {
 router.get("/Team-Stats/:id", (req, res) => {
 	con.query("SELECT teamID, teamName, wins, losses, gamesPlayed, completionPercentage, holdPercentage, breakPercentage, huckPercentage, turnovers, blocks, redZonePercentage, scoresFor, scoresAgainst FROM teams WHERE teamID = ?", [req.params.id], (err, rows, fields) => {
 		if (err) throw err;
-		console.log(rows);
 		res.send(rows[0]);
 	})
 })
@@ -56,7 +55,6 @@ router.get("/Team-Stats/:id", (req, res) => {
 router.get("/Player-Stats/:id", (req, res) => {
 	con.query("SELECT playerID, firstName, lastName, completionPercentage, completions, goals, assists, plusMinus, gamesPlayed, minutesPlayed, pointsPlayed, huckPercentage, drops, throwaways, blocks, yardsThrown, yardsReceived, offenseEfficiency FROM players WHERE playerID = ?", [req.params.id], (err, rows, fields) => {
 		if (err) throw err;
-		console.log(rows);
 		res.send(rows[0]);
 	})
 })
@@ -80,12 +78,12 @@ router.post("/Prediction-Form-Player", (req, res) => {
 		temperature: temp,
 		wind_speed: windspeed,
 		precipitation: precip,
-		humdidity: humidity
+		humidity: humidity
 	};
 	const url_args = querystring.stringify(url_object);
 
 	// Send request to prediction API
-	// TODO: Once Prection API has been udpated, update method to send request correctly
+	// TODO: Once Prection API has been ud
 	let prediction = http.get(API_HOST + "/api/v1/predict/players/?" + url_args, response => {
 		let data = "";
 		response.on("data", chunk => {
@@ -122,6 +120,28 @@ router.post("/Prediction-Form-Team", (req, res) => {
 	};
 	const url_args = querystring.stringify(url_object);
 
+	if (homeTeam == "havoc" || awayTeam == "havoc"){
+		var win;
+		if (homeTeam == "havoc"){
+			win = awayTeam;
+		}
+		else {
+			win = homeTeam;
+		}
+		var response = {
+			humidity: humidity,
+			message: "No Stats Available for Houston Havoc",
+			percentage: 0.50,
+			precipitation: precip,
+			team1: homeTeam,
+			team2: awayTeam,
+			temperature: temp,
+			wind: windspeed,
+			winner: win
+		};
+		res.send(response);
+	}
+
 	// Send request
 	let prediction = http.get(API_HOST + "/api/v1/predict/teams/?" + url_args, response => {
 		let data = "";
@@ -132,6 +152,7 @@ router.post("/Prediction-Form-Team", (req, res) => {
 		response.on("end", () => {
 			let msg = JSON.parse(data).message;
 			let winner = JSON.parse(data).winner;
+			console.log(data)
 			res.send(data);
 		});
 	});

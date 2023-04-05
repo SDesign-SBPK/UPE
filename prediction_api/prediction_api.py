@@ -23,6 +23,8 @@ Weather input is given a dictionary/json entry
 
 from flask import Flask, request, jsonify
 from ml.svm import predict
+from ml.player_svm import predictByPlayers
+
 # Will need to add import for ml.player_svm
 # May also need to change each predict method name, so there is no overlap
 
@@ -93,13 +95,12 @@ def predict_players():
     # Check Valid Parameters
     parameters = request.args
 
-    team1Players = parameters.get("team1Players")
-    team2Players = parameters.get("team2Players")
+    team1Players = parameters.getlist("team1Players")
+    team2Players = parameters.getlist("team2Players")
     wind_speed = parameters.get("wind_speed")
     temperature = parameters.get("temperature")
     precipitation = parameters.get("precipitation")
     humidity = parameters.get("humidity")
-    print(len(team1Players), len(team2Players))
 
     if not (team1Players or team2Players or wind_speed or temperature or precipitation or humidity):
         return invalid_endpoint(404, custom_message="Missing parameters")
@@ -107,22 +108,24 @@ def predict_players():
         return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do either contain less than 7 or more than 14 players")
     elif len(team1Players) != len(team2Players):
         return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do not contain an equal amount of players")
-    
-    for player in team1Players:
-        if (len(player) == 0):
+
+    for players in team1Players:
+        if (len(players) == 0):
             return invalid_endpoint(404, custom_message="Invalid parameters for player in team1")
-    for player in team2Players:
-        if (len(player) == 0):
+    for players in team2Players:
+        if (len(players) == 0):
+
             return invalid_endpoint(404, custom_message="Invalid parameters for a player in team2")
         
     # Pass prediction
     #Will need to change the predict method name
-    result = predict(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
+    result = predictByPlayers(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
 
     # Average the scores out to see what is accurate
     win_percentage = 0
+    print(result)
     winner_percents =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
     if winner_percents[0] > winner_percents[1]:
         winner = team1Players
@@ -148,7 +151,8 @@ def predict_players():
     )
 
 @app.route("/api/v1/predict/historical_players/", methods = ["GET"])
-def predict_players_historical():
+
+def historical_predict_players():
     # Check Valid Parameters
     parameters = request.args
 
@@ -167,16 +171,16 @@ def predict_players_historical():
     elif len(team1Players) != len(team2Players):
         return invalid_endpoint(404, custom_message="Invalid Parameters: Teams do not contain an equal amount of players")
     
-    for i in team1Players:
-        if (len(team1Players[i]) == 0):
+    for players in team1Players:
+        if (len(players) == 0):
             return invalid_endpoint(404, custom_message="Invalid parameters for player in team1")
-    for i in team2Players:
-        if (len(team2Players[i]) == 0):
+    for players in team2Players:
+        if (len(players) == 0):
             return invalid_endpoint(404, custom_message="Invalid parameters for a player in team2")
         
     # Pass prediction
     #Will need to change the predict method name
-    result = predict(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
+    result = predictByPlayers(team1Players, team2Players, temperature, wind_speed, precipitation, humidity)
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
 
