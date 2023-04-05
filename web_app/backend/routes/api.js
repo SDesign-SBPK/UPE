@@ -141,6 +141,7 @@ router.post("/Prediction-Form-Team", (req, res) => {
 			winner: win
 		};
 		res.send(response);
+		return;
 	}
 
 	// Send request
