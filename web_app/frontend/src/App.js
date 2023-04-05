@@ -45,6 +45,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
+      data.percentage *= 100;
       this.setState({
         content_state: "outcome_player",
         outcome_object: data
@@ -66,6 +67,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => { 
+      data.percentage *= 100;
       this.setState({
         content_state: "outcome_team", 
         outcome_object: data

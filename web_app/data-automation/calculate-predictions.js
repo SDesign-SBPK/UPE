@@ -46,6 +46,7 @@ async function calculatePredictions() {
 
             if (games[i].homeTeam == "havoc" || games[i].awayTeam == "havoc"){
                 var win;
+                var percent = 0.50;
                 if (games[i].homeTeam == "havoc"){
                     win = games[i].awayTeam;
                 }
@@ -59,7 +60,7 @@ async function calculatePredictions() {
                     games[i].startTime, 
                     games[i].timeZone,
                     win, 
-                    0.50, 
+                    percent, 
                     games[i].averageTemperature, 
                     games[i].averageWindSpeed, 
                     games[i].averagePrecipitation, 
