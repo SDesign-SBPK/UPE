@@ -23,7 +23,7 @@ connection = connector.connect(
 c = connection.cursor(buffered = True)
 
 AUDL_BACKEND = "https://www.backend.audlstats.com/web-api/player-stats?limit=20&page="
-PAGE_LIMIT = 154
+PAGE_LIMIT = 162
 
 # Get all pages down from the backend
 for page in range(1, PAGE_LIMIT + 1):
@@ -66,9 +66,26 @@ for page in range(1, PAGE_LIMIT + 1):
             print("Adding new player", player["name"])
         else: 
             sql = "UPDATE players \
-            SET completions = %s, offenseEfficiency = %s, yardsReceived = %s, yardsThrown = %s \
+            SET completions = %s, offenseEfficiency = %s, yardsReceived = %s, yardsThrown = %s, completionPercentage = %s, goals = %s, assists = %s, plusMinus = %s, gamesPlayed = %s, minutesPlayed = %s, pointsPlayed = %s, huckPercentage = %s, drops = %s, throwaways = %s, blocks = %s \
             WHERE playerID = %s"
-            values = (player["completions"], player["oEfficiency"], player["yardsReceived"], player["yardsThrown"], player["playerID"])
+            values = (
+                player["completions"], 
+                player["oEfficiency"], 
+                player["yardsReceived"], 
+                player["yardsThrown"], 
+                player["completionPercentage"],
+                player["goals"],
+                player["assists"],
+                player["plusMinus"],
+                player["gamesPlayed"],
+                player["minutesPlayed"],
+                player["pointsPlayed"],
+                player["huckPercentage"],
+                player["drops"],
+                player["throwaways"],
+                player["blocks"],
+                player["playerID"]
+            )
         c.execute(sql, values)
         connection.commit()
     

@@ -27,7 +27,7 @@ class App extends Component {
       outcome_object: {
         "winner": "none"
       },
-      content_state: "outcome_player"
+      content_state: "home"
     }; 
   }
 
@@ -137,14 +137,14 @@ class App extends Component {
     } else if (this.state.content_state === "outcome_player") {
       // Render the outcome of a player prediction
       content_body = <PlayerOutcome
-        team1 = {MOCK_DATA.team1}
-        team2 = {MOCK_DATA.team2}
-        winner = {MOCK_DATA.winner}
-        percentage = {MOCK_DATA.percentage}
-        wind = {MOCK_DATA.wind}
-        precipitation = {MOCK_DATA.precipitation}
-        temperature = {MOCK_DATA.temperature}
-        humidity = {MOCK_DATA.humidity}
+        team1 = {this.state.outcome_object.team1}
+        team2 = {this.state.outcome_object.team2}
+        winner = {this.state.outcome_object.winner}
+        percentage = {this.state.outcome_object.percentage}
+        wind = {this.state.outcome_object.wind}
+        precipitation = {this.state.outcome_object.precipitation}
+        temperature = {this.state.outcome_object.temperature}
+        humidity = {this.state.outcome_object.humidity}
       />
     } else {
       // Render the home page
