@@ -35,7 +35,7 @@
 .input-selections {
     display: flex;
     flex-wrap: nowrap;
-    justify-items: center;
+    align-items: center;
 }
 
 .input-selection {
@@ -65,4 +65,10 @@
 
 .remove-btn:hover {
     cursor: pointer;
+}
+
+.player-choices {
+    flex: 1 0 20%;
+    text-align: left;
+    height: 700px;
 }

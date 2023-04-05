@@ -1,5 +1,6 @@
 from sklearn import svm
 
+from ml_connector import getAllStatsForPlayer, getPlayer, getGame
 
 from ml_connector import getAllStatsForPlayer, getGame, getPlayer
 

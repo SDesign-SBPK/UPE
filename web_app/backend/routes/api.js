@@ -83,7 +83,8 @@ router.post("/Prediction-Form-Player", (req, res) => {
 	const url_args = querystring.stringify(url_object);
 
 	// Send request to prediction API
-	// TODO: Once Prection API has been ud
+	// TODO: Once Prection API has been udpated, update method to send request correctly
+
 	let prediction = http.get(API_HOST + "/api/v1/predict/players/?" + url_args, response => {
 		let data = "";
 		response.on("data", chunk => {

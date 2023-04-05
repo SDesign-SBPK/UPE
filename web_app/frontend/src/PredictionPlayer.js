@@ -90,7 +90,6 @@ export class PredictionPlayer extends Component {
                                     this.setState({
                                         team1: this.state.team1
                                     })
-                                    console.log(this.state.team1, this.state.team1.length);
                                 }}>✕</p>
                             </div>
                         ))
@@ -116,7 +115,6 @@ export class PredictionPlayer extends Component {
                                     this.setState({
                                         team2: this.state.team2
                                     })
-                                    console.log(this.state.team2, this.state.team2.length);
                                 }}>✕</p>
                             </div>
                         ))
@@ -137,7 +135,7 @@ export class PredictionPlayer extends Component {
                             (this.state.team1.length > 0) ? <TeamPlayerStats playerList = {this.state.team1} teamnum = {1}/> : "Add players to View Stats"
                         }
                     </div>
-                    <div className="input-selection">
+                    <div className="player-choices">
                         <h3>Team 1</h3>
                         { team1_selection }
                         <button className="" onClick={() => {
@@ -147,7 +145,7 @@ export class PredictionPlayer extends Component {
                             })
                         }}>Add to Team 1</button>
                     </div>
-                    <div className="input-selection">
+                    <div className="player-choices">
                         <h3>Team 2</h3>
                         { team2_selection }
                         <button className="" onClick={() => {
