@@ -6,6 +6,7 @@ Requires installing the `wget` module as well
 """
 import wget
 import mysql.connector as connector
+from PIL import Image
 
 BASE_URL = "https://theaudl.com/sites/default/files/players/profile-images/"
 
@@ -42,9 +43,15 @@ for player in players:
     image_file = None
     try:
         image_file = wget.download(createURL(player))
+        img = Image.open(image_file)
+        img = img.resize((120, 120))
+        img.save(image_file)
     except:
         try: 
             # Try with png instead
-            image_file = wget.download(createURL(player, png=True))
+            img_file = wget.download(createURL(player, png=True))
+            img = Image.open(img_file)
+            img = img.resize((120, 120))
+            img.save(img_file)
         except:
             print("No image found for player ", player)

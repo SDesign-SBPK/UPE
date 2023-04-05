@@ -160,38 +160,50 @@ class PredictionInput extends Component {
                         teamsInputted: false
                     }) 
                 }}>Back</button>
-                <p>Wind Speed: 
-                    <input type = "number" value={this.state.wind} 
-                        onChange={(event) => {
-                            this.setState({wind: event.target.value})
-                        }} required
-                        min={0}    
-                        max={30}
-                    /> mph</p>
-                <p>Precipitation: 
-                    <input type = "decimal" value={this.state.precipitation}
-                        onChange={(event) => {
-                            this.setState({precipitation: event.target.value})
-                        }} required 
-                        min={0}    
-                        max={1}
-                    /> inches</p>
-                <p>Temperature: 
-                    <input type = "number" value={this.state.temperature} 
-                        onChange={(event) => {
-                            this.setState({temperature: event.target.value})
-                        }} required 
-                        min={30}
-                        max={100}
-                    /> °F</p>
-                <p>Humidity: 
-                    <input type = "number" value={this.state.humidity} 
-                        onChange={(event) => {
-                            this.setState({humidity: event.target.value})
-                        }} required 
-                        min={1}    
-                        max= {100}
-                    /> %</p>
+                <div className="weather-form-cols">
+                    <div className="weather-form-col">
+                        <p>Wind Speed</p>
+                        <p>Precipitation</p>
+                        <p>Temperature</p>
+                        <p>Humidity</p>
+                    </div>
+                    <div className="weather-form-col">
+                        <p><input type = "number" value={this.state.wind} 
+                            onChange={(event) => {
+                                this.setState({wind: event.target.value})
+                            }} required
+                            min={0}    
+                            max={30}
+                        /></p>
+                        <p><input type = "decimal" value={this.state.precipitation}
+                            onChange={(event) => {
+                                this.setState({precipitation: event.target.value})
+                            }} required 
+                            min={0}    
+                            max={1}
+                        /></p>
+                        <p><input type = "number" value={this.state.temperature} 
+                            onChange={(event) => {
+                                this.setState({temperature: event.target.value})
+                            }} required 
+                            min={30}
+                            max={100}
+                        /></p>
+                        <p><input type = "number" value={this.state.humidity} 
+                            onChange={(event) => {
+                                this.setState({humidity: event.target.value})
+                            }} required 
+                            min={1}    
+                            max= {100}
+                        /></p>
+                    </div>
+                    <div className="weather-form-col">
+                        <p>mph</p>
+                        <p>inches</p>
+                        <p>°F</p>
+                        <p>%</p>
+                    </div>
+                </div>
                 <button className="finish-button" onClick={() => {
                     let prediction = {
                         awayTeam: this.state.team1,

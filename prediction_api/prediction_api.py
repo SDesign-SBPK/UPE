@@ -101,6 +101,7 @@ def predict_players():
     temperature = parameters.get("temperature")
     precipitation = parameters.get("precipitation")
     humidity = parameters.get("humidity")
+    print(team1Players, team2Players)
 
     if not (team1Players or team2Players or wind_speed or temperature or precipitation or humidity):
         return invalid_endpoint(404, custom_message="Missing parameters")

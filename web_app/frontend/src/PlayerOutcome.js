@@ -48,6 +48,7 @@ class PlayerOutcome extends Component {
                 <div className="outcome-bars">
                         {bar_components}
                     </div>
+                <p>{this.props.message}</p>
                 <p>{this.props.percentage.toFixed(2)}% more likely to win</p>
                 <div className="match-summary">
                     <h3>Match Summary</h3>
@@ -73,7 +74,7 @@ class PlayerOutcome extends Component {
                     </div>
                 </div>
                 <div className="outcome-split">
-                    <div className="input-selection outcome-split-piece">
+                    <div className="player-choices outcome-split-piece">
                         <h3>Team 1</h3>
                         {
                             this.props.team1.map(player => (
@@ -90,7 +91,7 @@ class PlayerOutcome extends Component {
                             ))
                         }
                     </div>
-                    <div className="input-selection outocme-split-piece">
+                    <div className="player-choices outcome-split-piece">
                         <h3>Team 2</h3>
                         {
                             this.props.team2.map(player => (

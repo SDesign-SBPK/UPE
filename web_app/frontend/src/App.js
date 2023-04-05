@@ -117,6 +117,7 @@ class App extends Component {
         precipitation = {this.state.outcome_object.precipitation}
         temperature = {this.state.outcome_object.temperature}
         humidity = {this.state.outcome_object.humidity}
+        message = {this.state.outcome_object.message}
       /> 
     } else if (this.state.content_state === "input") {
       // Render a team-input form
@@ -145,6 +146,7 @@ class App extends Component {
         precipitation = {this.state.outcome_object.precipitation}
         temperature = {this.state.outcome_object.temperature}
         humidity = {this.state.outcome_object.humidity}
+        message = {this.state.outcome_object.message}
       />
     } else {
       // Render the home page

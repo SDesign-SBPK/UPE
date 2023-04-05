@@ -27,7 +27,8 @@ export class PredictionPlayer extends Component {
             team1Input: true,
             display_state: "selections",
             player_stat: "",
-            searching: ""
+            searching: "",
+            message_body: ""
         };
 
         this.handleInput = this.handleInput.bind(this);
@@ -47,7 +48,8 @@ export class PredictionPlayer extends Component {
                 team1: [
                     ...this.state.team1,
                     id
-                ]
+                ], 
+                message_body: "Added " + playerInfo[id] + " to Team 1"
             })
         } else if (!this.state.team1Input && !this.state.team1.includes(id) && !this.state.team2.includes(id)) {
             // Add player to second team
@@ -55,8 +57,10 @@ export class PredictionPlayer extends Component {
                 team2: [
                     ...this.state.team2,
                     id
-                ]
+                ],
+                message_body: "Added " + playerInfo[id] + " to Team 2"
             })
+
         }
     }
 
@@ -88,9 +92,9 @@ export class PredictionPlayer extends Component {
                                 <p key = {player + "remove"} className = "remove-btn" onClick={() => {
                                     this.state.team1.splice(index, 1);
                                     this.setState({
-                                        team1: this.state.team1
+                                        team1: this.state.team1,
+                                        message_body: "Removed " + playerInfo[player] + " from Team 1"
                                     })
-                                    console.log(this.state.team1, this.state.team1.length);
                                 }}>✕</p>
                             </div>
                         ))
@@ -114,9 +118,9 @@ export class PredictionPlayer extends Component {
                                 <p key = {player + "remove"} className = "remove-btn" onClick={() => {
                                     this.state.team2.splice(index, 1);
                                     this.setState({
-                                        team2: this.state.team2
+                                        team2: this.state.team2,
+                                        message_body: "Removed " + playerInfo[player] + " from Team 2"
                                     })
-                                    console.log(this.state.team2, this.state.team2.length);
                                 }}>✕</p>
                             </div>
                         ))
@@ -127,9 +131,20 @@ export class PredictionPlayer extends Component {
             }
             input_body = <div>
                 <button className="continue-button" onClick={() => {
-                    this.setState({
-                        display_state: "weather"
-                    })
+                    // Check length constraints
+                    if (this.state.team1.length > 14 || this.state.team1.length < 7 || this.state.team2.length < 7 || this.state.team2.length > 14) {
+                        this.setState({
+                            message_body: "Teams must have 7-14 players"
+                        })
+                    } else if (this.state.team1.length !== this.state.team2.length) {
+                        this.setState({
+                            message_body: "Teams must have equal length"
+                        })
+                    } else {
+                        this.setState({
+                            display_state: "weather"
+                        })
+                    }
                 }}>Next</button>
                 <div className="input-selections">
                     <div className="input-selection">
@@ -137,7 +152,7 @@ export class PredictionPlayer extends Component {
                             (this.state.team1.length > 0) ? <TeamPlayerStats playerList = {this.state.team1} teamnum = {1}/> : "Add players to View Stats"
                         }
                     </div>
-                    <div className="input-selection">
+                    <div className="player-choices">
                         <h3>Team 1</h3>
                         { team1_selection }
                         <button className="" onClick={() => {
@@ -147,7 +162,7 @@ export class PredictionPlayer extends Component {
                             })
                         }}>Add to Team 1</button>
                     </div>
-                    <div className="input-selection">
+                    <div className="player-choices">
                         <h3>Team 2</h3>
                         { team2_selection }
                         <button className="" onClick={() => {
@@ -228,38 +243,50 @@ export class PredictionPlayer extends Component {
                         display_state: "selections"
                     }) 
                 }}>Back</button>
-                <p>Wind Speed: 
-                    <input type = "number" value={this.state.wind} 
-                        onChange={(event) => {
-                            this.setState({wind: event.target.value})
-                        }} required
-                        min={0}    
-                        max={30}
-                    /> mph</p>
-                <p>Precipitation: 
-                    <input type = "decimal" value={this.state.precipitation}
-                        onChange={(event) => {
-                            this.setState({precipitation: event.target.value})
-                        }} required 
-                        min={0}    
-                        max={1}
-                    /> inches</p>
-                <p>Temperature: 
-                    <input type = "number" value={this.state.temperature} 
-                        onChange={(event) => {
-                            this.setState({temperature: event.target.value})
-                        }} required 
-                        min={30}
-                        max={100}
-                    /> °F</p>
-                <p>Humidity: 
-                    <input type = "number" value={this.state.humidity} 
-                        onChange={(event) => {
-                            this.setState({humidity: event.target.value})
-                        }} required 
-                        min={1}    
-                        max= {100}
-                    /> %</p>
+                <div className="weather-form-cols">
+                    <div className="weather-form-col">
+                        <p>Wind Speed</p>
+                        <p>Precipitation</p>
+                        <p>Temperature</p>
+                        <p>Humidity</p>
+                    </div>
+                    <div className="weather-form-col">
+                        <p><input type = "number" value={this.state.wind} 
+                            onChange={(event) => {
+                                this.setState({wind: event.target.value})
+                            }} required
+                            min={0}    
+                            max={30}
+                        /></p>
+                        <p><input type = "decimal" value={this.state.precipitation}
+                            onChange={(event) => {
+                                this.setState({precipitation: event.target.value})
+                            }} required 
+                            min={0}    
+                            max={1}
+                        /></p>
+                        <p><input type = "number" value={this.state.temperature} 
+                            onChange={(event) => {
+                                this.setState({temperature: event.target.value})
+                            }} required 
+                            min={30}
+                            max={100}
+                        /></p>
+                        <p><input type = "number" value={this.state.humidity} 
+                            onChange={(event) => {
+                                this.setState({humidity: event.target.value})
+                            }} required 
+                            min={1}    
+                            max= {100}
+                        /></p>
+                    </div>
+                    <div className="weather-form-col">
+                        <p>mph</p>
+                        <p>inches</p>
+                        <p>°F</p>
+                        <p>%</p>
+                    </div>
+                </div>
                 <button className="finish-button" onClick={() => {
                     let prediction = {
                         awayTeam: this.state.team1,
@@ -283,6 +310,8 @@ export class PredictionPlayer extends Component {
         return (
             <div>
                 <h2>Player Prediction Input</h2>
+                <p>Rules:<br/>- Choose 7-14 players for each team<br/>- No player can be duplicated on either team<br/>- Both teams must have an equal number of players</p>
+                <p>{ this.state.message_body }</p>
                 { input_body }
             </div>
         );
