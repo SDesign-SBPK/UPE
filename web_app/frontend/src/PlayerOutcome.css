@@ -29,7 +29,6 @@
 
 .selection-summary { 
     display: flex;
-    justify-content: center;
 }
 
 .input-selections {

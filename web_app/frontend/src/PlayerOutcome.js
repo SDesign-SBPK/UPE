@@ -79,31 +79,37 @@ class PlayerOutcome extends Component {
                         {
                             this.props.team1.map(player => (
                                 <div className="selection-summary" style={{
-                                    alignItems: "right",
-                                    justifyItems: "right"
+                                    justifyItems: "left",
+                                    alignItems: "left",
+                                    textAlign: "left"
                                 }}>
-                                    <p key = {player + "name"}>{playerInfo[player]}</p>
                                     <PlayerPredictionOption
                                         key = {player + "img"}
                                         player = {player}
                                     />
+                                    <p key = {player + "name"}>{playerInfo[player]}</p>
                                 </div>
                             ))
                         }
                     </div>
-                    <div className="player-choices outcome-split-piece">
-                        <h3>Team 2</h3>
+                    <div className="player-choices outcome-split-piece" style = {{
+
+                    }}>
+                        <h3 style = {{
+                            textAlign: "right"
+                        }}>Team 2</h3>
                         {
                             this.props.team2.map(player => (
                                 <div className="selection-summary" style={{
-                                    alignItems: "left",
-                                    justifyItems: "left"
+                                    justifyItems: "right",
+                                    alignItems: "right",
+                                    textAlign: "right"
                                 }}>
+                                    <p key = {player + "name"}>{playerInfo[player]}</p>
                                     <PlayerPredictionOption
                                         key = {player + "img"}
                                         player = {player}
                                     />
-                                    <p key = {player + "name"}>{playerInfo[player]}</p>
                                 </div>
                             ))
                         }
