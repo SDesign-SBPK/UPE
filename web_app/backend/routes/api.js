@@ -80,7 +80,7 @@ router.post("/Prediction-Form-Player", (req, res) => {
 		temperature: temp,
 		wind_speed: windspeed,
 		precipitation: precip,
-		humdidity: humidity
+		humidity: humidity
 	};
 	const url_args = querystring.stringify(url_object);
 
@@ -97,7 +97,7 @@ router.post("/Prediction-Form-Player", (req, res) => {
 		response.on("end", () => {
 			let msg = JSON.parse(data).message;
 			let winner = JSON.parse(data).winner;
-			console.log(msg);
+			console.log(data);
 			res.send(data);
 		});
 	});

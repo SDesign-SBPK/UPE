@@ -1,6 +1,8 @@
 from sklearn import svm
 
 
+from ml_connector import getAllStatsForPlayer, getGame, getPlayer
+
 baseWeight = 1
 sampleWeights = []
 def getPlayerStats(playerList):
@@ -198,7 +200,7 @@ def predictByPlayers(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, pre
     teamTwoAverage = appendWeatherStats(teamTwoAverage, formattedTemp, formattedWind, formattedPrecip,
                                               formattedHumidity)
     toPredict = [teamOneAverage, teamTwoAverage]
-    result = machine.predict(toPredict).tolist()
+    result = machine.predict_proba(toPredict).tolist()
     return result
 
 def predictByPlayersPriorToGame(teamOnePlayers, teamTwoPlayers, temperature, windSpeed, precipitation, humidity, game):
