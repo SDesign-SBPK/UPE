@@ -9,34 +9,6 @@ const logos = require.context("../public/logos", true);
 
 const BACKEND_HOST = "http://localhost:8080";
 
-const MOCK_DATA = {
-  winner: "team1",
-  team1: [
-    "bjagt",
-    "amerriman",
-    "aatkins",
-    "acarr",
-    "amclean",
-    "bspielman",
-    "abartenst",
-    "bmurphy"
-  ],
-  team2: [
-    "acohen",
-    "acurtis",
-    "adelreal",
-    "adrews",
-    "aduffel",
-    "aengel",
-    "achoi"
-  ],
-  percentage: 64,
-  wind: 10,
-  precipitation: 0.01,
-  temperature: 75,
-  humidity: 54
-};
-
 /**
  * Content states:
  * - home -> Displays 3 upcoming games, banner for input
@@ -73,6 +45,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
+      data.percentage *= 100;
       this.setState({
         content_state: "outcome_player",
         outcome_object: data
@@ -94,6 +67,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => { 
+      data.percentage *= 100;
       this.setState({
         content_state: "outcome_team", 
         outcome_object: data
