@@ -27,7 +27,8 @@ export class PredictionPlayer extends Component {
             team1Input: true,
             display_state: "selections",
             player_stat: "",
-            searching: ""
+            searching: "",
+            message_body: ""
         };
 
         this.handleInput = this.handleInput.bind(this);
@@ -47,7 +48,8 @@ export class PredictionPlayer extends Component {
                 team1: [
                     ...this.state.team1,
                     id
-                ]
+                ], 
+                message_body: "Added " + playerInfo[id] + " to Team 1"
             })
         } else if (!this.state.team1Input && !this.state.team1.includes(id) && !this.state.team2.includes(id)) {
             // Add player to second team
@@ -55,8 +57,10 @@ export class PredictionPlayer extends Component {
                 team2: [
                     ...this.state.team2,
                     id
-                ]
+                ],
+                message_body: "Added " + playerInfo[id] + " to Team 2"
             })
+
         }
     }
 
@@ -88,7 +92,8 @@ export class PredictionPlayer extends Component {
                                 <p key = {player + "remove"} className = "remove-btn" onClick={() => {
                                     this.state.team1.splice(index, 1);
                                     this.setState({
-                                        team1: this.state.team1
+                                        team1: this.state.team1,
+                                        message_body: "Removed " + playerInfo[player] + " from Team 1"
                                     })
                                 }}>✕</p>
                             </div>
@@ -113,7 +118,8 @@ export class PredictionPlayer extends Component {
                                 <p key = {player + "remove"} className = "remove-btn" onClick={() => {
                                     this.state.team2.splice(index, 1);
                                     this.setState({
-                                        team2: this.state.team2
+                                        team2: this.state.team2,
+                                        message_body: "Removed " + playerInfo[player] + " from Team 2"
                                     })
                                 }}>✕</p>
                             </div>
@@ -281,6 +287,8 @@ export class PredictionPlayer extends Component {
         return (
             <div>
                 <h2>Player Prediction Input</h2>
+                <p>Rules:<br/>- Choose 7-14 players for each team<br/>- No player can be duplicated on either team<br/>- Both teams must have an equal number of players</p>
+                <p>{ this.state.message_body }</p>
                 { input_body }
             </div>
         );
