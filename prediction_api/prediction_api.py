@@ -149,7 +149,7 @@ def predict_players():
     )
 
 @app.route("/api/v1/predict/historical_players/", methods = ["GET"])
-def predict_players():
+def historical_predict_players():
     # Check Valid Parameters
     parameters = request.args
 
