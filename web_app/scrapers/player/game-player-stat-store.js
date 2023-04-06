@@ -54,7 +54,9 @@ let storePlayerGameStats = function(pageNumber){
                                             for(let game = 0; game < parsedYear['stats'].length; game++){
                                                 let playerGameStat = require(path.normalize('../audl-containers/player-game-stats'))
                                                 playerGameStat.gameID = parsedYear['stats'][game]['gameID']
+                                                playerGameStat.isHome = parsedYear['stats'][game]['isHome']
                                                 playerGameStat.playerID = list[index]
+                                                playerGameStat.isHomeTeam = parsedYear['stats'][game]['isHome']
                                                 playerGameStat.goals = parsedYear['stats'][game]['goals']
                                                 playerGameStat.assists = parsedYear['stats'][game]['assists']
                                                 playerGameStat.throwaways = parsedYear['stats'][game]['throwaways']
@@ -86,7 +88,7 @@ let storePlayerGameStats = function(pageNumber){
     })
 }
 
-let mainFunction = function (){
+function mainFunction() {
     storePlayerGameStats(page)
     page++
     if(page > pageLimit) clearInterval(interval)

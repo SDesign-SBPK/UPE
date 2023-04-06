@@ -14,12 +14,6 @@ body {
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -29,12 +23,6 @@ body {
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
-
-button {
-  width: 96px;
-  height: 36px;
-  font-size: 24px;
 }
 
 .column-container {
@@ -65,4 +53,18 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.clickable-link:hover {
+  cursor: pointer;
+}
+
+.clickable-link {
+  text-decoration-line: underline;
+}
+
+button {
+  height: 30px; 
+  border: none;
+  border-radius: 2px;
 }

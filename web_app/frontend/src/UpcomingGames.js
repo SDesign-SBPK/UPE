@@ -1,6 +1,9 @@
 import "./UpcomingGames.css";
 import { Component } from "react";
 const teamLogos = require.context("../public/logos", true);
+const teamNames = require("./teamDictionary.json");
+
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 /**
  * The overall container for showing game events. This takes in a set amount
@@ -38,24 +41,33 @@ class UpcomingGames extends Component {
 
     render() {
         // Render the top upcoming games, sorting by recency
-
-        // TODO: Insert a call to the backend here to retrieve the games
-        //  instead of just the temp entries        
         return (
             <div>
                 <h2>Upcoming Games</h2>
                 <div className="game-events">
+                    <div className="game-event">
+                        <p className="game-event-piece">Away Team</p>
+                        <p className="game-event-piece">Time</p>
+                        <p className="game-event-piece">Home Team</p>
+                        <p className="game-event-winner">Projected Winner</p>
+                    </div>
                     {
                         this.state.upcoming_games?.map(game => {
-                            let time_string_pieces = game.startTime.split(" ");
-                            let time_string = [time_string_pieces[0], <br />, time_string_pieces[1]];
+                            let time = new Date(game.startTime);
+                            let mins = time.getMinutes();
+                            if (mins < 10) {
+                                mins = mins.toString() + "0"
+                            }
+                            let time_string = [months[time.getMonth()], " ", time.getDate(), ", ", time.getFullYear(), <br />, time.getHours(), ":", mins];
                             return (
                                 <GameEvent 
                                     key= {game.gameID}
+                                    gameID = {game.gameID}
                                     team1 = { game.awayTeam }
                                     team2 = { game.homeTeam }
                                     time = { time_string }
                                     projectedWinner = { game.winner }
+                                    clickHandler = {game => this.props.gameEventClickHandler(game) }
                                 />
                             )
                         })
@@ -75,11 +87,18 @@ class GameEvent extends Component {
     render() {
         return (
             <div className="game-event">
-                <p>{this.props.team1}</p>
-                <img src = {teamLogos("./" + this.props.team1 + ".png")} alt = {this.props.team1 + " logo"} className = "logo-container" />
-                <p>{ this.props.time }</p>
-                <img src = {teamLogos("./" + this.props.team2 + ".png")} alt = {this.props.team2 + " logo"} className = "logo-container" />
-                <p>{this.props.team2}</p>
+                <div className="game-event-piece">
+                    <p className="piece-item">{teamNames[this.props.team1]}</p>
+                    <img className="logo-container" src = {teamLogos("./" + this.props.team1 + ".png")} alt = {this.props.team1 + " logo"} />
+                </div>
+                <p className="game-event-piece">{ this.props.time }</p>
+                <div className="game-event-piece">
+                    <img className="logo-container" src = {teamLogos("./" + this.props.team2 + ".png")} alt = {this.props.team2 + " logo"} />
+                    <p className="piece-item">{teamNames[this.props.team2]}</p>
+                </div>
+                <p className="clickable-link game-event-winner" onClick={() => {
+                    this.props.clickHandler(this.props.gameID);
+                }}>{teamNames[this.props.projectedWinner]}</p>
             </div>
         );
     }

@@ -17,7 +17,8 @@ loop();
 async function loop(){
 
     //Automatically Recalculates Predictions Every 24 Hours
-    setInterval(calculatePredictions, 1000 * 60 * 60 * 24);
+    // setInterval(calculatePredictions, 1000 * 60 * 60 * 24);
+    setInterval(calculatePredictions, 10000);
 }
 
 async function calculatePredictions() {
@@ -33,11 +34,7 @@ async function calculatePredictions() {
 
         let games = rows;
         for (let i = 0; i < games.length; i++){
-            if (i == 1) {
-                i++;
-            }
             //Argument sent to Prediction Algorithm
-            //Will need to be changed when ML is updated
             const url_object = {
                 team1: games[i].homeTeam,
                 team2: games[i].awayTeam,
@@ -47,6 +44,42 @@ async function calculatePredictions() {
                 humidity: games[i].averageHumidity
             };
 
+            if (games[i].homeTeam == "havoc" || games[i].awayTeam == "havoc"){
+                var win;
+                var percent = 0.50;
+                if (games[i].homeTeam == "havoc"){
+                    win = games[i].awayTeam;
+                }
+                else {
+                    win = games[i].homeTeam;
+                }
+                var response = [[
+                    games[i].gameID, 
+                    games[i].awayTeam,
+                    games[i].homeTeam, 
+                    games[i].startTime, 
+                    games[i].timeZone,
+                    win, 
+                    percent, 
+                    games[i].averageTemperature, 
+                    games[i].averageWindSpeed, 
+                    games[i].averagePrecipitation, 
+                    games[i].averageHumidity, 
+                    games[i].homeTeamCity, 
+                    games[i].awayTeamCity, 
+                    games[i].homeTeamCity
+
+                ]];
+
+                con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, timeZone, winner, winnerPercentage, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [response], (err, result, fields) => {
+                        
+                    if (err) throw err;
+
+                    console.log(result);
+                });
+                continue;
+            }
+
             //Send request to Prediction API
             const url_args =  querystring.stringify(url_object);
             let prediction = http.get("http://localhost:50300/api/v1/predict/teams/?" + url_args, response => {
@@ -55,7 +88,9 @@ async function calculatePredictions() {
                 response.on("end", () => {
                 
                     let winner = JSON.parse(data).winner;
+                    let percentage = JSON.parse(data).percentage;
                     console.log(winner);
+                    console.log(percentage);
                     
                     //Store Prediction Results
                     let records = [[
@@ -65,6 +100,7 @@ async function calculatePredictions() {
                         games[i].startTime, 
                         games[i].timeZone,
                         winner, 
+                        percentage, 
                         games[i].averageTemperature, 
                         games[i].averageWindSpeed, 
                         games[i].averagePrecipitation, 
@@ -75,7 +111,7 @@ async function calculatePredictions() {
                     ];
 
                     //Insert Prediction Results into Predicted Games Table
-                    con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, timeZone, winner, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [records], (err, result, fields) => {
+                    con.query('INSERT INTO predictedgames (gameID, awayTeam, homeTeam, startTime, timeZone, winner, winnerPercentage, forecastedTemp, forecastedWindSpeed, forecastedPrecipitation, forecastedHumidity, locationName, awayTeamCity, homeTeamCity) VALUES ?', [records], (err, result, fields) => {
                         
                         if (err) throw err;
 
