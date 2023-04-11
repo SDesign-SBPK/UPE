@@ -90,9 +90,8 @@ export class PredictionPlayer extends Component {
                                 />
                                 <p key = {player + "name"}>{ playerInfo[player] }</p>
                                 <p key = {player + "remove"} className = "remove-btn" onClick={() => {
-                                    this.state.team1.splice(index, 1);
                                     this.setState({
-                                        team1: this.state.team1,
+                                        team1: this.state.team1.filter(member => member !== player),
                                         message_body: "Removed " + playerInfo[player] + " from Team 1"
                                     })
                                 }}>✕</p>
@@ -116,9 +115,8 @@ export class PredictionPlayer extends Component {
                                 />
                                 <p key = {player + "name"}>{ playerInfo[player] }</p>
                                 <p key = {player + "remove"} className = "remove-btn" onClick={() => {
-                                    this.state.team2.splice(index, 1);
                                     this.setState({
-                                        team2: this.state.team2,
+                                        team2: this.state.team2.filter(member => member !== player),
                                         message_body: "Removed " + playerInfo[player] + " from Team 2"
                                     })
                                 }}>✕</p>
@@ -488,21 +486,21 @@ class PlayerStatDisplay extends Component {
                         <p>Offense Efficiency</p>
                     </div>
                     <div className="stat-summary-col">
-                        <p>{this.state.data.completionPercentage}%</p>
-                        <p>{this.state.data.completions}</p>
-                        <p>{this.state.data.goals}</p>
-                        <p>{this.state.data.assists}</p>
-                        <p>{this.state.data.plusMinus}</p>
-                        <p>{this.state.data.gamesPlayed}</p>
-                        <p>{this.state.data.minutesPlayed}</p>
-                        <p>{this.state.data.pointsPlayed}</p>
-                        <p>{this.state.data.huckPercentage}%</p>
-                        <p>{this.state.data.drops}</p>
-                        <p>{this.state.data.throwaways}</p>
-                        <p>{this.state.data.blocks}</p>
-                        <p>{this.state.data.yardsThrown}</p>
-                        <p>{this.state.data.yardsReceived}</p>
-                        <p>{this.state.data.offenseEfficiency}</p>
+                        <p>{(this.state.data.completionPercentage === null || this.state.data.completionPercentage == 0) ? "---": this.state.data.completionPercentage}%</p>
+                        <p>{(this.state.data.completions === null || this.state.data.completions == 0) ? "---": this.state.data.completions}</p>
+                        <p>{(this.state.data.goals === null || this.state.data.goals == 0) ? "---": this.state.data.goals}</p>
+                        <p>{(this.state.data.assists === null || this.state.data.assists == 0) ? "---": this.state.data.assists}</p>
+                        <p>{(this.state.data.plusMinus === null || this.state.data.plusMinus == 0) ? "---": this.state.data.plusMinus}</p>
+                        <p>{(this.state.data.gamesPlayed === null || this.state.data.gamesPlayed == 0) ? "---": this.state.data.gamesPlayed}</p>
+                        <p>{(this.state.data.minutesPlayed === null || this.state.data.minutesPlayed == 0) ? "---": this.state.data.minutesPlayed}</p>
+                        <p>{(this.state.data.pointsPlayed === null || this.state.data.pointsPlayed == 0) ? "---": this.state.data.pointsPlayed}</p>
+                        <p>{(this.state.data.huckPercentage === null || this.state.data.huckPercentage == 0) ? "---": this.state.data.huckPercentage}%</p>
+                        <p>{(this.state.data.drops === null || this.state.data.drops == 0) ? "---": this.state.data.drops}</p>
+                        <p>{(this.state.data.throwaways === null || this.state.data.throwaways == 0) ? "---": this.state.data.throwaways}</p>
+                        <p>{(this.state.data.blocks === null || this.state.data.blocks == 0) ? "---": this.state.data.blocks}</p>
+                        <p>{(this.state.data.yardsThrown === null || this.state.data.yardsThrown == 0) ? "---": this.state.data.yardsThrown}</p>
+                        <p>{(this.state.data.yardsReceived === null || this.state.data.yardsReceived == 0) ? "---": this.state.data.yardsReceived}</p>
+                        <p>{(this.state.data.offenseEfficiency === null || this.state.data.offenseEfficiency == 0) ? "---": this.state.data.offenseEfficiency}</p>
                     </div>
                 </div>
                 <button id = {this.props.player} onClick = {this.props.clickHandler}>Add to Team</button>
