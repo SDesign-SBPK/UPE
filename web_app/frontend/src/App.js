@@ -15,7 +15,7 @@ const BACKEND_HOST = "http://localhost:8080";
  * - outcome_team -> Displays a predicted outcome of a matchup, using the returned data
  * - outcome_player -> Displays a precited outcome of a player-based matchup, using returned data
  * - input -> Displays the input page for predictions
- *    !TODO: Once player inputs added, change this state to team_input
+ * - input_player -> Displays the input page for player-based predictions
  * - upcomingGames -> Shows all available upcoming games currently stored
  */
 

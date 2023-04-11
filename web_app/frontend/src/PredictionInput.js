@@ -85,7 +85,6 @@ class PredictionInput extends Component {
         let input_body;
         if (!this.state.teamsInputted) {
             // Check to see if a logo should be shown yet or not
-            // TODO: Make an empty box here, so that the page isn't changing format on its own
             let team1_selection;
             if (this.state.team1 !== "") {
                 team1_selection = <div>
@@ -232,14 +231,53 @@ class PredictionInput extends Component {
  * displays the current state of selection
  */
 class PredictionOption extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            tooltipVisible: false,
+            tooltipPosiition: {
+                x: 0,
+                y: 0
+            }
+        };
+    }
+
     render() {
         return (
             <div>
                 <img src = {teamLogos("./" + this.props.team + ".png")}
                     id = {this.props.team} 
                     alt = {this.props.team + " logo"}
-                    onClick = {this.props.clickHandler}    
+                    onClick = {this.props.clickHandler} 
+                    onMouseMove={(e) => {
+                        this.setState({
+                            tooltipVisible: true,
+                            tooltipPosiition: {
+                                x: e.pageX + 10,
+                                y: e.pageY + 10
+                            }
+                        })
+                    }}
+                    onMouseOver={() => {
+                        this.setState({
+                            tooltipVisible: true
+                        })
+                    }}
+                    onMouseOut={() => {
+                        this.setState({
+                            tooltipVisible: false
+                        })
+                    }}
                 />
+                {
+                    this.state.tooltipVisible && (
+                        <div className="tooltip" style={{
+                            left: this.state.tooltipPosiition.x,
+                            top: this.state.tooltipPosiition.y
+                        }}>{teamNames[this.props.team]}</div>
+                    )
+                }
             </div>
         );
     }

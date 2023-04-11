@@ -319,6 +319,17 @@ export class PredictionPlayer extends Component {
 }
 
 export class PlayerPredictionOption extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tooltipVisible: false,
+            tooltipPosiition: {
+                x: 0,
+                y: 0
+            }
+        };
+    }
+
     render() {
         let img;
         try {
@@ -328,6 +339,25 @@ export class PlayerPredictionOption extends Component {
                 id = {this.props.player}
                 alt = {this.props.player}
                 onClick = {this.props.clickHandler}
+                onMouseMove={(e) => {
+                    this.setState({
+                        tooltipVisible: true,
+                        tooltipPosiition: {
+                            x: e.pageX + 10,
+                            y: e.pageY + 10
+                        }
+                    })
+                }}
+                onMouseOver={() => {
+                    this.setState({
+                        tooltipVisible: true
+                    })
+                }}
+                onMouseOut={() => {
+                    this.setState({
+                        tooltipVisible: false
+                    })
+                }}
             />
         } catch {
             try {
@@ -337,6 +367,25 @@ export class PlayerPredictionOption extends Component {
                     id = {this.props.player}
                     alt = {this.props.player}
                     onClick = {this.props.clickHandler}
+                    onMouseMove={(e) => {
+                        this.setState({
+                            tooltipVisible: true,
+                            tooltipPosiition: {
+                                x: e.pageX + 10,
+                                y: e.pageY + 10
+                            }
+                        })
+                    }}
+                    onMouseOver={() => {
+                        this.setState({
+                            tooltipVisible: true
+                        })
+                    }}
+                    onMouseOut={() => {
+                        this.setState({
+                            tooltipVisible: false
+                        })
+                    }}
                 />
             } catch {
                 // No picture found
@@ -345,12 +394,39 @@ export class PlayerPredictionOption extends Component {
                     id = {this.props.player}
                     alt = {this.props.player}
                     onClick = {this.props.clickHandler}
+                    onMouseMove={(e) => {
+                        this.setState({
+                            tooltipVisible: true,
+                            tooltipPosiition: {
+                                x: e.pageX + 10,
+                                y: e.pageY + 10
+                            }
+                        })
+                    }}
+                    onMouseOver={() => {
+                        this.setState({
+                            tooltipVisible: true
+                        })
+                    }}
+                    onMouseOut={() => {
+                        this.setState({
+                            tooltipVisible: false
+                        })
+                    }}
                 />
             }
         }
         return (
             <div className="picture-player">
                 { img } 
+                {
+                    this.state.tooltipVisible && (
+                        <div className="tooltip" style={{
+                            left: this.state.tooltipPosiition.x,
+                            top: this.state.tooltipPosiition.y
+                        }}>{playerInfo[this.props.player]}</div>
+                    )
+                }
             </div>
         );
     }
