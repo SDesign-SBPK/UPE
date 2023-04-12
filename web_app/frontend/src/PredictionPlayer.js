@@ -28,10 +28,29 @@ export class PredictionPlayer extends Component {
             display_state: "selections",
             player_stat: "",
             searching: "",
-            message_body: ""
+            message_body: "",
+            team_data1: [],
+            team_data2: []
         };
 
         this.handleInput = this.handleInput.bind(this);
+        this.handleTeamStat = this.handleTeamStat.bind(this);
+    }
+
+    /**
+     * Input handler passed down to the stat display
+     * @param data Packet of data entries
+     */
+    handleTeamStat(team, data) {
+        if (team === 1) {
+            this.setState({
+                team_data1: data
+            });
+        } else {
+            this.setState({
+                team_data2: data
+            });
+        }
     }
 
     /**
@@ -147,7 +166,7 @@ export class PredictionPlayer extends Component {
                 <div className="input-selections">
                     <div className="input-selection">
                         {
-                            (this.state.team1.length > 0) ? <TeamPlayerStats playerList = {this.state.team1} teamnum = {1}/> : "Add players to View Stats"
+                            (this.state.team1.length > 0) ? <TeamPlayerStats playerList = {this.state.team1} teamnum = {1} dataHandler = {this.handleTeamStat} data = {this.state.team_data1}/> : "Add players to View Stats"
                         }
                     </div>
                     <div className="player-choices">
@@ -172,7 +191,7 @@ export class PredictionPlayer extends Component {
                     </div>
                     <div className="input-selection">
                         {
-                            (this.state.team2.length > 0) ? <TeamPlayerStats playerList = {this.state.team2} teamnum = {2}/> : "Add players to View Stats"
+                            (this.state.team2.length > 0) ? <TeamPlayerStats playerList = {this.state.team2} teamnum = {2} dataHandler = {this.handleTeamStat} data = {this.state.team_data2}/> : "Add players to View Stats"
                         }
                     </div>
                 </div>
@@ -439,7 +458,7 @@ class PlayerStatDisplay extends Component {
         super(props);
         this.state = {
             data: {}
-        }
+        };
     }
 
     retrieveStats() {
@@ -486,21 +505,21 @@ class PlayerStatDisplay extends Component {
                         <p>Offense Efficiency</p>
                     </div>
                     <div className="stat-summary-col">
-                        <p>{(this.state.data.completionPercentage === null || this.state.data.completionPercentage == 0) ? "---": this.state.data.completionPercentage}%</p>
-                        <p>{(this.state.data.completions === null || this.state.data.completions == 0) ? "---": this.state.data.completions}</p>
-                        <p>{(this.state.data.goals === null || this.state.data.goals == 0) ? "---": this.state.data.goals}</p>
-                        <p>{(this.state.data.assists === null || this.state.data.assists == 0) ? "---": this.state.data.assists}</p>
-                        <p>{(this.state.data.plusMinus === null || this.state.data.plusMinus == 0) ? "---": this.state.data.plusMinus}</p>
-                        <p>{(this.state.data.gamesPlayed === null || this.state.data.gamesPlayed == 0) ? "---": this.state.data.gamesPlayed}</p>
-                        <p>{(this.state.data.minutesPlayed === null || this.state.data.minutesPlayed == 0) ? "---": this.state.data.minutesPlayed}</p>
-                        <p>{(this.state.data.pointsPlayed === null || this.state.data.pointsPlayed == 0) ? "---": this.state.data.pointsPlayed}</p>
-                        <p>{(this.state.data.huckPercentage === null || this.state.data.huckPercentage == 0) ? "---": this.state.data.huckPercentage}%</p>
-                        <p>{(this.state.data.drops === null || this.state.data.drops == 0) ? "---": this.state.data.drops}</p>
-                        <p>{(this.state.data.throwaways === null || this.state.data.throwaways == 0) ? "---": this.state.data.throwaways}</p>
-                        <p>{(this.state.data.blocks === null || this.state.data.blocks == 0) ? "---": this.state.data.blocks}</p>
-                        <p>{(this.state.data.yardsThrown === null || this.state.data.yardsThrown == 0) ? "---": this.state.data.yardsThrown}</p>
-                        <p>{(this.state.data.yardsReceived === null || this.state.data.yardsReceived == 0) ? "---": this.state.data.yardsReceived}</p>
-                        <p>{(this.state.data.offenseEfficiency === null || this.state.data.offenseEfficiency == 0) ? "---": this.state.data.offenseEfficiency}</p>
+                        <p>{(this.state.data.completionPercentage === null || this.state.data.completionPercentage === 0) ? "---": this.state.data.completionPercentage}%</p>
+                        <p>{(this.state.data.completions === null || this.state.data.completions === 0) ? "---": this.state.data.completions}</p>
+                        <p>{(this.state.data.goals === null || this.state.data.goals === 0) ? "---": this.state.data.goals}</p>
+                        <p>{(this.state.data.assists === null || this.state.data.assists === 0) ? "---": this.state.data.assists}</p>
+                        <p>{(this.state.data.plusMinus === null || this.state.data.plusMinus === 0) ? "---": this.state.data.plusMinus}</p>
+                        <p>{(this.state.data.gamesPlayed === null || this.state.data.gamesPlayed === 0) ? "---": this.state.data.gamesPlayed}</p>
+                        <p>{(this.state.data.minutesPlayed === null || this.state.data.minutesPlayed === 0) ? "---": this.state.data.minutesPlayed}</p>
+                        <p>{(this.state.data.pointsPlayed === null || this.state.data.pointsPlayed === 0) ? "---": this.state.data.pointsPlayed}</p>
+                        <p>{(this.state.data.huckPercentage === null || this.state.data.huckPercentage === 0) ? "---": this.state.data.huckPercentage}%</p>
+                        <p>{(this.state.data.drops === null || this.state.data.drops === 0) ? "---": this.state.data.drops}</p>
+                        <p>{(this.state.data.throwaways === null || this.state.data.throwaways === 0) ? "---": this.state.data.throwaways}</p>
+                        <p>{(this.state.data.blocks === null || this.state.data.blocks === 0) ? "---": this.state.data.blocks}</p>
+                        <p>{(this.state.data.yardsThrown === null || this.state.data.yardsThrown === 0) ? "---": this.state.data.yardsThrown}</p>
+                        <p>{(this.state.data.yardsReceived === null || this.state.data.yardsReceived === 0) ? "---": this.state.data.yardsReceived}</p>
+                        <p>{(this.state.data.offenseEfficiency === null || this.state.data.offenseEfficiency === 0) ? "---": this.state.data.offenseEfficiency}</p>
                     </div>
                 </div>
                 <button id = {this.props.player} onClick = {this.props.clickHandler}>Add to Team</button>
@@ -513,12 +532,6 @@ class PlayerStatDisplay extends Component {
  * Displays the composite/average stats for a player-made team
  */
 class TeamPlayerStats extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: []
-        }
-    }
 
     /**
      * Retrieve all of the stats for the selected players in a custom team
@@ -528,12 +541,10 @@ class TeamPlayerStats extends Component {
             fetch("http://localhost:8080/api/Player-Stats/" + player)
             .then(res => res.json())
             .then(res => {
-                this.setState({
-                    data: [
-                        ...this.state.data,
-                        res
-                    ]
-                })
+                this.props.dataHandler(this.props.teamnum, [
+                    ...this.props.data,
+                    res
+                ]);
             })
         })
     }
@@ -546,7 +557,7 @@ class TeamPlayerStats extends Component {
         // Get the average for each stat based on the player
         let average_stats = Array(15).fill(0);
         let num_entries = Array(15).fill(0);
-        this.state.data.forEach(player => {
+        this.props.data.forEach(player => {
             if (player.completionPercentage != null || player.completionPercentage !== 0) {
                 average_stats[0] += player.completionPercentage;
                 num_entries[0]++;
