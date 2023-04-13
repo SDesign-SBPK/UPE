@@ -5,6 +5,7 @@ import GameOutcome from './GameOutcome';
 import { PredictionPlayer } from './PredictionPlayer';
 import { Component } from 'react';
 import PlayerOutcome from './PlayerOutcome';
+import WeatherForm from './WeatherForm';
 const logos = require.context("../public/logos", true);
 
 const BACKEND_HOST = "http://localhost:8080";
@@ -27,7 +28,8 @@ class App extends Component {
       outcome_object: {
         "winner": "none"
       },
-      content_state: "home"
+      content_state: "weather",
+      loading_animation: false
     }; 
   }
 
@@ -38,6 +40,7 @@ class App extends Component {
    * @param prediction The object containing all of the fields from the prediction input
    */
   sendPredictionPlayers(prediction) {
+    this.setState({loading_animation: true});
     fetch(BACKEND_HOST + "/api/Prediction-Form-Player", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -48,7 +51,8 @@ class App extends Component {
       data.percentage *= 100;
       this.setState({
         content_state: "outcome_player",
-        outcome_object: data
+        outcome_object: data,
+        loading_animation: false
       })
     })
   }
@@ -60,6 +64,7 @@ class App extends Component {
    * @param prediction The object containing all of the fields from the prediction input
    */
   sendPredictionTeam(prediction) {
+    this.setState({loading_animation: true});
     fetch(BACKEND_HOST + "/api/Prediction-Form-Team", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,7 +75,8 @@ class App extends Component {
       data.percentage *= 100;
       this.setState({
         content_state: "outcome_team", 
-        outcome_object: data
+        outcome_object: data,
+        loading_animation: false
       })
     })
     .catch(error => console.error("Error: ", error));
@@ -148,6 +154,8 @@ class App extends Component {
         humidity = {this.state.outcome_object.humidity}
         message = {this.state.outcome_object.message}
       />
+    } else if (this.state.content_state === "weather") {
+      content_body = <WeatherForm />
     } else {
       // Render the home page
       content_body = <div>
@@ -170,6 +178,23 @@ class App extends Component {
               })
             }}>Lets Go! {">>>"}</h4>
           </div>
+        </div>
+      </div>;
+    }
+    if (this.state.loading_animation) {
+      content_body = <div>
+        <h3>Predicting...</h3>
+        <div class="center">
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
         </div>
       </div>;
     }
