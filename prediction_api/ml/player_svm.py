@@ -1,7 +1,8 @@
 from sklearn import svm
 
+from prediction_api.ml_connector import getAllStatsForPlayer, getGame, getPlayer
 
-baseWeight = 1
+baseWeight = 5
 sampleWeights = []
 def getPlayerStats(playerList):
     records = []
@@ -75,71 +76,69 @@ def getPlayerStatsFiltered(playerList, game):
         # Loop through each of the filtered games and put the details into the array
         for game in gameStatsFiltered:
             nextRecord = []
-            ##Store the value if the player was on the away team or home team
-            away = game[2]
-            ## Get the record of the game for the weather stats
+            # Store the value if the player was on the away team or home team
+            home = game[2]
+            # Get the record of the game for the weather stats
             gameRecord = getGame(game[0])
             recordWeight = baseWeight
             if gameRecord is not None:
-                if away:
-                    if gameRecord[6] > gameRecord[7]:
-                        nextRecord.append(1)
-                    else:
-                        nextRecord.append(0)
+                if home == 0:
+                    if gameRecord[6] < gameRecord[7]:
+                        continue
                 else:
-                    if gameRecord[7] > gameRecord[6]:
-                        nextRecord.append(1)
-                    else:
-                        nextRecord.append(0)
-                ## Append goals
-                nextRecord.append(game[2])
-                ## Append assists
+                    if gameRecord[7] < gameRecord[6]:
+                        continue
+                # Append goals
                 nextRecord.append(game[3])
-                ## Append completions
-                nextRecord.append(game[4])
+                # Append assists
+                # nextRecord.append(game[4])
+                # Append completions
+                # nextRecord.append(game[7])
 
-                ## Weather data appending
-                temp = gameRecord[7]
-                wind = gameRecord[8]
-                precip = gameRecord[9]
-                humid = gameRecord[10]
+                # Weather data appending
+                temp = gameRecord[9]
+                wind = gameRecord[10]
+                precip = gameRecord[11]
+                humid = gameRecord[12]
 
-                ## Error checking
+                # Error checking
                 if None == temp:
                     temp = -1
-                    recordWeight -= .1
+                    recordWeight -= 0
                 if None == wind:
                     wind = -1
-                    recordWeight -= .25
+                    recordWeight -= 1
                 if None == precip:
                     precip = -1
-                    recordWeight -= .25
+                    recordWeight -= 0
                 if None == humid:
                     humid = -1
-                    recordWeight -= .1
+                    recordWeight -= 0
 
-                nextRecord.append(temp)
+                # nextRecord.append(temp)
                 nextRecord.append(wind)
-                nextRecord.append(precip)
-                nextRecord.append(humid)
+                # nextRecord.append(precip)
+                # nextRecord.append(humid)
                 records.append(nextRecord)
                 sampleWeights.append(recordWeight)
 
     return records
 
+
 def getAverageStats(playerList):
-    averageStats = [1, 0.0, 0.0, 0.0]
+    averageStats = [0.0]
     removed = 0
     for player in playerList:
         stats = getPlayer(player)
-        if stats is not None:
-            averageStats[1] += stats[5]
-            averageStats[2] += stats[6]
-            averageStats[3] += stats[4]
+        if stats is not None and stats[8] > 0:
+            averageStats[0] += stats[5] / stats[8]
+            # averageStats[1] += stats[6] / stats[8]
+            # averageStats[2] += stats[4] / stats[8]
         else:
             removed += 1
-    for stat in averageStats:
-        stat = (stat/(len(playerList) - removed))
+
+    for idx in range(len(averageStats)):
+        averageStats[idx] /= (len(playerList) - removed)
     return averageStats
 
 def stringOfTeamId(array, total, teamId):
@@ -158,10 +157,10 @@ def combineArrays(teamOne, teamTwo):
 
 def appendWeatherStats(stats, temp, wind, precip, humidity):
     formattedStats = stats
-    formattedStats.append(temp)
+    # formattedStats.append(temp)
     formattedStats.append(wind)
-    formattedStats.append(precip)
-    formattedStats.append(humidity)
+    # formattedStats.append(precip)
+    # formattedStats.append(humidity)
     return formattedStats
 
 def beforeDate(gameDateOne, gameDateTwo):
@@ -207,6 +206,10 @@ def predictByPlayersPriorToGame(teamOnePlayers, teamTwoPlayers, temperature, win
         return None
     teamOneStats = getPlayerStatsFiltered(teamOnePlayers, game)
     teamTwoStats = getPlayerStatsFiltered(teamTwoPlayers, game)
+
+    if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
+        return None
+
     formattedTemp = float(temperature)
     formattedWind = float(windSpeed)
     formattedPrecip = float(precipitation)
@@ -224,5 +227,6 @@ def predictByPlayersPriorToGame(teamOnePlayers, teamTwoPlayers, temperature, win
     teamTwoAverage = appendWeatherStats(teamTwoAverage, formattedTemp, formattedWind, formattedPrecip,
                                               formattedHumidity)
     toPredict = [teamOneAverage, teamTwoAverage]
-    result = machine.predict(toPredict).tolist()
-    return result
+    result = machine.predict_proba(toPredict).tolist()
+    adjusted = [(float(result[0][0] + result[1][0])/2), (float(result[0][1] + result[1][1])/2)]
+    return adjusted

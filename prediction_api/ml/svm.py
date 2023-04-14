@@ -1,7 +1,9 @@
 from sklearn import svm
 
+from prediction_api.ml.player_svm import predictByPlayers
+from prediction_api.ml_connector import getTeamGameRoster, getGameFromTeamID, getTeam, getGame, getAllStatsForTeam
 
-baseWeight = 1
+baseWeight = 5
 sampleWeights = []
 
 
@@ -26,47 +28,41 @@ def getTeamStatsFiltered(teamId, gameID):
             continue
         currentWeight = baseWeight
         # Add the team completion%, hold%, break%, turnovers, blocks. Verified that there are no null values in DB first
-        gameEntry = [float(row[2]), float(row[6]), float(row[7]), float(row[9]), float(row[10])]
+        gameEntry = [float(row[2]), float(row[6]), float(row[7])]
         winHistory = getGame(row[0])
         if winHistory is not None:
             # Check to see if it is away or home team
-            if teamId in winHistory[0][1]:
-                if int(winHistory[0][5]) - int(winHistory[0][6]) > 0:
+            if teamId == winHistory[1]:
+                if not (int(winHistory[6]) - int(winHistory[7]) > 0):
                     # Append that they won
-                    gameEntry.append(1)
-                else:
-                    # Append the team lost
-                    gameEntry.append(-1)
+                    # gameEntry.append(1)
+                    continue
             else:
-                if int(winHistory[0][6]) - int(winHistory[0][5]) > 0:
+                if not (int(winHistory[7]) - int(winHistory[6]) > 0):
                     # Append the team won
-                    gameEntry.append(1)
-                else:
-                    # Append the team lost
-                    gameEntry.append(-1)
+                    # gameEntry.append(1)
+                    continue
             # Add the average  temp, wind, precip, humidity from th game data
             # TODO: Verify if there are any null cases to look for.
             temp = winHistory[0][7]
             wind = winHistory[0][8]
             precip = winHistory[0][9]
             humidity = winHistory[0][10]
-            if '-' in temp:
-                temp = -1
-                currentWeight = currentWeight - .15
+            # if '-' in temp:
+            #     temp = -1
+            #     currentWeight = currentWeight - .15
             if '-' in wind:
                 wind = -1
-                currentWeight = currentWeight - .2
+                currentWeight = currentWeight - 1
             if '-' in precip:
                 precip = -1
-                currentWeight = currentWeight - .2
-            if '-' in humidity:
-                humidity = -1
-                currentWeight = currentWeight - .1
+                currentWeight = currentWeight - 1
+            # if '-' in humidity:
+            #     humidity = -1
+            #     currentWeight = currentWeight - .1
 
-            gameEntry.append(temp)
             gameEntry.append(wind)
             gameEntry.append(precip)
-            gameEntry.append(humidity)
             gameHistory.append(gameEntry)
             sampleWeights.append(currentWeight)
 
@@ -77,10 +73,9 @@ def getTeamStats(teamId):
     gameHistory = []
     sqlGames = getAllStatsForTeam(teamId)
     for row in sqlGames:
-
         currentWeight = baseWeight
-        # Add the team completion%, hold%, break%, turnovers, blocks. Verified that there are no null values in DB first
-        gameEntry = [float(row[2]), float(row[6]), float(row[7]), float(row[9]), float(row[10])]
+        # Add the team completion%, hold%, blocks. Verified that there are no null values in DB first
+        gameEntry = [float(row[2]), float(row[6]),  float(row[10])]
         winHistory = getGame(row[0])
         if winHistory is not None:
             # Check to see if it is away or home team
@@ -104,37 +99,28 @@ def getTeamStats(teamId):
             wind = winHistory[0][8]
             precip = winHistory[0][9]
             humidity = winHistory[0][10]
-            if '-' in temp:
-                temp = -1
-                currentWeight = currentWeight - .15
+            # if '-' in temp:
+            #     temp = -1
+            #     currentWeight = currentWeight - .15
             if '-' in wind:
                 wind = -1
-                currentWeight = currentWeight - .2
+                currentWeight = currentWeight - 1
             if '-' in precip:
                 precip = -1
-                currentWeight = currentWeight - .2
-            if '-' in humidity:
-                humidity = -1
-                currentWeight = currentWeight - .1
+                currentWeight = currentWeight - 1
+            # if '-' in humidity:
+            #     humidity = -1
+            #     currentWeight = currentWeight - .1
 
-            gameEntry.append(temp)
             gameEntry.append(wind)
             gameEntry.append(precip)
-            gameEntry.append(humidity)
             gameHistory.append(gameEntry)
             sampleWeights.append(currentWeight)
 
     return gameHistory
 
 
-def getStats():
-    gameHistory = []
-    for x in range(20):
-        temp = []
-        for y in range(2):
-            temp.append(x)
-        gameHistory.append(temp)
-    return gameHistory
+
 
 
 def stringOfTeamId(array, total, teamId):
@@ -173,20 +159,20 @@ def getStatAverage(teamId):
         blocks = float(teamStats[10])
         if blocks is None:
             blocks = 0
-        formattedResult = [completion, hold, breakPercentage, turnovers, blocks]
+        formattedResult = [float(completion / 100), float(hold/100), float(breakPercentage/100)]
     else:
-        formattedResult = [.5, .5, .5, .5, 0, 0]
+        formattedResult = [.5, .5, .5]
     #   Append a 1 for as a 'win' since that is what we are checking for
-    formattedResult.append(1)
+    # formattedResult.append(1)
     return formattedResult
 
 
 def appendWeatherStats(stats, temp, wind, precip, humidity):
     formattedStats = stats
-    formattedStats.append(temp)
+    # formattedStats.append(temp)
     formattedStats.append(wind)
     formattedStats.append(precip)
-    formattedStats.append(humidity)
+    # formattedStats.append(humidity)
     return formattedStats
 
 
@@ -269,7 +255,7 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     teamStats = combineArrays(teamOneStats, teamTwoStats)
     teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
-    machine = svm.SVC(kernel="linear", C=1, probability=True, class_weight='balanced')
+    machine = svm.SVC(kernel="linear", C=1, probability=True)
     machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
 
     teamOneSeasonAverage = getStatAverage(teamOne)
@@ -289,7 +275,8 @@ def predictPriorToGame(teamOne, teamTwo, temperature, windSpeed, precipitation, 
     teamTwoStats = getTeamStatsFiltered(teamTwo, game)
 
     if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
-        return predictByPlayers(getTeamPlayersBeforeGame(teamOne, game), getTeamPlayersBeforeGame(teamTwo, game), temperature, windSpeed, precipitation, humidity)
+        return None
+        # return predictByPlayers(getTeamPlayersBeforeGame(teamOne, game), getTeamPlayersBeforeGame(teamTwo, game), temperature, windSpeed, precipitation, humidity)
 
     formattedTemp = float(temperature)
     formattedWind = float(windSpeed)
@@ -298,7 +285,7 @@ def predictPriorToGame(teamOne, teamTwo, temperature, windSpeed, precipitation, 
     teamStats = combineArrays(teamOneStats, teamTwoStats)
     teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
-    machine = svm.SVC(kernel="linear", C=1, probability=True, class_weight='balanced')
+    machine = svm.SVC(kernel="linear", C=1, probability=True)
     machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
 
     teamOneSeasonAverage = getStatAverage(teamOne)
@@ -308,5 +295,7 @@ def predictPriorToGame(teamOne, teamTwo, temperature, windSpeed, precipitation, 
     teamTwoSeasonAverage = appendWeatherStats(teamTwoSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
                                               formattedHumidity)
     toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
+
     result = machine.predict_proba(toPredict).tolist()
-    return result
+    adjusted = [float((result[0][0] + result[1][0]) / 2), float((result[0][1] + result[1][1]) / 2)]
+    return adjusted
