@@ -45,8 +45,22 @@ body {
 }
 
 .nav-option:hover {
-  background-color: darkslategrey;
   cursor: pointer;
+  animation-name: fill-nav;
+  animation-duration: 2s;  
+  animation-fill-mode: forwards;
+}
+
+@keyframes fill-nav {
+  0% {
+    background-color: #181928;
+  }
+  25% {
+    background-color: darkslategrey; 
+  }
+  100% {
+    background-color: lightslategrey;
+  }
 }
 
 .prediction-banner-ad {
@@ -93,6 +107,10 @@ button {
   pointer-events: none;
 }
 
+
+/*
+Wave animation - credit to https://codepen.io/Bilal1909/pen/pobgJae
+*/
 .center {
   height: 50vh;
   display: flex;
