@@ -1,24 +1,58 @@
 """
 API for the ML prediction engine. Returns a JSON response
-Input for teams/players is given as an array entry
-    Examples: 
-        # Pre-built teams
-        team1 = ['empire']
-        # Players 
-        player1 = ['bjagt']
-        # Custom team
-        team1 = [
-            'bjagt', 
-            'cbrock', 
-            # Other players... 
-        ] 
-Weather input is given a dictionary/json entry
-    Example:
-        {
-            'factors': 2,
-            'wind_speed': 15,
-            'temperature': 98
-        }
+
+Endpoints for API:
+- GET /api/v1/predict/teams/
+- GET /api/v1/predict/players/
+- GET /api/v1/predict/historical_players/
+- GET /api/v1/predict/historical_teams/
+
+Inputs for API (players):
+- team1Players: [
+        # playerIDs (7-14, team1 and team2 must have equal numbers)
+    ]
+- team2Players: [
+        # playerIDs (7-14, team1 and team2 must have equal numbers)
+    ]
+- wind_speed: number (0-30 mph)
+- temperature: number (degrees F)
+- precipitation: decimal (inches)
+- humidity: number (0-100) %
+
+Inputs for API (teams):
+- team1: teamID
+- team2: teamID
+- wind_speed: number (0-30 mph)
+- temperature: number (degrees F)
+- precipitation: decimal (inches)
+- humidity: number (0-100) %
+
+API converts ML output into API output:
+Output of SVM:
+team-X-stats correspond to stats-used indices
+{
+    "winning-team":"glory",
+    "winning-team-percent":78.223,
+    "team-one-stats":[[0.94, 0.76, 0.33, '1', '9'], [0.87, 0.72, 0.38, '2', '6'], [0.82, 0.74, 0.21, '0', '4'], [0.92, 0.64, 0.0, '1', '0'], [0.91, 0.62, 0.48, '1', '4'], [0.93, 0.67, 0.28, '2', '1'], [0.94, 0.94, 0.42, '2', '7'], [0.93, 0.91, 0.56, '2', '4'], [0.92, 0.67, 0.56, '0', '2'], [0.94, 0.84, 0.21, '0', '8']]
+    "team-two-stats":[[0.94, 0.76, 0.33, '1', '9'], [0.87, 0.72, 0.38, '2', '6'], [0.82, 0.74, 0.21, '0', '4'], [0.92, 0.64, 0.0, '1', '0'], [0.91, 0.62, 0.48, '1', '4'], [0.93, 0.67, 0.28, '2', '1'], [0.94, 0.94, 0.42, '2', '7'], [0.93, 0.91, 0.56, '2', '4'], [0.92, 0.67, 0.56, '0', '2'], [0.94, 0.84, 0.21, '0', '8']]
+    "stats-used":["completion percentage", "hold percentage", "break percentage", "wind", "precipitation"]
+}
+
+Converted output sent back from API: 
+{
+    "message": "Prediction succesful",
+    "team1": "glory",
+    "team2": "empire"
+    "winner": "glory",
+    "percentage": 78.223,
+    "team-one-stats":[[0.94, 0.76, 0.33, '1', '9'], [0.87, 0.72, 0.38, '2', '6'], [0.82, 0.74, 0.21, '0', '4'], [0.92, 0.64, 0.0, '1', '0'], [0.91, 0.62, 0.48, '1', '4'], [0.93, 0.67, 0.28, '2', '1'], [0.94, 0.94, 0.42, '2', '7'], [0.93, 0.91, 0.56, '2', '4'], [0.92, 0.67, 0.56, '0', '2'], [0.94, 0.84, 0.21, '0', '8']]
+    "team-two-stats":[[0.94, 0.76, 0.33, '1', '9'], [0.87, 0.72, 0.38, '2', '6'], [0.82, 0.74, 0.21, '0', '4'], [0.92, 0.64, 0.0, '1', '0'], [0.91, 0.62, 0.48, '1', '4'], [0.93, 0.67, 0.28, '2', '1'], [0.94, 0.94, 0.42, '2', '7'], [0.93, 0.91, 0.56, '2', '4'], [0.92, 0.67, 0.56, '0', '2'], [0.94, 0.84, 0.21, '0', '8']]
+    "stats-used":["completion percentage", "hold percentage", "break percentage", "wind", "precipitation"]
+    "wind": 12
+    "precipitation": 0.01
+    "temperature": 75,
+    "humidity": 56
+}
 """
 
 from flask import Flask, request, jsonify
@@ -30,7 +64,7 @@ from ml.player_svm import predictByPlayers
 
 app = Flask(__name__)
 
-USAGE_MESSAGE = "Usage: \n\tGET /api/v1/predict/teams\n"
+USAGE_MESSAGE = "Usage: \n\tGET /api/v1/predict/teams\n\tGET /api/v1/predict/players\n\tGET /api/v1/predict/historical_players/\n\tGET /api/v1/predict/historical_teams/"
 
 @app.route("/api/v1/", methods = ["GET"])
 def home():
