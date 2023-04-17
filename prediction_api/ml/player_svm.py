@@ -1,6 +1,6 @@
 from sklearn import svm
 
-from prediction_api.ml_connector import getAllStatsForPlayer, getGame, getPlayer
+from prediction_api.ml_connector import getAllStatsForPlayer, getGame, getPlayer, getAllPlayersStats
 
 baseWeight = 5
 sampleWeights = []
@@ -66,61 +66,60 @@ def getPlayerStats(playerList):
 
 def getPlayerStatsFiltered(playerList, game):
     records = []
-    for player in playerList:
-        gameStats = getAllStatsForPlayer(player)
-        gameStatsFiltered = []
+    playerTuple = tuple(playerList)
+    playersStats = getAllPlayersStats(playerTuple)
+    gameStatsFiltered = []
 
-        for row in gameStats:
-            if beforeDate(row, game):
-                gameStatsFiltered.append(row)
-        # Loop through each of the filtered games and put the details into the array
-        for game in gameStatsFiltered:
-            nextRecord = []
-            # Store the value if the player was on the away team or home team
-            home = game[2]
-            # Get the record of the game for the weather stats
-            gameRecord = getGame(game[0])
-            recordWeight = baseWeight
-            if gameRecord is not None:
-                if home == 0:
-                    if gameRecord[6] < gameRecord[7]:
-                        continue
-                else:
-                    if gameRecord[7] < gameRecord[6]:
-                        continue
-                # Append goals
-                nextRecord.append(game[3])
-                # Append assists
-                # nextRecord.append(game[4])
-                # Append completions
-                # nextRecord.append(game[7])
+    for row in playersStats:
+        gameDate = row["gameID"]
+        if beforeDate(gameDate, game[0]):
+            gameStatsFiltered.append(row)
+    # Loop through each of the filtered games and put the details into the array
+    for playerRow in gameStatsFiltered:
+        nextRecord = []
+        # Store the value if the player was on the away team or home team
+        home = playerRow["isHome"]
+        # Get the record of the game for the weather stats
+        recordWeight = baseWeight
+        if home == 0:
+            if playerRow["awayScore"] < playerRow["homeScore"]:
+                continue
+        else:
+            if playerRow["awayScore"] > playerRow["homeScore"]:
+                continue
+            # Append goals
+            nextRecord.append(playerRow["goals"])
+            # Append assists
+            # nextRecord.append(game[4])
+            # Append completions
+            # nextRecord.append(game[7])
 
-                # Weather data appending
-                temp = gameRecord[9]
-                wind = gameRecord[10]
-                precip = gameRecord[11]
-                humid = gameRecord[12]
+            # Weather data appending
+            temp = playerRow["temp"]
+            wind = playerRow["wind"]
+            precip = playerRow["precip"]
+            humid = playerRow["humid"]
 
-                # Error checking
-                if None == temp:
-                    temp = -1
-                    recordWeight -= 0
-                if None == wind:
-                    wind = -1
-                    recordWeight -= 1
-                if None == precip:
-                    precip = -1
-                    recordWeight -= 0
-                if None == humid:
-                    humid = -1
-                    recordWeight -= 0
+            # Error checking
+            if None == temp:
+                temp = -1
+                recordWeight -= 0
+            if None == wind:
+                wind = -1
+                recordWeight -= 1
+            if None == precip:
+                precip = -1
+                recordWeight -= 0
+            if None == humid:
+                humid = -1
+                recordWeight -= 0
 
-                # nextRecord.append(temp)
-                nextRecord.append(wind)
-                # nextRecord.append(precip)
-                # nextRecord.append(humid)
-                records.append(nextRecord)
-                sampleWeights.append(recordWeight)
+            # nextRecord.append(temp)
+            nextRecord.append(wind)
+            # nextRecord.append(precip)
+            # nextRecord.append(humid)
+            records.append(nextRecord)
+            sampleWeights.append(recordWeight)
 
     return records
 
@@ -163,7 +162,9 @@ def appendWeatherStats(stats, temp, wind, precip, humidity):
     # formattedStats.append(humidity)
     return formattedStats
 
-def beforeDate(gameDateOne, gameDateTwo):
+def beforeDate(gameOne, gameTwo):
+    gameDateOne = gameOne.split('-')
+    gameDateTwo = gameTwo.split('-')
     if gameDateOne[0] < gameDateTwo[0]:
         return True
     elif gameDateOne[0] == gameDateTwo[0]:

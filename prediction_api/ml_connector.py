@@ -183,3 +183,32 @@ def getTeamGameRoster(gameID, away):
     c.close()
     connection.close()
     return results
+
+def getAllPlayersStats(tuple):
+    string_names = str(tuple)
+    connection = getConnection()
+    c = connection.cursor()
+    c.execute("SELECT games.gameID, playerID, isHome, goals, awayTeam, homeTeam, awayScore, homeScore, status, "
+              "averageTemperature, averageWindSpeed, averageHumidity, averagePrecipitation FROM playergamestats JOIN "
+              "games ON games.gameID = playergamestats.gameID WHERE playerID IN " + string_names)
+    stats = c.fetchall()
+    c.close()
+    connection.close()
+    dictionaries = []
+    for stat in stats:
+        dictionaries.append({
+            "gameID": stat[0],
+            "playerID": stat[1],
+            "isHome": stat[2],
+            "goals": stat[3],
+            "awayTeam": stat[4],
+            "homeTeam": stat[5],
+            "awayScore": stat[6],
+            "homeScore": stat[7],
+            "status": stat[8],
+            "temp": stat[9],
+            "wind": stat[10],
+            "humid": stat[11],
+            "precip": stat[12]
+        })
+    return dictionaries

@@ -20,9 +20,9 @@ def testPlayerPrediction(spot):
     if gameList is None or len(gameList) < 2:
         return None
     else:
-        selectedGame = gameList[random.randrange(0, int(len(gameList) / 5) + 1, 1)]
+        selectedGame = gameList[random.randrange(0, int(len(gameList) / 10) + 1, 1)]
         while selectedGame[8] == 'Upcoming':
-            selectedGame = gameList[random.randrange(0, int(len(gameList) / 5) + 1, 1)]
+            selectedGame = gameList[random.randrange(0, int(len(gameList) / 8) + 1, 1)]
         teamOne = team
         if selectedGame[1] == teamOne:
             teamTwo = selectedGame[2]
@@ -70,7 +70,7 @@ def testTeamPrediction(spot):
     if gameList is None or len(gameList) < 2:
         return None
     else:
-        selectedGame = gameList[random.randrange(0, int(len(gameList) / 8) + 1, 1)]
+        selectedGame = gameList[random.randrange(0, int(len(gameList) / 10) + 1, 1)]
         if selectedGame[8] == 'Upcoming':
             return None
         teamOne = team
@@ -131,8 +131,8 @@ spot = 0
 correct = 0
 total = 0
 nulls = 0
-while total < 80:
-    result = testTeamPrediction(spot)
+while total < 100:
+    result = testPlayerPrediction(spot)
     spot += 1
     spot %= len(teamIdList)
     if result is None:
