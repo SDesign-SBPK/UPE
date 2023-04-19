@@ -283,32 +283,26 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
 
 
 def predictPriorToGame(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity, game):
-    sampleWeights = []
-    teamOneStats = getTeamStatsFiltered(teamOne, game)
-    teamTwoStats = getTeamStatsFiltered(teamTwo, game)
+    prediction = predictByPlayers(getTeamPlayersBeforeGame(teamOne, game), getTeamPlayersBeforeGame(teamTwo, game), temperature, windSpeed,
+                                  precipitation,
+                                  humidity)
 
-    if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
-        return None
-        # return predictByPlayers(getTeamPlayersBeforeGame(teamOne, game), getTeamPlayersBeforeGame(teamTwo, game), temperature, windSpeed, precipitation, humidity)
+    if prediction["winning-team"] is not None:
+        if prediction["winning-team"] == "team-one":
+            prediction["winning-team"] = teamOne
+        else:
+            prediction["winning-team"] = teamTwo
 
-    formattedTemp = float(temperature)
-    formattedWind = float(windSpeed)
-    formattedPrecip = float(precipitation)
-    formattedHumidity = float(humidity)
-    teamStats = combineArrays(teamOneStats, teamTwoStats)
-    teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
-    teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
-    machine = svm.SVC(kernel="linear", C=1, probability=True)
-    machine.fit(teamStats, teamTargets)
+    return prediction
 
-    teamOneSeasonAverage = getStatAverage(teamOne)
-    teamOneSeasonAverage = appendWeatherStats(teamOneSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
-    teamTwoSeasonAverage = getStatAverage(teamTwo)
-    teamTwoSeasonAverage = appendWeatherStats(teamTwoSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
-    toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
+def predictPlayerBased(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
+    prediction = predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation,
+                                humidity)
 
-    result = machine.predict_proba(toPredict).tolist()
-    adjusted = [float((result[0][0] + result[1][0]) / 2), float((result[0][1] + result[1][1]) / 2)]
-    return adjusted
+    if prediction["winning-team"] is not None:
+        if prediction["winning-team"] == "team-one":
+            prediction["winning-team"] = teamOne
+        else:
+            prediction["winning-team"] = teamTwo
+
+    return prediction
