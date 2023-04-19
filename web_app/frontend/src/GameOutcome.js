@@ -67,8 +67,8 @@ class GameOutcome extends Component {
                 </div>
                 <p>{this.props.message}</p>
                 <p>{this.props.percentage.toFixed(2)}% more likely to win</p>
+                <h3>Match Summary</h3> 
                 <div className="match-summary">
-                    <h3>Match Summary</h3> 
                     <div className="summary-text">
                         <div className="summary-text-col">
                             <p>Wind</p>
@@ -87,6 +87,28 @@ class GameOutcome extends Component {
                             <p>inches</p>
                             <p>°F</p>
                             <p>%</p>
+                        </div>
+                    </div>
+                    <div className="stats-used-container">
+                        <div className="stats-used-1">
+                            {
+                                this.props.teamOneStats.map((game, index) => (
+                                    <div className="summary-text">
+                                        <div className="summary-text-col">
+                                            <p key = {"statTitle"}>{this.props.statsUsed[0]}</p>
+                                        </div>
+                                        <div className="summary-text-col">
+                                            <p key = {"stat" + index}>{game[0]}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div className="stats-used-2">
+
+                        </div>
+                        <div className="summary-text">
+                            
                         </div>
                     </div>
                 </div>
