@@ -20,6 +20,7 @@ async function loop(){
 
     //Gather new Upcoming Games from the AUDL every 24 hours
     setInterval(storeGamesOnPage, 1000 * 60 * 60 * 24);
+    //setInterval(storeGamesOnPage, 10000)
 }
 
 

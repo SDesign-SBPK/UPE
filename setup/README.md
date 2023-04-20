@@ -11,3 +11,8 @@ Then simply run the following command:
 ```
 ./setup.sh
 ```
+
+After the setup is complete, you can then run the entire UPE by simply running this command:
+```
+./run.sh
+```
