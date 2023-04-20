@@ -307,3 +307,5 @@ def predictPlayerBased(teamOne, teamTwo, temperature, windSpeed, precipitation, 
 
     return prediction
 
+
+print(predictPlayerBased('glory', 'empire', 65, 6, 0, 58))

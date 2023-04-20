@@ -56,7 +56,7 @@ def getPlayerStats(playerList):
             nextRecord.append(wind)
             # nextRecord.append(precip)
             # nextRecord.append(humid)
-            entry = [playerRow["gameID"]] + nextRecord
+            entry = [playerRow["gameID"], playerRow["playerID"]] +nextRecord
             entries.append(entry)
             records.append(nextRecord)
             sampleWeights.append(recordWeight)
