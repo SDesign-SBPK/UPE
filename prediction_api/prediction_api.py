@@ -22,7 +22,7 @@ Weather input is given a dictionary/json entry
 """
 
 from flask import Flask, request, jsonify
-from ml.svm import predict
+from ml.svm import predict, predictPlayerBased
 from ml.player_svm import predictByPlayers
 
 # Will need to add import for ml.player_svm
@@ -59,29 +59,27 @@ def predict_teams():
         return invalid_endpoint(404, custom_message="Invalid parameters for teams")
     
     # Pass prediction
-    result = predict(team1, team2, temperature, wind_speed, precipitation, humidity)
+    result = predictPlayerBased(team1, team2, temperature, wind_speed, precipitation, humidity)
     if not result:
         return invalid_endpoint(404, custom_message="No result from prediction")
-    # [team1 score, team2 score]
-    # [team1 score, team2 score]
-    # Average the scores out to see what is accurate
-    win_percentage = 0
-    winner_percents =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
-    if winner_percents[0] > winner_percents[1]:
-        winner = team1
-        win_percentage = winner_percents[0]
-    else: 
-        winner = team2
-        win_percentage = winner_percents[1]
+   
+    win_percentage = result["winning-team-percent"]
+    winner = result["winning-team"]
+    team_one_stats = result["team-one-stats"]
+    team_two_stats = result["team-two-stats"]
+    stats_used = result["stats-used"]
     
     # Return result 
     return jsonify(
         {
             "message": "Prediction successful",
-            "winner": winner,
             "team1": team1,
             "team2": team2,
+            "winner": winner,
             "percentage": win_percentage,
+            "team-one-stats": team_one_stats,
+            "team-two-stats": team_two_stats,
+            "stats-used": stats_used,
             "wind": wind_speed,
             "precipitation": precipitation,
             "temperature": temperature,
