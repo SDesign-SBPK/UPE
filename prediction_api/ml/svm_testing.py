@@ -111,7 +111,7 @@ correct = 0
 total = 0
 nulls = 0
 while total < 100:
-    result = testTeamPrediction(spot)
+    result = testPlayerPrediction(spot)
     spot += 1
     spot %= len(teamIdList)
     if result is None:

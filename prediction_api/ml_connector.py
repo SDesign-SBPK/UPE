@@ -164,7 +164,7 @@ def getWeatherInterval(gameID: str, intervalNumber: str):
 def getGameFromTeamID(teamID):
     connection = getConnection()
     c = connection.cursor()
-    c.execute("SELECT * FROM games WHERE awayTeam = %s OR homeTeam = %s ORDER BY gameID desc", (teamID, teamID))
+    c.execute("SELECT * FROM games WHERE (awayTeam = %s OR homeTeam = %s) and status is null ORDER BY gameID desc", (teamID, teamID))
     results = c.fetchall()
     c.close()
     connection.close()
