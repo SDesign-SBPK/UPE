@@ -159,48 +159,50 @@ class PredictionInput extends Component {
                         teamsInputted: false
                     }) 
                 }}>Back</button>
-                <div className="weather-form-cols">
-                    <div className="weather-form-col">
-                        <p>Wind Speed</p>
-                        <p>Precipitation</p>
-                        <p>Temperature</p>
-                        <p>Humidity</p>
+                <div className="weather-form-alt">
+                    <div className="weather-form-item">
+                        <label htmlFor="wind">Wind<br />
+                            <input type = "number" value={this.state.wind} 
+                                onChange={(event) => {
+                                    this.setState({wind: event.target.value})
+                                }} required
+                                min={0}    
+                                max={30}
+                            />mph
+                        </label>
                     </div>
-                    <div className="weather-form-col">
-                        <p><input type = "number" value={this.state.wind} 
-                            onChange={(event) => {
-                                this.setState({wind: event.target.value})
-                            }} required
-                            min={0}    
-                            max={30}
-                        /></p>
-                        <p><input type = "decimal" value={this.state.precipitation}
-                            onChange={(event) => {
-                                this.setState({precipitation: event.target.value})
-                            }} required 
-                            min={0}    
-                            max={1}
-                        /></p>
-                        <p><input type = "number" value={this.state.temperature} 
-                            onChange={(event) => {
-                                this.setState({temperature: event.target.value})
-                            }} required 
-                            min={30}
-                            max={100}
-                        /></p>
-                        <p><input type = "number" value={this.state.humidity} 
-                            onChange={(event) => {
-                                this.setState({humidity: event.target.value})
-                            }} required 
-                            min={1}    
-                            max= {100}
-                        /></p>
+                    <div className="weather-form-item">
+                        <label htmlFor="precipitation">Precipitation<br />
+                            <input type = "decimal" value={this.state.precipitation}
+                                onChange={(event) => {
+                                    this.setState({precipitation: event.target.value})
+                                }} required 
+                                min={0}    
+                                max={1}
+                            />in 
+                        </label>
                     </div>
-                    <div className="weather-form-col">
-                        <p>mph</p>
-                        <p>inches</p>
-                        <p>°F</p>
-                        <p>%</p>
+                    <div className="weather-form-item">
+                        <label htmlFor="temperature">Temperature<br />
+                            <input type = "number" value={this.state.temperature} 
+                                onChange={(event) => {
+                                    this.setState({temperature: event.target.value})
+                                }} required 
+                                min={30}
+                                max={100}
+                            />°F 
+                        </label>
+                    </div>
+                    <div className="weather-form-item">
+                        <label htmlFor="humidity">Humidity<br />
+                            <input type = "number" value={this.state.humidity} 
+                                onChange={(event) => {
+                                    this.setState({humidity: event.target.value})
+                                }} required 
+                                min={1}    
+                                max= {100}
+                            />% 
+                        </label>
                     </div>
                 </div>
                 <button className="finish-button" onClick={() => {

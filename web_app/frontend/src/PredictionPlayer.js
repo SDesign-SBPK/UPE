@@ -172,7 +172,7 @@ export class PredictionPlayer extends Component {
                     <div className="player-choices">
                         <h3>Team 1</h3>
                         { team1_selection }
-                        <button className="" onClick={() => {
+                        <button className="add-btn" onClick={() => {
                             this.setState({
                                 display_state: "add_player",
                                 team1Input: true
@@ -182,7 +182,7 @@ export class PredictionPlayer extends Component {
                     <div className="player-choices">
                         <h3>Team 2</h3>
                         { team2_selection }
-                        <button className="" onClick={() => {
+                        <button className="add-btn" onClick={() => {
                             this.setState({
                                 display_state: "add_player",
                                 team1Input: false
@@ -227,28 +227,27 @@ export class PredictionPlayer extends Component {
                     })
                 }}>See Selections</button>
                 <div className="add_options">
-                    <div className="add-option">
-                        <input
-                            type = "text"
-                            placeholder="Search"
-                            onChange={(event) => {
-                                this.setState({
-                                    searching: event.target.value
-                                })
-                            }}
-                            value = {this.state.searching}
-                            />
                         <h3 className="add-option">{ (this.state.team1Input) ? "Adding to Team 1" : "Adding to Team 2"}</h3>
-                    </div>
-                </div>
-                <div className="add-player-container">
-                    <div className="add-player-col picture-players-container">
-                        {
-                            players_shown
-                        }
-                    </div>
-                    <div className="add-player-col player-stat-display-container">
-                        { player_stat_body }
+                        <div className="add-option">
+                            <input
+                                id = "player-search"
+                                type = "text"
+                                placeholder="Search"
+                                onChange={(event) => {
+                                    this.setState({
+                                        searching: event.target.value
+                                    })
+                                }}
+                                value = {this.state.searching}
+                            />
+                        </div>
+                    <div className="add-player-container">
+                        <div className="add-player-col picture-players-container">
+                            { players_shown }
+                        </div>
+                        <div className="add-player-col player-stat-display-container">
+                            { player_stat_body }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -260,48 +259,50 @@ export class PredictionPlayer extends Component {
                         display_state: "selections"
                     }) 
                 }}>Back</button>
-                <div className="weather-form-cols">
-                    <div className="weather-form-col">
-                        <p>Wind Speed</p>
-                        <p>Precipitation</p>
-                        <p>Temperature</p>
-                        <p>Humidity</p>
+                <div className="weather-form-alt">
+                    <div className="weather-form-item">
+                        <label htmlFor="wind">Wind<br />
+                            <input type = "number" value={this.state.wind} 
+                                onChange={(event) => {
+                                    this.setState({wind: event.target.value})
+                                }} required
+                                min={0}    
+                                max={30}
+                            />mph
+                        </label>
                     </div>
-                    <div className="weather-form-col">
-                        <p><input type = "number" value={this.state.wind} 
-                            onChange={(event) => {
-                                this.setState({wind: event.target.value})
-                            }} required
-                            min={0}    
-                            max={30}
-                        /></p>
-                        <p><input type = "decimal" value={this.state.precipitation}
-                            onChange={(event) => {
-                                this.setState({precipitation: event.target.value})
-                            }} required 
-                            min={0}    
-                            max={1}
-                        /></p>
-                        <p><input type = "number" value={this.state.temperature} 
-                            onChange={(event) => {
-                                this.setState({temperature: event.target.value})
-                            }} required 
-                            min={30}
-                            max={100}
-                        /></p>
-                        <p><input type = "number" value={this.state.humidity} 
-                            onChange={(event) => {
-                                this.setState({humidity: event.target.value})
-                            }} required 
-                            min={1}    
-                            max= {100}
-                        /></p>
+                    <div className="weather-form-item">
+                        <label htmlFor="precipitation">Precipitation<br />
+                            <input type = "decimal" value={this.state.precipitation}
+                                onChange={(event) => {
+                                    this.setState({precipitation: event.target.value})
+                                }} required 
+                                min={0}    
+                                max={1}
+                            />in 
+                        </label>
                     </div>
-                    <div className="weather-form-col">
-                        <p>mph</p>
-                        <p>inches</p>
-                        <p>°F</p>
-                        <p>%</p>
+                    <div className="weather-form-item">
+                        <label htmlFor="temperature">Temperature<br />
+                            <input type = "number" value={this.state.temperature} 
+                                onChange={(event) => {
+                                    this.setState({temperature: event.target.value})
+                                }} required 
+                                min={30}
+                                max={100}
+                            />°F 
+                        </label>
+                    </div>
+                    <div className="weather-form-item">
+                        <label htmlFor="humidity">Humidity<br />
+                            <input type = "number" value={this.state.humidity} 
+                                onChange={(event) => {
+                                    this.setState({humidity: event.target.value})
+                                }} required 
+                                min={1}    
+                                max= {100}
+                            />% 
+                        </label>
                     </div>
                 </div>
                 <button className="finish-button" onClick={() => {
@@ -522,7 +523,7 @@ class PlayerStatDisplay extends Component {
                         <p>{(this.state.data.offenseEfficiency === null || this.state.data.offenseEfficiency === 0) ? "---": this.state.data.offenseEfficiency}</p>
                     </div>
                 </div>
-                <button id = {this.props.player} onClick = {this.props.clickHandler}>Add to Team</button>
+                <button className="add-btn" id = {this.props.player} onClick = {this.props.clickHandler}>Add to Team</button>
             </div>
         );
     }

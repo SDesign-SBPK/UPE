@@ -40,3 +40,29 @@
     display: flex;
     text-align: left;
 }
+
+.weather-form-alt {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.weather-form-item {
+    text-align: left;
+    padding: 2px;
+    width: 33%;
+}
+
+input {
+    text-align: left;
+    background-color: #3a3a49;
+    border-radius: .25rem;
+    color: white;
+    font-size: 20px;
+    padding: 20px 20px;
+    margin: 10px 10px;
+    width: 75%;
+}

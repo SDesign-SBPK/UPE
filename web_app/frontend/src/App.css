@@ -78,9 +78,11 @@ body {
 }
 
 button {
-  height: 30px; 
+  height: 50px;
   border: none;
+  font-size: 16px;
   border-radius: 2px;
+  width: 8%;
 }
 
 .tooltip {
