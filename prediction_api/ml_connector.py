@@ -129,7 +129,7 @@ def getGameStatForTeam(teamID: str, gameID: str):
     """
     connection = getConnection()
     c = connection.cursor()
-    c.execute("SELECT * FROM teamgamestats WHERE teamID = %s AND gameID = %s", (teamID, gameID))
+    c.execute("SELECT games.gameID, teamID, completionPercentage, huckPercentage, redZonePercentage, holdPercentage, breakPercentage, turnovers, blocks, averageTemperature, averageWindSpeed, averageHumidity, averagePrecipitation FROM teamgamestats LEFT JOIN games ON games.gameID = teamgamestats.gameID WHERE teamID = %s AND teamgamestats.gameID = %s ", (teamID, gameID))
     stat = c.fetchone()
     c.close()
     connection.close()
