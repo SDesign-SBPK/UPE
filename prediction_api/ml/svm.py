@@ -1,7 +1,7 @@
 from sklearn import svm
 
-from prediction_api.ml.player_svm import predictByPlayers
-from prediction_api.ml_connector import getTeamGameRoster, getGameFromTeamID, getTeam, getGame, getAllStatsForTeam, \
+from ml.player_svm import predictByPlayers
+from ml_connector import getTeamGameRoster, getGameFromTeamID, getTeam, getGame, getAllStatsForTeam, \
     getGameStatForTeam
 
 baseWeight = 5
@@ -336,7 +336,7 @@ def predictPlayerBased(teamOne, teamTwo, temperature, windSpeed, precipitation, 
 
     prediction["team-two-stats"] = teamTwoEntries
 
-    prediction["stats-used"] = ["Game ID", "Team ID", "Completion Percentage", "Huck Percentage", "Red  Zone Percentage",
+    prediction["stats-used"] = ["Game ID", "Team ID", "Completion Percentage", "Huck Percentage", "Red Zone Percentage",
                                 "Hold Percentage", "Break Percentage", "Turnovers", "Blocks", "Average Temperature",
                                 "Average Wind Speed", "Average Humidity", "Average Precipitation"]
     return prediction
