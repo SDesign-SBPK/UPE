@@ -35,7 +35,7 @@
 .input-selections {
     display: flex;
     flex-wrap: nowrap;
-    justify-items: center;
+    align-items: center;
 }
 
 .input-selection {
@@ -57,4 +57,27 @@
 
 .add-option {
     flex: 1 0 20%;
+}
+
+.remove-btn {
+    color: red;
+}
+
+.remove-btn:hover {
+    cursor: pointer;
+}
+
+.player-choices {
+    flex: 1 0 20%;
+    text-align: left;
+    height: 700px;
+}
+
+.add-btn {
+    width: 50%;
+}
+
+#player-search {
+    position: relative;
+    width: 25%;
 }

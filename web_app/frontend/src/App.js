@@ -9,42 +9,13 @@ const logos = require.context("../public/logos", true);
 
 const BACKEND_HOST = "http://localhost:8080";
 
-
-const MOCK_DATA = {
-  winner: "team1",
-  team1: [
-    "bjagt",
-    "amerriman",
-    "aatkins",
-    "acarr",
-    "amclean",
-    "bspielman",
-    "abartenst",
-    "bmurphy"
-  ],
-  team2: [
-    "acohen",
-    "acurtis",
-    "adelreal",
-    "adrews",
-    "aduffel",
-    "aengel",
-    "achoi"
-  ],
-  percentage: 64,
-  wind: 10,
-  precipitation: 0.01,
-  temperature: 75,
-  humidity: 54
-};
-
 /**
  * Content states:
  * - home -> Displays 3 upcoming games, banner for input
  * - outcome_team -> Displays a predicted outcome of a matchup, using the returned data
  * - outcome_player -> Displays a precited outcome of a player-based matchup, using returned data
  * - input -> Displays the input page for predictions
- *    !TODO: Once player inputs added, change this state to team_input
+ * - input_player -> Displays the input page for player-based predictions
  * - upcomingGames -> Shows all available upcoming games currently stored
  */
 
@@ -56,17 +27,19 @@ class App extends Component {
       outcome_object: {
         "winner": "none"
       },
-      content_state: "outcome_player"
+      content_state: "home",
+      loading_animation: false,
     }; 
   }
 
   /**
    * Sends a user-created player prediction over to the backend and waits for a response.
-   * Upon success, captures teh result and transitions the content state to show the outcome
+   * Upon success, captures the result and transitions the content state to show the outcome
    * breakdown
    * @param prediction The object containing all of the fields from the prediction input
    */
   sendPredictionPlayers(prediction) {
+    this.setState({loading_animation: true});
     fetch(BACKEND_HOST + "/api/Prediction-Form-Player", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -74,9 +47,11 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
+      data.percentage *= 100;
       this.setState({
         content_state: "outcome_player",
-        outcome_object: data
+        outcome_object: data,
+        loading_animation: false
       })
     })
   }
@@ -88,17 +63,19 @@ class App extends Component {
    * @param prediction The object containing all of the fields from the prediction input
    */
   sendPredictionTeam(prediction) {
+    this.setState({loading_animation: true});
     fetch(BACKEND_HOST + "/api/Prediction-Form-Team", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(prediction)
     })
     .then(res => res.json())
-    .then(data => {
-      data.percentage = data.percentage * 100;
+    .then(data => { 
+      data.percentage *= 100;
       this.setState({
         content_state: "outcome_team", 
-        outcome_object: data
+        outcome_object: data,
+        loading_animation: false
       })
     })
     .catch(error => console.error("Error: ", error));
@@ -145,6 +122,10 @@ class App extends Component {
         precipitation = {this.state.outcome_object.precipitation}
         temperature = {this.state.outcome_object.temperature}
         humidity = {this.state.outcome_object.humidity}
+        message = {this.state.outcome_object.message}
+        teamOneStats = {this.state.outcome_object.teamOneStats}
+        teamTwoStats = {this.state.outcome_object.teamTwoStats}
+        statsUsed = {this.state.outcome_object.statsUsed}
       /> 
     } else if (this.state.content_state === "input") {
       // Render a team-input form
@@ -165,14 +146,18 @@ class App extends Component {
     } else if (this.state.content_state === "outcome_player") {
       // Render the outcome of a player prediction
       content_body = <PlayerOutcome
-        team1 = {MOCK_DATA.team1}
-        team2 = {MOCK_DATA.team2}
-        winner = {MOCK_DATA.winner}
-        percentage = {MOCK_DATA.percentage}
-        wind = {MOCK_DATA.wind}
-        precipitation = {MOCK_DATA.precipitation}
-        temperature = {MOCK_DATA.temperature}
-        humidity = {MOCK_DATA.humidity}
+        team1 = {this.state.outcome_object.team1}
+        team2 = {this.state.outcome_object.team2}
+        winner = {this.state.outcome_object.winner}
+        percentage = {this.state.outcome_object.percentage}
+        wind = {this.state.outcome_object.wind}
+        precipitation = {this.state.outcome_object.precipitation}
+        temperature = {this.state.outcome_object.temperature}
+        humidity = {this.state.outcome_object.humidity}
+        message = {this.state.outcome_object.message}
+        teamOneStats = {this.state.outcome_object.teamOneStats}
+        teamTwoStats = {this.state.outcome_object.teamTwoStats}
+        statsUsed = {this.state.outcome_object.statsUsed}
       />
     } else {
       // Render the home page
@@ -196,6 +181,23 @@ class App extends Component {
               })
             }}>Lets Go! {">>>"}</h4>
           </div>
+        </div>
+      </div>;
+    }
+    if (this.state.loading_animation) {
+      content_body = <div>
+        <h3>Predicting...</h3>
+        <div class="center">
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
         </div>
       </div>;
     }

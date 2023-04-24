@@ -1,6 +1,6 @@
 from sklearn import svm
 
-from prediction_api.ml_connector import getAllStatsForPlayer, getGame, getPlayer, getAllPlayersStats
+from ml_connector import getAllStatsForPlayer, getGame, getPlayer, getAllPlayersStats
 
 baseWeight = 5
 sampleWeights = []

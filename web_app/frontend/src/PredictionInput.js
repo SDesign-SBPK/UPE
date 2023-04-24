@@ -85,7 +85,6 @@ class PredictionInput extends Component {
         let input_body;
         if (!this.state.teamsInputted) {
             // Check to see if a logo should be shown yet or not
-            // TODO: Make an empty box here, so that the page isn't changing format on its own
             let team1_selection;
             if (this.state.team1 !== "") {
                 team1_selection = <div>
@@ -160,38 +159,52 @@ class PredictionInput extends Component {
                         teamsInputted: false
                     }) 
                 }}>Back</button>
-                <p>Wind Speed: 
-                    <input type = "number" value={this.state.wind} 
-                        onChange={(event) => {
-                            this.setState({wind: event.target.value})
-                        }} required
-                        min={0}    
-                        max={30}
-                    /> mph</p>
-                <p>Precipitation: 
-                    <input type = "decimal" value={this.state.precipitation}
-                        onChange={(event) => {
-                            this.setState({precipitation: event.target.value})
-                        }} required 
-                        min={0}    
-                        max={1}
-                    /> inches</p>
-                <p>Temperature: 
-                    <input type = "number" value={this.state.temperature} 
-                        onChange={(event) => {
-                            this.setState({temperature: event.target.value})
-                        }} required 
-                        min={30}
-                        max={100}
-                    /> °F</p>
-                <p>Humidity: 
-                    <input type = "number" value={this.state.humidity} 
-                        onChange={(event) => {
-                            this.setState({humidity: event.target.value})
-                        }} required 
-                        min={1}    
-                        max= {100}
-                    /> %</p>
+                <div className="weather-form-alt">
+                    <div className="weather-form-item">
+                        <label htmlFor="wind">Wind<br />
+                            <input type = "number" value={this.state.wind} 
+                                onChange={(event) => {
+                                    this.setState({wind: event.target.value})
+                                }} required
+                                min={0}    
+                                max={30}
+                            />mph
+                        </label>
+                    </div>
+                    <div className="weather-form-item">
+                        <label htmlFor="precipitation">Precipitation<br />
+                            <input type = "decimal" value={this.state.precipitation}
+                                onChange={(event) => {
+                                    this.setState({precipitation: event.target.value})
+                                }} required 
+                                min={0}    
+                                max={1}
+                            />in 
+                        </label>
+                    </div>
+                    <div className="weather-form-item">
+                        <label htmlFor="temperature">Temperature<br />
+                            <input type = "number" value={this.state.temperature} 
+                                onChange={(event) => {
+                                    this.setState({temperature: event.target.value})
+                                }} required 
+                                min={30}
+                                max={100}
+                            />°F 
+                        </label>
+                    </div>
+                    <div className="weather-form-item">
+                        <label htmlFor="humidity">Humidity<br />
+                            <input type = "number" value={this.state.humidity} 
+                                onChange={(event) => {
+                                    this.setState({humidity: event.target.value})
+                                }} required 
+                                min={1}    
+                                max= {100}
+                            />% 
+                        </label>
+                    </div>
+                </div>
                 <button className="finish-button" onClick={() => {
                     let prediction = {
                         awayTeam: this.state.team1,
@@ -220,14 +233,53 @@ class PredictionInput extends Component {
  * displays the current state of selection
  */
 class PredictionOption extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            tooltipVisible: false,
+            tooltipPosiition: {
+                x: 0,
+                y: 0
+            }
+        };
+    }
+
     render() {
         return (
             <div>
                 <img src = {teamLogos("./" + this.props.team + ".png")}
                     id = {this.props.team} 
                     alt = {this.props.team + " logo"}
-                    onClick = {this.props.clickHandler}    
+                    onClick = {this.props.clickHandler} 
+                    onMouseMove={(e) => {
+                        this.setState({
+                            tooltipVisible: true,
+                            tooltipPosiition: {
+                                x: e.pageX + 10,
+                                y: e.pageY + 10
+                            }
+                        })
+                    }}
+                    onMouseOver={() => {
+                        this.setState({
+                            tooltipVisible: true
+                        })
+                    }}
+                    onMouseOut={() => {
+                        this.setState({
+                            tooltipVisible: false
+                        })
+                    }}
                 />
+                {
+                    this.state.tooltipVisible && (
+                        <div className="tooltip" style={{
+                            left: this.state.tooltipPosiition.x,
+                            top: this.state.tooltipPosiition.y
+                        }}>{teamNames[this.props.team]}</div>
+                    )
+                }
             </div>
         );
     }

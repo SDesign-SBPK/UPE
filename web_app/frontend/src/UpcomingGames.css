@@ -27,6 +27,7 @@ p {
     text-align: center;
     align-items: center;
     justify-items: center;
+    justify-content: center;
 }
 
 .piece-item {

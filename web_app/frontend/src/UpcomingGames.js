@@ -3,6 +3,8 @@ import { Component } from "react";
 const teamLogos = require.context("../public/logos", true);
 const teamNames = require("./teamDictionary.json");
 
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 /**
  * The overall container for showing game events. This takes in a set amount
  * to show, as it used to preview in the home page and as a standalone feature
@@ -51,8 +53,12 @@ class UpcomingGames extends Component {
                     </div>
                     {
                         this.state.upcoming_games?.map(game => {
-                            let time_string_pieces = game.startTime.split(" ");
-                            let time_string = [time_string_pieces[0], <br />, time_string_pieces[1]];
+                            let time = new Date(game.startTime);
+                            let mins = time.getMinutes();
+                            if (mins < 10) {
+                                mins = mins.toString() + "0"
+                            }
+                            let time_string = [months[time.getMonth()], " ", time.getDate(), ", ", time.getFullYear(), <br key = {"timeBr1" + game}/>, time.getHours(), ":", mins];
                             return (
                                 <GameEvent 
                                     key= {game.gameID}

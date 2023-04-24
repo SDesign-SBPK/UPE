@@ -48,9 +48,55 @@ class PlayerOutcome extends Component {
                 <div className="outcome-bars">
                         {bar_components}
                     </div>
-                <p>{this.props.percentage}% more likely to win</p>
+                <p>{this.props.message}</p>
+                <p>{this.props.percentage.toFixed(2)}% more likely to win</p>
+
+                <div className="outcome-split">
+                    <div className="player-choices outcome-split-piece" style={{
+                        height: `${140 * this.props.team1.length}px` 
+                    }}>
+                        <h3>Team 1</h3>
+                        {
+                            this.props.team1.map(player => (
+                                <div className="selection-summary" style={{
+                                    justifyItems: "left",
+                                    alignItems: "left",
+                                    textAlign: "left"
+                                }}>
+                                    <PlayerPredictionOption
+                                        key = {player + "img"}
+                                        player = {player}
+                                    />
+                                    <p key = {player + "name"}>{playerInfo[player]}</p>
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <div className="player-choices outcome-split-piece" style = {{
+                        height: `${140 * this.props.team2.length}px` 
+                    }}>
+                        <h3 style = {{
+                            textAlign: "right"
+                        }}>Team 2</h3>
+                        {
+                            this.props.team2.map(player => (
+                                <div className="selection-summary" style={{
+                                    justifyItems: "right",
+                                    alignItems: "right",
+                                    textAlign: "right"
+                                }}>
+                                    <p key = {player + "name"}>{playerInfo[player]}</p>
+                                    <PlayerPredictionOption
+                                        key = {player + "img"}
+                                        player = {player}
+                                    />
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+                <h3>Match Summary</h3>
                 <div className="match-summary">
-                    <h3>Match Summary</h3>
                     <div className="summary-text">
                         <div className="summary-text-col">
                             <p>Wind</p>
@@ -70,42 +116,6 @@ class PlayerOutcome extends Component {
                             <p>°F</p>
                             <p>%</p>
                         </div>
-                    </div>
-                </div>
-                <div className="outcome-split">
-                    <div className="input-selection outcome-split-piece">
-                        <h3>Team 1</h3>
-                        {
-                            this.props.team1.map(player => (
-                                <div className="selection-summary" style={{
-                                    alignItems: "right",
-                                    justifyItems: "right"
-                                }}>
-                                    <p key = {player + "name"}>{playerInfo[player]}</p>
-                                    <PlayerPredictionOption
-                                        key = {player + "img"}
-                                        player = {player}
-                                    />
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <div className="input-selection outocme-split-piece">
-                        <h3>Team 2</h3>
-                        {
-                            this.props.team2.map(player => (
-                                <div className="selection-summary" style={{
-                                    alignItems: "left",
-                                    justifyItems: "left"
-                                }}>
-                                    <PlayerPredictionOption
-                                        key = {player + "img"}
-                                        player = {player}
-                                    />
-                                    <p key = {player + "name"}>{playerInfo[player]}</p>
-                                </div>
-                            ))
-                        }
                     </div>
                 </div>
             </div>

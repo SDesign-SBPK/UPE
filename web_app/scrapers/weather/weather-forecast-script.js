@@ -20,6 +20,7 @@ loop();
 async function loop(){
     //Run Weather Retrieval every 24 hours
     setInterval(gameDataRetrieval, 1000 * 60 * 60 * 24);
+    //setInterval(gameDataRetrieval, 10000);
 }
 
 async function gameDataRetrieval() {
