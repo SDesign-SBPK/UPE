@@ -5,7 +5,6 @@ import GameOutcome from './GameOutcome';
 import { PredictionPlayer } from './PredictionPlayer';
 import { Component } from 'react';
 import PlayerOutcome from './PlayerOutcome';
-import WeatherForm from './WeatherForm';
 const logos = require.context("../public/logos", true);
 
 const BACKEND_HOST = "http://localhost:8080";
@@ -20,66 +19,22 @@ const BACKEND_HOST = "http://localhost:8080";
  * - upcomingGames -> Shows all available upcoming games currently stored
  */
 
-const MOCK_DATA = {
-  message: "Prediction successful",
-  team1: "glory",
-  team2: "empire",
-  winner: "glory",
-  percentage: 78.23,
-  teamOneStats: [
-    [0.94, 0.76, 0.33, '1', '9'],
-    [0.87, 0.72, 0.38, '2', '6'], 
-    [0.82, 0.74, 0.21, '0', '4'], 
-    [0.92, 0.64, 0.0, '1', '0'], 
-    [0.91, 0.62, 0.48, '1', '4'], 
-    [0.93, 0.67, 0.28, '2', '1'], 
-    [0.94, 0.94, 0.42, '2', '7'], 
-    [0.93, 0.91, 0.56, '2', '4'], 
-    [0.92, 0.67, 0.56, '0', '2'], 
-    [0.94, 0.84, 0.21, '0', '8']
-  ],
-  teamTwoStats: [
-    [0.94, 0.76, 0.33, '1', '9'],
-    [0.87, 0.72, 0.38, '2', '6'], 
-    [0.82, 0.74, 0.21, '0', '4'], 
-    [0.92, 0.64, 0.0, '1', '0'], 
-    [0.91, 0.62, 0.48, '1', '4'], 
-    [0.93, 0.67, 0.28, '2', '1'], 
-    [0.94, 0.94, 0.42, '2', '7'], 
-    [0.93, 0.91, 0.56, '2', '4'], 
-    [0.92, 0.67, 0.56, '0', '2'], 
-    [0.94, 0.84, 0.21, '0', '8']
-  ],
-  statsUsed: [
-    "completion percentage", 
-    "hold percentage", 
-    "break percentage", 
-    "wind", 
-    "precipitation"
-  ],
-  wind: 12,
-  precipitation: 0.01,
-  temperature: 75,
-  humidity: 56
-};
-
 class App extends Component {
 
 	constructor(props) {
     super(props);
     this.state = {
-      outcome_object: MOCK_DATA,
-      // {
-      //   "winner": "none"
-      // },
-      content_state: "outcome_team",
+      outcome_object: {
+        "winner": "none"
+      },
+      content_state: "home",
       loading_animation: false,
     }; 
   }
 
   /**
    * Sends a user-created player prediction over to the backend and waits for a response.
-   * Upon success, captures teh result and transitions the content state to show the outcome
+   * Upon success, captures the result and transitions the content state to show the outcome
    * breakdown
    * @param prediction The object containing all of the fields from the prediction input
    */
@@ -200,9 +155,10 @@ class App extends Component {
         temperature = {this.state.outcome_object.temperature}
         humidity = {this.state.outcome_object.humidity}
         message = {this.state.outcome_object.message}
+        teamOneStats = {this.state.outcome_object.teamOneStats}
+        teamTwoStats = {this.state.outcome_object.teamTwoStats}
+        statsUsed = {this.state.outcome_object.statsUsed}
       />
-    } else if (this.state.content_state === "weather") {
-      content_body = <WeatherForm />
     } else {
       // Render the home page
       content_body = <div>

@@ -89,28 +89,6 @@ class GameOutcome extends Component {
                             <p>%</p>
                         </div>
                     </div>
-                    <div className="stats-used-container">
-                        <div className="stats-used-1">
-                            {
-                                this.props.teamOneStats.map((game, index) => (
-                                    <div className="summary-text">
-                                        <div className="summary-text-col">
-                                            <p key = {"statTitle"}>{this.props.statsUsed[0]}</p>
-                                        </div>
-                                        <div className="summary-text-col">
-                                            <p key = {"stat" + index}>{game[0]}</p>
-                                        </div>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                        <div className="stats-used-2">
-
-                        </div>
-                        <div className="summary-text">
-                            
-                        </div>
-                    </div>
                 </div>
             </div>
         );
