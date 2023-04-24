@@ -1,7 +1,8 @@
 from sklearn import svm
 
-from ml_connector import getAllStatsForTeam, getGame, getTeam, getGameFromTeamID, getTeamGameRoster
 from ml.player_svm import predictByPlayers
+from ml_connector import getTeamGameRoster, getGameFromTeamID, getTeam, getGame, getAllStatsForTeam, \
+    getGameStatForTeam
 
 baseWeight = 5
 sampleWeights = []
@@ -295,6 +296,7 @@ def predictPriorToGame(teamOne, teamTwo, temperature, windSpeed, precipitation, 
 
     return prediction
 
+
 def predictPlayerBased(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     prediction = predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation,
                                 humidity)
@@ -305,4 +307,39 @@ def predictPlayerBased(teamOne, teamTwo, temperature, windSpeed, precipitation, 
         else:
             prediction["winning-team"] = teamTwo
 
+    lastGameID = None
+    teamOneArray = prediction["team-one-stats"]
+    teamOneEntries = []
+    for x in teamOneArray:
+        if lastGameID is None or lastGameID != x[0]:
+            game = getGameStatForTeam(teamOne, x[0])
+            lastGameID = x[0]
+            if game is None:
+                continue
+            else:
+
+                teamOneEntries.append(game)
+
+    prediction["team-one-stats"] = teamOneEntries
+
+    lastGameID = None
+    teamTwoArray = prediction["team-two-stats"]
+    teamTwoEntries = []
+    for x in teamTwoArray:
+        if lastGameID is None or lastGameID != x[0]:
+            game = getGameStatForTeam(teamTwo, x[0])
+            lastGameID = x[0]
+            if game is None:
+                continue
+            else:
+                teamTwoEntries.append(game)
+
+    prediction["team-two-stats"] = teamTwoEntries
+
+    prediction["stats-used"] = ["Game ID", "Team ID", "Completion Percentage", "Huck Percentage", "Red Zone Percentage",
+                                "Hold Percentage", "Break Percentage", "Turnovers", "Blocks", "Average Temperature",
+                                "Average Wind Speed", "Average Humidity", "Average Precipitation"]
     return prediction
+
+
+# print(predictPlayerBased('glory', 'empire', 65, 6, 0, 58))

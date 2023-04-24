@@ -52,11 +52,11 @@ def getPlayerStats(playerList):
                 humid = -1
                 recordWeight -= 0
 
-            # nextRecord.append(temp)
+            nextRecord.append(temp)
             nextRecord.append(wind)
             # nextRecord.append(precip)
             # nextRecord.append(humid)
-            entry = [playerRow["gameID"]] + nextRecord
+            entry = [playerRow["gameID"], playerRow["playerID"]] +nextRecord
             entries.append(entry)
             records.append(nextRecord)
             sampleWeights.append(recordWeight)
@@ -115,7 +115,7 @@ def getPlayerStatsFiltered(playerList, game):
                 humid = -1
                 recordWeight -= 0
 
-            # nextRecord.append(temp)
+            nextRecord.append(temp)
             nextRecord.append(wind)
             # nextRecord.append(precip)
             # nextRecord.append(humid)
@@ -161,7 +161,7 @@ def combineArrays(teamOne, teamTwo):
 
 def appendWeatherStats(stats, temp, wind, precip, humidity):
     formattedStats = stats
-    # formattedStats.append(temp)
+    formattedStats.append(temp)
     formattedStats.append(wind)
     # formattedStats.append(precip)
     # formattedStats.append(humidity)
