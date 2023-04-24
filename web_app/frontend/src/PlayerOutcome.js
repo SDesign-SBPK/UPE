@@ -50,31 +50,11 @@ class PlayerOutcome extends Component {
                     </div>
                 <p>{this.props.message}</p>
                 <p>{this.props.percentage.toFixed(2)}% more likely to win</p>
-                <div className="match-summary">
-                    <h3>Match Summary</h3>
-                    <div className="summary-text">
-                        <div className="summary-text-col">
-                            <p>Wind</p>
-                            <p>Precipitation</p>
-                            <p>Temperature</p>
-                            <p>Humidity</p>
-                        </div>
-                        <div className="summary-text-col">
-                            <p>{this.props.wind}</p>
-                            <p>{this.props.precipitation}</p>
-                            <p>{this.props.temperature}</p>
-                            <p>{this.props.humidity}</p>
-                        </div>
-                        <div className="summary-text-col">
-                            <p>mph</p>
-                            <p>inches</p>
-                            <p>°F</p>
-                            <p>%</p>
-                        </div>
-                    </div>
-                </div>
+
                 <div className="outcome-split">
-                    <div className="player-choices outcome-split-piece">
+                    <div className="player-choices outcome-split-piece" style={{
+                        height: `${140 * this.props.team1.length}px` 
+                    }}>
                         <h3>Team 1</h3>
                         {
                             this.props.team1.map(player => (
@@ -93,7 +73,7 @@ class PlayerOutcome extends Component {
                         }
                     </div>
                     <div className="player-choices outcome-split-piece" style = {{
-
+                        height: `${140 * this.props.team2.length}px` 
                     }}>
                         <h3 style = {{
                             textAlign: "right"
@@ -113,6 +93,29 @@ class PlayerOutcome extends Component {
                                 </div>
                             ))
                         }
+                    </div>
+                </div>
+                <h3>Match Summary</h3>
+                <div className="match-summary">
+                    <div className="summary-text">
+                        <div className="summary-text-col">
+                            <p>Wind</p>
+                            <p>Precipitation</p>
+                            <p>Temperature</p>
+                            <p>Humidity</p>
+                        </div>
+                        <div className="summary-text-col">
+                            <p>{this.props.wind}</p>
+                            <p>{this.props.precipitation}</p>
+                            <p>{this.props.temperature}</p>
+                            <p>{this.props.humidity}</p>
+                        </div>
+                        <div className="summary-text-col">
+                            <p>mph</p>
+                            <p>inches</p>
+                            <p>°F</p>
+                            <p>%</p>
+                        </div>
                     </div>
                 </div>
             </div>

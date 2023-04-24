@@ -37,7 +37,7 @@ def getGame(gameID: str):
     Gets a game using a gameID
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM games WHERE gameID = %s", (gameID,))
     game = c.fetchone()
     c.close()
@@ -50,7 +50,7 @@ def getLocation(teamID: str):
     Gets a specific location using the relevant teamID
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM locations WHERE teamID = %s", (teamID,))
     location = c.fetchone()
     c.close()
@@ -63,7 +63,7 @@ def getPlayer(playerID: str):
     Gets a player using their playerID
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM players WHERE playerID = %s", (playerID,))
     player = c.fetchone()
     c.close()
@@ -73,10 +73,10 @@ def getPlayer(playerID: str):
 
 def getAllStatsForPlayer(playerID: str):
     """
-    Gets all of the game stat entries for a specific player
+    Gets all game stat entries for a specific player
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM playergamestats WHERE playerID = %s", (playerID,))
     stats = c.fetchall()
     c.close()
@@ -89,7 +89,7 @@ def getGameStatForPlayer(playerID: str, gameID: str):
     Gets the game stat entry for a specific player in a specific game
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM playergamestats WHERE playerID = %s AND gameID = %s", (playerID, gameID))
     stat = c.fetchone()
     c.close()
@@ -102,7 +102,7 @@ def getTeam(teamID: str):
     Gets a team entry with a given teamID
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM teams WHERE teamID = %s", (teamID,))
     team = c.fetchone()
     c.close()
@@ -112,10 +112,10 @@ def getTeam(teamID: str):
 
 def getAllStatsForTeam(teamID: str):
     """
-    Gets all of the game stat entries for a specific team
+    Gets all game stat entries for a specific team
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM teamgamestats WHERE teamID = %s", (teamID,))
     stats = c.fetchall()
     c.close()
@@ -128,7 +128,7 @@ def getGameStatForTeam(teamID: str, gameID: str):
     Gets the game stat entry for a specific team in a specific game
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM teamgamestats WHERE teamID = %s AND gameID = %s", (teamID, gameID))
     stat = c.fetchone()
     c.close()
@@ -138,10 +138,10 @@ def getGameStatForTeam(teamID: str, gameID: str):
 
 def getGameWeatherIntervals(gameID: str):
     """
-    Gets all of the weather intervals for a given game
+    Gets all weather intervals for a given game
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM weatherintervals WHERE gameID = %s", (gameID,))
     intervals = c.fetchall()
     c.close()
@@ -154,7 +154,7 @@ def getWeatherInterval(gameID: str, intervalNumber: str):
     Gets a specific interval from a game
     """
     connection = getConnection()
-    c = connection.cursor(buffered = True)
+    c = connection.cursor()
     c.execute("SELECT * FROM weatherintervals WHERE gameID = %s AND intervalNumber = %s", (gameID, intervalNumber))
     interval = c.fetchone()
     c.close()
@@ -163,21 +163,52 @@ def getWeatherInterval(gameID: str, intervalNumber: str):
 
 def getGameFromTeamID(teamID):
     connection = getConnection()
-    c = connection.cursor(buffered=True)
+    c = connection.cursor()
     c.execute("SELECT * FROM games WHERE awayTeam = %s OR homeTeam = %s ORDER BY gameID desc", (teamID, teamID))
     results = c.fetchall()
     c.close()
     connection.close()
     return results
 
+
 def getTeamGameRoster(gameID, away):
-    home = 1
-    if away:
+    if away is True:
         home = 0
+    else:
+        home = 1
     connection = getConnection()
-    c = connection.cursor(buffered=True)
+    c = connection.cursor()
     c.execute("SELECT * FROM playergamestats WHERE gameID = %s AND isHome = %s ORDER BY gameID desc", (gameID[0], home))
     results = c.fetchall()
     c.close()
     connection.close()
     return results
+
+def getAllPlayersStats(tuple):
+    string_names = str(tuple)
+    connection = getConnection()
+    c = connection.cursor()
+    c.execute("SELECT games.gameID, playerID, isHome, goals, awayTeam, homeTeam, awayScore, homeScore, status, "
+              "averageTemperature, averageWindSpeed, averageHumidity, averagePrecipitation FROM playergamestats JOIN "
+              "games ON games.gameID = playergamestats.gameID WHERE playerID IN " + string_names)
+    stats = c.fetchall()
+    c.close()
+    connection.close()
+    dictionaries = []
+    for stat in stats:
+        dictionaries.append({
+            "gameID": stat[0],
+            "playerID": stat[1],
+            "isHome": stat[2],
+            "goals": stat[3],
+            "awayTeam": stat[4],
+            "homeTeam": stat[5],
+            "awayScore": stat[6],
+            "homeScore": stat[7],
+            "status": stat[8],
+            "temp": stat[9],
+            "wind": stat[10],
+            "humid": stat[11],
+            "precip": stat[12]
+        })
+    return dictionaries

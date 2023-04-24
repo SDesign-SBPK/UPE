@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const connection = require("../database/connection.json");
 const http = require("http");
 const querystring = require("querystring");
@@ -31,4 +31,4 @@ app.use("/api", apiRouter);
 app.use("/index", indexRouter);
 
 //module.exports = app;
-app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
+app.listen(PORT, '127.0.0.1',() => console.log(`Listening on port: ${PORT}`));

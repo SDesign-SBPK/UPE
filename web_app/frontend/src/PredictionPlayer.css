@@ -72,3 +72,12 @@
     text-align: left;
     height: 700px;
 }
+
+.add-btn {
+    width: 50%;
+}
+
+#player-search {
+    position: relative;
+    width: 25%;
+}

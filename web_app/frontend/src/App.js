@@ -15,7 +15,7 @@ const BACKEND_HOST = "http://localhost:8080";
  * - outcome_team -> Displays a predicted outcome of a matchup, using the returned data
  * - outcome_player -> Displays a precited outcome of a player-based matchup, using returned data
  * - input -> Displays the input page for predictions
- *    !TODO: Once player inputs added, change this state to team_input
+ * - input_player -> Displays the input page for player-based predictions
  * - upcomingGames -> Shows all available upcoming games currently stored
  */
 
@@ -27,17 +27,19 @@ class App extends Component {
       outcome_object: {
         "winner": "none"
       },
-      content_state: "home"
+      content_state: "home",
+      loading_animation: false,
     }; 
   }
 
   /**
    * Sends a user-created player prediction over to the backend and waits for a response.
-   * Upon success, captures teh result and transitions the content state to show the outcome
+   * Upon success, captures the result and transitions the content state to show the outcome
    * breakdown
    * @param prediction The object containing all of the fields from the prediction input
    */
   sendPredictionPlayers(prediction) {
+    this.setState({loading_animation: true});
     fetch(BACKEND_HOST + "/api/Prediction-Form-Player", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -48,7 +50,8 @@ class App extends Component {
       data.percentage *= 100;
       this.setState({
         content_state: "outcome_player",
-        outcome_object: data
+        outcome_object: data,
+        loading_animation: false
       })
     })
   }
@@ -60,6 +63,7 @@ class App extends Component {
    * @param prediction The object containing all of the fields from the prediction input
    */
   sendPredictionTeam(prediction) {
+    this.setState({loading_animation: true});
     fetch(BACKEND_HOST + "/api/Prediction-Form-Team", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,7 +74,8 @@ class App extends Component {
       data.percentage *= 100;
       this.setState({
         content_state: "outcome_team", 
-        outcome_object: data
+        outcome_object: data,
+        loading_animation: false
       })
     })
     .catch(error => console.error("Error: ", error));
@@ -118,6 +123,9 @@ class App extends Component {
         temperature = {this.state.outcome_object.temperature}
         humidity = {this.state.outcome_object.humidity}
         message = {this.state.outcome_object.message}
+        teamOneStats = {this.state.outcome_object.teamOneStats}
+        teamTwoStats = {this.state.outcome_object.teamTwoStats}
+        statsUsed = {this.state.outcome_object.statsUsed}
       /> 
     } else if (this.state.content_state === "input") {
       // Render a team-input form
@@ -147,6 +155,9 @@ class App extends Component {
         temperature = {this.state.outcome_object.temperature}
         humidity = {this.state.outcome_object.humidity}
         message = {this.state.outcome_object.message}
+        teamOneStats = {this.state.outcome_object.teamOneStats}
+        teamTwoStats = {this.state.outcome_object.teamTwoStats}
+        statsUsed = {this.state.outcome_object.statsUsed}
       />
     } else {
       // Render the home page
@@ -170,6 +181,23 @@ class App extends Component {
               })
             }}>Lets Go! {">>>"}</h4>
           </div>
+        </div>
+      </div>;
+    }
+    if (this.state.loading_animation) {
+      content_body = <div>
+        <h3>Predicting...</h3>
+        <div class="center">
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
         </div>
       </div>;
     }

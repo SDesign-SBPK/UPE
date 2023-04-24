@@ -67,8 +67,8 @@ class GameOutcome extends Component {
                 </div>
                 <p>{this.props.message}</p>
                 <p>{this.props.percentage.toFixed(2)}% more likely to win</p>
+                <h3>Match Summary</h3> 
                 <div className="match-summary">
-                    <h3>Match Summary</h3> 
                     <div className="summary-text">
                         <div className="summary-text-col">
                             <p>Wind</p>
