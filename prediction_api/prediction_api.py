@@ -157,25 +157,26 @@ def predict_players():
         return invalid_endpoint(404, custom_message="No result from prediction")
 
     # Average the scores out to see what is accurate
-    win_percentage = 0
-    print(result)
-    winner_percents =  [(float(result[0][0]) + float(result[1][0])) / 2, (float(result[0][1]) + float(result[1][1])) / 2]
-    if winner_percents[0] > winner_percents[1]:
-        winner = team1Players
-        win_percentage = winner_percents[0]
-    else: 
-        winner = team2Players
-        win_percentage = winner_percents[1]
+    win_percentage = result["winning-team-percent"]
+    winner = result["winning-team"]
+    team_one_stats = result["team-one-stats"]
+    team_two_stats = result["team-two-stats"]
+    stats_used = result["stats-used"]
+    
+
+
 
     # Return result 
     return jsonify(
         {
             "message": "Prediction successful",
             "winner": winner,
-            # Will most likely need to change how we return the players in JSON Format
             "team1": team1Players,
             "team2": team2Players,
             "percentage": win_percentage,
+            "team-one-stats": team_one_stats,
+            "team-two-stats": team_two_stats,
+            "stats-used": stats_used,
             "wind": wind_speed,
             "precipitation": precipitation,
             "temperature": temperature,
