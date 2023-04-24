@@ -1,6 +1,6 @@
 from sklearn import svm
 
-from ml.player_svm import predictByPlayers
+from player_svm import predictByPlayers
 from ml_connector import getTeamGameRoster, getGameFromTeamID, getTeam, getGame, getAllStatsForTeam, \
     getGameStatForTeam
 

@@ -188,8 +188,8 @@ def getAllPlayersStats(tuple):
     string_names = str(tuple)
     connection = getConnection()
     c = connection.cursor()
-    c.execute("SELECT games.gameID, playerID, isHome, goals, awayTeam, homeTeam, awayScore, homeScore, status, "
-              "averageTemperature, averageWindSpeed, averageHumidity, averagePrecipitation FROM playergamestats JOIN "
+    c.execute("SELECT games.gameID, playerID, isHome, goals, assists, awayTeam, homeTeam, awayScore, homeScore, status, "
+              "averageTemperature, averageWindSpeed, averageHumidity, averagePrecipitation, completionPercentage FROM playergamestats JOIN "
               "games ON games.gameID = playergamestats.gameID WHERE playerID IN " + string_names)
     stats = c.fetchall()
     c.close()
@@ -201,14 +201,16 @@ def getAllPlayersStats(tuple):
             "playerID": stat[1],
             "isHome": stat[2],
             "goals": stat[3],
-            "awayTeam": stat[4],
-            "homeTeam": stat[5],
-            "awayScore": stat[6],
-            "homeScore": stat[7],
-            "status": stat[8],
-            "temp": stat[9],
-            "wind": stat[10],
-            "humid": stat[11],
-            "precip": stat[12]
+            "assists": stat[4],
+            "awayTeam": stat[5],
+            "homeTeam": stat[6],
+            "awayScore": stat[7],
+            "homeScore": stat[8],
+            "status": stat[9],
+            "temp": stat[10],
+            "wind": stat[11],
+            "humid": stat[12],
+            "precip": stat[13],
+            "completionPercentage": stat[14]
         })
     return dictionaries

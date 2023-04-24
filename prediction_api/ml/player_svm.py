@@ -1,6 +1,6 @@
 from sklearn import svm
 
-from ml_connector import getAllStatsForPlayer, getGame, getPlayer, getAllPlayersStats
+from ml_connector import getAllPlayersStats, getPlayer
 
 baseWeight = 5
 sampleWeights = []
@@ -28,7 +28,7 @@ def getPlayerStats(playerList):
             # Append goals
             nextRecord.append(playerRow["goals"])
             # Append assists
-            # nextRecord.append(game[4])
+            nextRecord.append(playerRow["assists"])
             # Append completions
             # nextRecord.append(game[7])
 
@@ -91,7 +91,7 @@ def getPlayerStatsFiltered(playerList, game):
             # Append goals
             nextRecord.append(playerRow["goals"])
             # Append assists
-            # nextRecord.append(game[4])
+            nextRecord.append(playerRow["assists"])
             # Append completions
             # nextRecord.append(game[7])
 
@@ -128,13 +128,13 @@ def getPlayerStatsFiltered(playerList, game):
 
 
 def getAverageStats(playerList):
-    averageStats = [0.0]
+    averageStats = [0.0, 0.0]
     removed = 0
     for player in playerList:
         stats = getPlayer(player)
         if stats is not None and stats[8] > 0:
             averageStats[0] += stats[5] / stats[8]
-            # averageStats[1] += stats[6] / stats[8]
+            averageStats[1] += stats[6] / stats[8]
             # averageStats[2] += stats[4] / stats[8]
         else:
             removed += 1
