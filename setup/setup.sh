@@ -2,7 +2,7 @@
 
 host=localhost
 port=3306
-database=upemock
+database=upefinal
 user=UPE-admin
 password=UpTF@YW797@N
 destination=connection.json

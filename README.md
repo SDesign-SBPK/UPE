@@ -1,11 +1,13 @@
 # UPE - Ultimate Prediction Engine
 
+The UPE is an interactive web-based application where fans of the AUDL can view accurate upcoming games predictions and create their own fantasy matchups.
+
 ## Setup
 
 Pre-requisites:
-- MySQL
-- Node.js + NPM
-- Python
+- MySQL 8.x
+- Node.js 16.x + NPM 8.x
+- Python 3.8+
 
 There are currently two key divisions of the project. Both can be setup and run independently of each other. However, to achieve the full functionality, both need to be updated.
 
@@ -16,7 +18,7 @@ Create a new file `connection.json` in the base directory of each module. This i
 {
     "host": "<the host where your mysql is - likely 'localhost'>",
     "port": 3306,
-    "database": "upe-beta",
+    "database": "upefinal",
     "user": "<your mysql username>",
     "pass": "<your mysql password>"
 }
@@ -26,7 +28,7 @@ The connection file needs to be duplicated and put into both the `prediction_api
 
 The database can be restored to a local copy by entering the `mysql` shell and running the following from the root level of the repository:
 ```
-source backups/UPE-BETA-DB.sql;
+source backups/UPE-BACKUP-FINAL_DEMO.sql;
 ```
 
 ### Predictions
@@ -36,7 +38,8 @@ The prediction package is built with Python. This is the part of the project tha
 Dependencies are managed with a virtual environment to avoid version conflicts with any other projects that may be on your system. To setup, navigate to the `prediction_api` folder and run the following:
 ```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate # For linux
+source venv\Scripts\activate # For Windows
 pip install -r requirements.txt
 ```
 
@@ -44,8 +47,10 @@ This will install of the packages for the prediction module and enable you to ac
 
 Once all of the dependencies are installed and the `connection.json` file is created correctly, the module can be run after the virtual environment is activated:
 ```bash
-source venv/bin/activate # Must be activated for packages to work!
-python prediction_api.py
+# Must be activated for packages to work!
+source venv/bin/activate # For linux
+source venv\Scripts\activate # For Windows
+python3 prediction_api.py
 ```
 
 ### Web Application
@@ -77,6 +82,19 @@ This installs all of the depencies involved in the front end development and dep
 npm start
 ```
 
+#### Weather Parser
+
+The weather parser is required as another submodule of the web_app its own package list.
+
+From the `web_app/scrapers/weather` directory, run the following:
+```bash
+npm install
+```
+
+## Future Work
+
+To expand on this project on the future, a large amount of work can be focused onto creating more of the fantasy elements of the application. This would include integrating users into the project to store their custom teams and update the stats of the custom teams as games occur. This could then be expanded to include competitions between users, including the option to create custom leagues.
+
 ## Conclusion
 
 There are three main parts that need to be running at all times for the application to be fully running:
@@ -84,4 +102,4 @@ There are three main parts that need to be running at all times for the applicat
 - The front end
 - The prediction API
 
-For other edge cases of running parts of the application (ex: database script, parsing scripts), see documentation in the relevant folder or ask the team.
+For other edge cases of running parts of the application (ex: database script, parsing scripts), see documentation in the relevant folder.
