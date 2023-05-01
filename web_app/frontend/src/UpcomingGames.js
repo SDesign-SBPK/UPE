@@ -58,7 +58,7 @@ class UpcomingGames extends Component {
                             if (mins < 10) {
                                 mins = mins.toString() + "0"
                             }
-                            let time_string = [months[time.getMonth()], " ", time.getDate(), ", ", time.getFullYear(), <br />, time.getHours(), ":", mins];
+                            let time_string = [months[time.getMonth()], " ", time.getDate(), ", ", time.getFullYear(), <br key = {"timeBr1" + game}/>, time.getHours(), ":", mins];
                             return (
                                 <GameEvent 
                                     key= {game.gameID}

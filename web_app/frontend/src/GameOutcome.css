@@ -20,6 +20,9 @@
 
 .match-summary {
     color: lightslategray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .summary-text {

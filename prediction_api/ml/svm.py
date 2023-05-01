@@ -1,9 +1,10 @@
 from sklearn import svm
 
-from ml_connector import getAllStatsForTeam, getGame, getTeam, getGameFromTeamID, getTeamGameRoster
 from ml.player_svm import predictByPlayers
+from ml_connector import getTeamGameRoster, getGameFromTeamID, getTeam, getGame, getAllStatsForTeam, \
+    getGameStatForTeam
 
-baseWeight = 1
+baseWeight = 5
 sampleWeights = []
 
 
@@ -28,47 +29,46 @@ def getTeamStatsFiltered(teamId, gameID):
             continue
         currentWeight = baseWeight
         # Add the team completion%, hold%, break%, turnovers, blocks. Verified that there are no null values in DB first
-        gameEntry = [float(row[2]), float(row[6]), float(row[7]), float(row[9]), float(row[10])]
+        # gameEntry = [float(row[2]), float(row[6]), float(row[7])]
         winHistory = getGame(row[0])
+        gameEntry = []
         if winHistory is not None:
             # Check to see if it is away or home team
-            if teamId in winHistory[0][1]:
-                if int(winHistory[0][5]) - int(winHistory[0][6]) > 0:
+            if teamId == winHistory[1]:
+                if not (int(winHistory[6]) - int(winHistory[7]) > 0):
                     # Append that they won
-                    gameEntry.append(1)
+                    # gameEntry.append(1)
+                    continue
                 else:
-                    # Append the team lost
-                    gameEntry.append(-1)
+                    gameEntry.append(winHistory[6])
             else:
-                if int(winHistory[0][6]) - int(winHistory[0][5]) > 0:
+                if not (int(winHistory[7]) - int(winHistory[6]) > 0):
                     # Append the team won
-                    gameEntry.append(1)
+                    # gameEntry.append(1)
+                    continue
                 else:
-                    # Append the team lost
-                    gameEntry.append(-1)
+                    gameEntry.append(winHistory[7])
             # Add the average  temp, wind, precip, humidity from th game data
             # TODO: Verify if there are any null cases to look for.
-            temp = winHistory[0][7]
-            wind = winHistory[0][8]
-            precip = winHistory[0][9]
-            humidity = winHistory[0][10]
-            if '-' in temp:
-                temp = -1
-                currentWeight = currentWeight - .15
-            if '-' in wind:
+            temp = winHistory[9]
+            wind = winHistory[10]
+            precip = winHistory[11]
+            humidity = winHistory[10]
+            # if '-' in temp:
+            #     temp = -1
+            #     currentWeight = currentWeight - .15
+            if wind is None:
                 wind = -1
-                currentWeight = currentWeight - .2
-            if '-' in precip:
+                currentWeight = currentWeight - 1
+            if precip is None:
                 precip = -1
-                currentWeight = currentWeight - .2
-            if '-' in humidity:
-                humidity = -1
-                currentWeight = currentWeight - .1
+                currentWeight = currentWeight - 1
+            # if '-' in humidity:
+            #     humidity = -1
+            #     currentWeight = currentWeight - .1
 
-            gameEntry.append(temp)
             gameEntry.append(wind)
-            gameEntry.append(precip)
-            gameEntry.append(humidity)
+            # gameEntry.append(precip)
             gameHistory.append(gameEntry)
             sampleWeights.append(currentWeight)
 
@@ -79,10 +79,9 @@ def getTeamStats(teamId):
     gameHistory = []
     sqlGames = getAllStatsForTeam(teamId)
     for row in sqlGames:
-
         currentWeight = baseWeight
-        # Add the team completion%, hold%, break%, turnovers, blocks. Verified that there are no null values in DB first
-        gameEntry = [float(row[2]), float(row[6]), float(row[7]), float(row[9]), float(row[10])]
+        # Add the team completion%, hold%, blocks. Verified that there are no null values in DB first
+        gameEntry = [float(row[2]), float(row[6]),  float(row[10])]
         winHistory = getGame(row[0])
         if winHistory is not None:
             # Check to see if it is away or home team
@@ -106,37 +105,28 @@ def getTeamStats(teamId):
             wind = winHistory[0][8]
             precip = winHistory[0][9]
             humidity = winHistory[0][10]
-            if '-' in temp:
-                temp = -1
-                currentWeight = currentWeight - .15
+            # if '-' in temp:
+            #     temp = -1
+            #     currentWeight = currentWeight - .15
             if '-' in wind:
                 wind = -1
-                currentWeight = currentWeight - .2
+                currentWeight = currentWeight - 1
             if '-' in precip:
                 precip = -1
-                currentWeight = currentWeight - .2
-            if '-' in humidity:
-                humidity = -1
-                currentWeight = currentWeight - .1
+                currentWeight = currentWeight - 1
+            # if '-' in humidity:
+            #     humidity = -1
+            #     currentWeight = currentWeight - .1
 
-            gameEntry.append(temp)
             gameEntry.append(wind)
-            gameEntry.append(precip)
-            gameEntry.append(humidity)
+            # gameEntry.append(precip)
             gameHistory.append(gameEntry)
             sampleWeights.append(currentWeight)
 
     return gameHistory
 
 
-def getStats():
-    gameHistory = []
-    for x in range(20):
-        temp = []
-        for y in range(2):
-            temp.append(x)
-        gameHistory.append(temp)
-    return gameHistory
+
 
 
 def stringOfTeamId(array, total, teamId):
@@ -175,20 +165,26 @@ def getStatAverage(teamId):
         blocks = float(teamStats[10])
         if blocks is None:
             blocks = 0
-        formattedResult = [completion, hold, breakPercentage, turnovers, blocks]
+        gamesPlayed = teamStats[4]
+        if gamesPlayed <= 0:
+            gamesPlayed = 1
+        scoresFor = teamStats[12]
+        if scoresFor < 0:
+            scoresFor = 0
+        formattedResult = [float(scoresFor / gamesPlayed)]
     else:
-        formattedResult = [.5, .5, .5, .5, 0, 0]
+        formattedResult = [.5, .5, .5]
     #   Append a 1 for as a 'win' since that is what we are checking for
-    formattedResult.append(1)
+    # formattedResult.append(1)
     return formattedResult
 
 
 def appendWeatherStats(stats, temp, wind, precip, humidity):
     formattedStats = stats
-    formattedStats.append(temp)
+    # formattedStats.append(temp)
     formattedStats.append(wind)
-    formattedStats.append(precip)
-    formattedStats.append(humidity)
+    # formattedStats.append(precip)
+    # formattedStats.append(humidity)
     return formattedStats
 
 
@@ -263,6 +259,8 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
         return predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation,
                                 humidity)
+    print(teamOneStats)
+
 
     formattedTemp = float(temperature)
     formattedWind = float(windSpeed)
@@ -271,7 +269,7 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
     teamStats = combineArrays(teamOneStats, teamTwoStats)
     teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
     teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
-    machine = svm.SVC(kernel="linear", C=1, probability=True, class_weight='balanced')
+    machine = svm.SVC(kernel="linear", C=1, probability=True)
     machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
 
     teamOneSeasonAverage = getStatAverage(teamOne)
@@ -286,29 +284,62 @@ def predict(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
 
 
 def predictPriorToGame(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity, game):
-    sampleWeights = []
-    teamOneStats = getTeamStatsFiltered(teamOne, game)
-    teamTwoStats = getTeamStatsFiltered(teamTwo, game)
+    prediction = predictByPlayers(getTeamPlayersBeforeGame(teamOne, game), getTeamPlayersBeforeGame(teamTwo, game), temperature, windSpeed,
+                                  precipitation,
+                                  humidity)
 
-    if len(teamOneStats) == 0 or len(teamTwoStats) == 0:
-        return predictByPlayers(getTeamPlayersBeforeGame(teamOne, game), getTeamPlayersBeforeGame(teamTwo, game), temperature, windSpeed, precipitation, humidity)
+    if prediction["winning-team"] is not None:
+        if prediction["winning-team"] == "team-one":
+            prediction["winning-team"] = teamOne
+        else:
+            prediction["winning-team"] = teamTwo
 
-    formattedTemp = float(temperature)
-    formattedWind = float(windSpeed)
-    formattedPrecip = float(precipitation)
-    formattedHumidity = float(humidity)
-    teamStats = combineArrays(teamOneStats, teamTwoStats)
-    teamTargets = stringOfTeamId([], len(teamOneStats), teamOne)
-    teamTargets = stringOfTeamId(teamTargets, len(teamTwoStats), teamTwo)
-    machine = svm.SVC(kernel="linear", C=1, probability=True, class_weight='balanced')
-    machine.fit(teamStats, teamTargets, sample_weight=sampleWeights)
+    return prediction
 
-    teamOneSeasonAverage = getStatAverage(teamOne)
-    teamOneSeasonAverage = appendWeatherStats(teamOneSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
-    teamTwoSeasonAverage = getStatAverage(teamTwo)
-    teamTwoSeasonAverage = appendWeatherStats(teamTwoSeasonAverage, formattedTemp, formattedWind, formattedPrecip,
-                                              formattedHumidity)
-    toPredict = [teamOneSeasonAverage, teamTwoSeasonAverage]
-    result = machine.predict_proba(toPredict).tolist()
-    return result
+
+def predictPlayerBased(teamOne, teamTwo, temperature, windSpeed, precipitation, humidity):
+    prediction = predictByPlayers(getTeamPlayers(teamOne), getTeamPlayers(teamTwo), temperature, windSpeed, precipitation,
+                                humidity)
+
+    if prediction["winning-team"] is not None:
+        if prediction["winning-team"] == "team-one":
+            prediction["winning-team"] = teamOne
+        else:
+            prediction["winning-team"] = teamTwo
+
+    lastGameID = None
+    teamOneArray = prediction["team-one-stats"]
+    teamOneEntries = []
+    for x in teamOneArray:
+        if lastGameID is None or lastGameID != x[0]:
+            game = getGameStatForTeam(teamOne, x[0])
+            lastGameID = x[0]
+            if game is None:
+                continue
+            else:
+
+                teamOneEntries.append(game)
+
+    prediction["team-one-stats"] = teamOneEntries
+
+    lastGameID = None
+    teamTwoArray = prediction["team-two-stats"]
+    teamTwoEntries = []
+    for x in teamTwoArray:
+        if lastGameID is None or lastGameID != x[0]:
+            game = getGameStatForTeam(teamTwo, x[0])
+            lastGameID = x[0]
+            if game is None:
+                continue
+            else:
+                teamTwoEntries.append(game)
+
+    prediction["team-two-stats"] = teamTwoEntries
+
+    prediction["stats-used"] = ["Game ID", "Team ID", "Completion Percentage", "Huck Percentage", "Red Zone Percentage",
+                                "Hold Percentage", "Break Percentage", "Turnovers", "Blocks", "Average Temperature",
+                                "Average Wind Speed", "Average Humidity", "Average Precipitation"]
+    return prediction
+
+
+# print(predictPlayerBased('glory', 'empire', 65, 6, 0, 58))
